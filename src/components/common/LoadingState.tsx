@@ -3,51 +3,58 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 
 type LoadingStateProps = {
-  message?: string;
-  subMessage?: string;
-  fullscreen?: boolean;
+    message?: string;
+    fullscreen?: boolean;
 };
 
-export const LoadingState = ({ message, subMessage, fullscreen = true }: LoadingStateProps) => {
-  const { t } = useTranslation();
-  const { theme } = useTheme();
+export const LoadingState = ({ message, fullscreen = true }: LoadingStateProps) => {
+    const { t } = useTranslation();
+    const { theme } = useTheme();
 
-  const finalMessage = message ?? t('common.loading');
-  const finalSubMessage = subMessage ?? t('common.loadingMessage');
-  const containerClasses = useMemo(
-    () =>
-      [
-        'flex flex-col items-center justify-center text-center space-y-6 px-6',
-        fullscreen ? 'min-h-[60vh]' : 'py-16',
-      ].join(' '),
-    [fullscreen],
-  );
+    const finalMessage = message ?? t('common.loading');
 
-  return (
-    <div className={containerClasses} aria-live="polite" aria-busy>
-      <div className="relative">
-        <div className="w-28 h-28 rounded-full border-4 border-theatre-gold/30 border-t-theatre-gold animate-spin shadow-inner shadow-black/10 bg-gradient-to-br from-theatre-red/20 to-transparent"></div>
-        <div className="absolute inset-0 flex items-center justify-center text-4xl">
-          {theme === 'dark' ? '🌙' : '🎭'}
+    const containerClasses = useMemo(
+        () =>
+            [
+                'flex flex-col items-center justify-center text-center space-y-6 px-6',
+                fullscreen ? 'min-h-[60vh]' : 'py-16',
+            ].join(' '),
+        [fullscreen],
+    );
+
+    return (
+        <div className={containerClasses} aria-live="polite" aria-busy={true}>
+            {/* Loader */}
+            <div className="relative">
+                <div className="w-24 h-24 rounded-full border border-theatre-gold/20 bg-theatre-black/60 shadow-[0_0_40px_rgba(0,0,0,0.6)] flex items-center justify-center">
+                    <div className="relative w-16 h-16">
+                        <div className="absolute inset-0 rounded-full border-2 border-theatre-gold/30 border-t-theatre-gold animate-spin" />
+                        <div className="absolute inset-3 rounded-full border border-theatre-red/40" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xs tracking-[0.2em] uppercase text-theatre-gold">
+                {theme === 'dark' ? 'ARF' : 'ARF'}
+              </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Text */}
+            <div className="space-y-3">
+                <p className="text-lg font-semibold tracking-wide text-theatre-gold dark:text-theatre-gold-light">
+                    {finalMessage}
+                </p>
+
+                <div className="flex items-center justify-center gap-2 text-xs uppercase tracking-[0.3em] text-theatre-red dark:text-theatre-red-light">
+                    <span>Arab Festival</span>
+                </div>
+
+                <div className="flex items-center justify-center gap-1 mt-2 text-theatre-gold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse [animation-delay:120ms]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse [animation-delay:240ms]" />
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <p className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
-          {finalMessage}
-        </p>
-        {finalSubMessage && (
-          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-            {finalSubMessage}
-          </p>
-        )}
-      </div>
-
-      <div className="flex items-end gap-2 text-theatre-gold dark:text-theatre-gold-light">
-        <span className="w-3 h-3 rounded-full bg-current animate-bounce" />
-        <span className="w-3 h-3 rounded-full bg-current animate-bounce [animation-delay:120ms]" />
-        <span className="w-3 h-3 rounded-full bg-current animate-bounce [animation-delay:240ms]" />
-      </div>
-    </div>
-  );
+    );
 };
