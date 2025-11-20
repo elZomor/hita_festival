@@ -1,0 +1,213 @@
+import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { ArrowLeft, Calendar, MapPin, Globe, User, Users, ExternalLink } from 'lucide-react';
+import { Button, Card, Badge, SectionHeader } from '../components/common';
+import { mockShows, mockArticles, mockSymposia } from '../data/mockData';
+
+export const ShowDetail = () => {
+  const { year, slug } = useParams<{ year: string; slug: string }>();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+
+  const show = mockShows.find(s => s.slug === slug && s.editionYear === Number(year));
+  const relatedArticles = mockArticles.filter(a => a.showId === show?.id);
+  const relatedSymposium = mockSymposia.find(s => s.relatedShowIds?.includes(show?.id || ''));
+
+  if (!show) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t('common.noResults')}
+        </h2>
+      </div>
+    );
+  }
+
+  const showDate = new Date(show.dateTime);
+
+  return (
+    <div className="space-y-8">
+      <Link
+        to={`/festival/${year}`}
+        className="inline-flex items-center gap-2 text-theatre-gold hover:text-theatre-gold-light transition-colors"
+      >
+        <ArrowLeft size={20} className={isRTL ? 'rotate-180' : ''} />
+        {t('common.backToList')}
+      </Link>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+          {show.posterUrl && (
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src={show.posterUrl}
+                alt={isRTL ? show.titleAr : show.titleEn}
+                className="w-full h-auto"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-4xl font-bold text-theatre-red dark:text-theatre-gold mb-2">
+              {isRTL ? show.titleAr : show.titleEn}
+            </h1>
+            {isRTL !== true && show.titleAr !== show.titleEn && (
+              <p className="text-xl text-gray-600 dark:text-gray-400">
+                {isRTL ? show.titleEn : show.titleAr}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <Users size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.group')}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{show.groupName}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Globe size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.country')}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{show.country}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <User size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.director')}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{show.director}</p>
+              </div>
+            </div>
+
+            {show.dramaturg && (
+              <div className="flex items-start gap-3">
+                <User size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.dramaturg')}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{show.dramaturg}</p>
+                </div>
+              </div>
+            )}
+
+            {show.cast && show.cast.length > 0 && (
+              <div className="flex items-start gap-3">
+                <Users size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.cast')}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {show.cast.join(', ')}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-start gap-3">
+              <Calendar size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.dateTime')}</p>
+                <p className="font-medium text-gray-900 dark:text-white">
+                  {showDate.toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <MapPin size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.venue')}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{show.venue}</p>
+              </div>
+            </div>
+          </div>
+
+          {show.bookingUrl && (
+            <a
+              href={show.bookingUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block"
+            >
+              <Button variant="primary" className="w-full group">
+                {t('show.bookTicket')}
+                <ExternalLink className={`${isRTL ? 'mr-2' : 'ml-2'} group-hover:translate-x-1 transition-transform`} size={20} />
+              </Button>
+            </a>
+          )}
+        </div>
+      </div>
+
+      <Card className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900" hover={false}>
+        <h2 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold mb-4">
+          {t('show.synopsis')}
+        </h2>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+          {isRTL ? show.synopsisAr : show.synopsisEn}
+        </p>
+      </Card>
+
+      {relatedArticles.length > 0 && (
+        <div>
+          <SectionHeader>{t('show.criticalArticles')}</SectionHeader>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {relatedArticles.map(article => (
+              <Link key={article.id} to={`/articles/${article.slug}`}>
+                <Card>
+                  <div className="space-y-3">
+                    <Badge variant="gold">
+                      {t(`articles.types.${article.type}`)}
+                    </Badge>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                      {isRTL ? article.titleAr : article.titleEn}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {t('articles.author')}: {article.author}
+                    </p>
+                    <p className="text-gray-700 dark:text-gray-300 line-clamp-2">
+                      {isRTL ? article.contentAr.substring(0, 120) : article.contentEn?.substring(0, 120)}...
+                    </p>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {relatedSymposium && (
+        <div>
+          <SectionHeader>{t('show.symposium')}</SectionHeader>
+          <Link to={`/symposia/${relatedSymposium.id}`}>
+            <Card>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
+                  {isRTL ? relatedSymposium.titleAr : relatedSymposium.titleEn}
+                </h3>
+                <div className="flex flex-wrap gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span>{new Date(relatedSymposium.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US')}</span>
+                  <span>•</span>
+                  <span>{relatedSymposium.hall}</span>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300">
+                  {relatedSymposium.summaryAr.substring(0, 200)}...
+                </p>
+              </div>
+            </Card>
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};

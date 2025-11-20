@@ -1,0 +1,26 @@
+import { ReactNode } from 'react';
+
+interface CardProps {
+  children: ReactNode;
+  className?: string;
+  hover?: boolean;
+}
+
+export const Card = ({ children, className = '', hover = true }: CardProps) => {
+  const hoverStyles = hover ? 'hover:scale-105 hover:shadow-2xl cursor-pointer' : '';
+
+  return (
+    <div
+      className={`
+        bg-white dark:bg-gray-800
+        rounded-lg shadow-lg
+        p-6
+        transition-all duration-300
+        ${hoverStyles}
+        ${className}
+      `}
+    >
+      {children}
+    </div>
+  );
+};

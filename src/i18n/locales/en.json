@@ -1,0 +1,122 @@
+{
+  "nav": {
+    "home": "Home",
+    "editions": "Festival Editions",
+    "articles": "Critical Articles",
+    "creativity": "Student Creativity",
+    "about": "About"
+  },
+  "home": {
+    "title": "Arab Festival",
+    "subtitle": "Higher Institute of Theatrical Arts - Cairo",
+    "tagline": "A comprehensive critical and documentary archive of the Arab Festival through the years",
+    "currentEdition": "Go to Current Edition",
+    "browseArticles": "Browse Critical Articles",
+    "editionsTitle": "Festival Editions",
+    "latestArticles": "Latest Critical Articles",
+    "creativityTitle": "Student Creativity",
+    "creativityText": "An open space for student creative contributions during the festival including stories, critical essays, and poems",
+    "exploreCreativity": "Explore Creativity"
+  },
+  "festival": {
+    "shows": "Shows",
+    "articles": "Critical Articles",
+    "symposia": "Symposia",
+    "creativity": "Student Creativity",
+    "numberOfShows": "shows",
+    "numberOfArticles": "articles",
+    "filterByDate": "Filter by Date",
+    "filterByVenue": "Filter by Venue",
+    "filterByCountry": "Filter by Country",
+    "allDates": "All Dates",
+    "allVenues": "All Venues",
+    "allCountries": "All Countries",
+    "todayShow": "Today's Show"
+  },
+  "show": {
+    "bookTicket": "Book Your Ticket",
+    "director": "Director",
+    "dramaturg": "Dramaturg",
+    "cast": "Cast",
+    "group": "Group",
+    "country": "Country",
+    "dateTime": "Date & Time",
+    "venue": "Venue",
+    "synopsis": "Synopsis",
+    "criticalArticles": "Critical Articles About This Show",
+    "symposium": "Critical Symposium"
+  },
+  "articles": {
+    "title": "Critical Articles",
+    "filterByYear": "Filter by Year",
+    "filterByShow": "Filter by Show",
+    "filterByType": "Filter by Type",
+    "allYears": "All Years",
+    "allShows": "All Shows",
+    "allTypes": "All Types",
+    "types": {
+      "review": "Show Review",
+      "symposium_coverage": "Symposium Coverage",
+      "analysis": "Analytical Article",
+      "general": "General Festival Article"
+    },
+    "author": "Author",
+    "relatedShow": "Related Show",
+    "relatedArticles": "Related Articles",
+    "readMore": "Read More"
+  },
+  "symposia": {
+    "title": "Critical Symposia",
+    "moderator": "Moderator",
+    "panelists": "Panelists",
+    "dateTime": "Date & Time",
+    "hall": "Hall",
+    "summary": "Discussion Summary",
+    "relatedShows": "Related Shows"
+  },
+  "creativity": {
+    "title": "Student Creativity",
+    "description": "An open space for student creative contributions during the festival including short stories, critical essays, poems, and experimental texts",
+    "submit": "Submit Your Work",
+    "submitForm": {
+      "title": "Share Your Creativity",
+      "name": "Name",
+      "email": "Email",
+      "workTitle": "Work Title",
+      "type": "Work Type",
+      "types": {
+        "story": "Short Story",
+        "essay": "Critical Essay",
+        "poem": "Poem",
+        "other": "Other"
+      },
+      "editionYear": "Festival Edition (Optional)",
+      "content": "Text",
+      "file": "Or Upload a File",
+      "submitBtn": "Submit",
+      "cancel": "Cancel",
+      "success": "Thank you for your submission! Your work will be reviewed soon."
+    },
+    "by": "By"
+  },
+  "about": {
+    "title": "About the Festival",
+    "whatIsTitle": "What is the Arab Festival?",
+    "whatIsText": "The Arab Theatre Festival is an annual event hosted by the Higher Institute of Theatrical Arts in Cairo, bringing together theatrical performances from various Arab countries and providing a platform for critical dialogue and cultural exchange among Arab theatre practitioners.",
+    "whyArchiveTitle": "Why This Archive?",
+    "whyArchiveText": "This website aims to comprehensively document the festival's history, preserve the theatrical criticism accompanying the performances, and provide a research reference for scholars and those interested in contemporary Arab theatre.",
+    "contactTitle": "Contact Us",
+    "contactText": "For inquiries and suggestions, please contact:"
+  },
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "noResults": "No results found",
+    "viewDetails": "View Details",
+    "backToList": "Back to List",
+    "share": "Share"
+  }
+}
