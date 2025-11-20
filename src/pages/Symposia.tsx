@@ -2,21 +2,52 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar, MapPin, Users } from 'lucide-react';
 import { Card, SectionHeader } from '../components/common';
-import { mockSymposia } from '../data/mockData';
+import { useSymposia } from '../api/hooks';
+import type { Symposium } from '../types';
 
 export const Symposia = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
-  const symposiaByYear = mockSymposia.reduce((acc, symposium) => {
+  const {
+    data: symposia = [],
+    isLoading,
+    isError,
+  } = useSymposia();
+
+  const symposiaByYear = symposia.reduce<Record<number, Symposium[]>>((acc, symposium) => {
     if (!acc[symposium.editionYear]) {
       acc[symposium.editionYear] = [];
     }
     acc[symposium.editionYear].push(symposium);
     return acc;
-  }, {} as Record<number, typeof mockSymposia>);
+  }, {});
 
   const years = Object.keys(symposiaByYear).sort((a, b) => Number(b) - Number(a));
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+      </div>
+    );
+  }
+
+  if (!symposia.length) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.noResults')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

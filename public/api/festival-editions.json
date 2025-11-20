@@ -1,0 +1,38 @@
+[
+  {
+    "year": 2025,
+    "slug": "2025",
+    "titleAr": "الدورة الحادية عشرة - 2025",
+    "titleEn": "11th Edition - 2025",
+    "descriptionAr": "دورة استثنائية تجمع 15 عرضاً مسرحياً من 10 دول عربية",
+    "descriptionEn": "An exceptional edition bringing together 15 theatrical performances from 10 Arab countries",
+    "startDate": "2025-03-15",
+    "endDate": "2025-03-25",
+    "numberOfShows": 15,
+    "numberOfArticles": 23
+  },
+  {
+    "year": 2024,
+    "slug": "2024",
+    "titleAr": "الدورة العاشرة - 2024",
+    "titleEn": "10th Edition - 2024",
+    "descriptionAr": "احتفالاً بالدورة العاشرة، استضفنا 18 عرضاً متميزاً",
+    "descriptionEn": "Celebrating the 10th edition with 18 outstanding performances",
+    "startDate": "2024-03-10",
+    "endDate": "2024-03-22",
+    "numberOfShows": 18,
+    "numberOfArticles": 31
+  },
+  {
+    "year": 2023,
+    "slug": "2023",
+    "titleAr": "الدورة التاسعة - 2023",
+    "titleEn": "9th Edition - 2023",
+    "descriptionAr": "دورة تميزت بالتنوع والتجريب المسرحي",
+    "descriptionEn": "An edition distinguished by diversity and theatrical experimentation",
+    "startDate": "2023-03-12",
+    "endDate": "2023-03-20",
+    "numberOfShows": 12,
+    "numberOfArticles": 19
+  }
+]

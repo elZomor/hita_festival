@@ -2,16 +2,47 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Calendar, MapPin, Globe, User, Users, ExternalLink } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader } from '../components/common';
-import { mockShows, mockArticles, mockSymposia } from '../data/mockData';
+import { useArticles, useShows, useSymposia } from '../api/hooks';
 
 export const ShowDetail = () => {
   const { year, slug } = useParams<{ year: string; slug: string }>();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
-  const show = mockShows.find(s => s.slug === slug && s.editionYear === Number(year));
-  const relatedArticles = mockArticles.filter(a => a.showId === show?.id);
-  const relatedSymposium = mockSymposia.find(s => s.relatedShowIds?.includes(show?.id || ''));
+  const showsQuery = useShows();
+  const articlesQuery = useArticles();
+  const symposiaQuery = useSymposia();
+
+  const isLoading = showsQuery.isLoading || articlesQuery.isLoading || symposiaQuery.isLoading;
+  const hasError = showsQuery.isError || articlesQuery.isError || symposiaQuery.isError;
+
+  const show = showsQuery.data?.find(
+    s => s.slug === slug && s.editionYear === Number(year),
+  );
+  const relatedArticles = (articlesQuery.data ?? []).filter(a => a.showId === show?.id);
+  const relatedSymposium = (symposiaQuery.data ?? []).find(s =>
+    show?.id ? s.relatedShowIds?.includes(show.id) : false,
+  );
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t('common.loading')}
+        </h2>
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t('common.error')}
+        </h2>
+      </div>
+    );
+  }
 
   if (!show) {
     return (

@@ -35,11 +35,11 @@ A comprehensive, bilingual (Arabic/English) web application dedicated to the Ara
 
 ```
 src/
+├── api/                # React Query client + resource hooks
 ├── components/
 │   ├── common/          # Reusable UI components
 │   └── layout/          # Layout components (Header, Footer)
 ├── contexts/            # React contexts (Theme)
-├── data/                # Mock data
 ├── features/            # Feature-specific components
 │   └── festival/        # Festival-related components
 ├── i18n/                # Localization files
@@ -62,13 +62,36 @@ src/
 - `/creativity` - Student creativity hub
 - `/about` - About page
 
-## Mock Data
+## Mock API
 
-The application currently uses mock data for demonstration. To connect to a real backend:
+- Development data now lives under `public/api/*.json` and is automatically served at `/api/<resource>.json` (e.g. `/api/festival-editions.json`).
+- The shared React Query hooks (`src/api/hooks.ts`) consume those endpoints, so every page now fetches data via the reusable client instead of importing static objects.
+- Set `VITE_API_BASE_URL` (see `.env`) to point at your real backend when ready; replace or remove the JSON files once true endpoints exist.
 
-1. Update the data fetching logic in pages to use React Query hooks
-2. Replace mock data imports with API calls
-3. The TypeScript types are already defined and ready to use
+## API Utility
+
+- `src/api/reactQueryClient.ts` centralizes access to backend endpoints through a reusable `ReactQueryApiClient`.
+- Configure the base URL via `VITE_API_BASE_URL`; relative paths fall back to Vite's dev proxy if unset.
+- The helper exposes typed `useQuery` / `useMutation` builders, `buildQueryKey`, and `withQueryParams` helpers to keep React Query usage consistent across features.
+- `src/api/hooks.ts` wraps common resources (festival editions, shows, articles, symposia, creativity submissions) so pages can stay declarative and only worry about presentation.
+
+```ts
+import { apiQueryClient, withQueryParams } from './api/reactQueryClient';
+import type { FestivalEdition, Show } from './types';
+
+export const useFestivalEditions = () =>
+  apiQueryClient.useQuery<FestivalEdition[]>({
+    queryKey: ['festivalEditions'],
+    path: '/festival-editions',
+  });
+
+export const useShowBySlug = (year: number, slug?: string) =>
+  apiQueryClient.useQuery<Show | undefined>({
+    queryKey: ['show', year, slug],
+    path: () => withQueryParams(`/festival/${year}/shows`, { slug }),
+    enabled: () => Boolean(slug),
+  });
+```
 
 ## Color Palette
 

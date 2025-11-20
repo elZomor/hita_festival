@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FileText } from 'lucide-react';
 import { Card, Badge, SectionHeader } from '../components/common';
-import { mockArticles, mockShows } from '../data/mockData';
+import { useArticles, useShows } from '../api/hooks';
 import { ArticleType } from '../types';
 
 export const Articles = () => {
@@ -12,10 +12,21 @@ export const Articles = () => {
   const [yearFilter, setYearFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<ArticleType | 'all'>('all');
 
-  const uniqueYears = ['all', ...new Set(mockArticles.map(a => a.editionYear))];
+  const {
+    data: articles = [],
+    isLoading,
+    isError,
+  } = useArticles();
+  const {
+    data: shows = [],
+    isLoading: isLoadingShows,
+    isError: hasShowsError,
+  } = useShows();
+
+  const uniqueYears = ['all', ...new Set(articles.map(a => a.editionYear))];
   const articleTypes: (ArticleType | 'all')[] = ['all', 'review', 'symposium_coverage', 'analysis', 'general'];
 
-  const filteredArticles = mockArticles.filter(article => {
+  const filteredArticles = articles.filter(article => {
     if (yearFilter !== 'all' && article.editionYear !== Number(yearFilter)) return false;
     if (typeFilter !== 'all' && article.type !== typeFilter) return false;
     return true;
@@ -23,9 +34,25 @@ export const Articles = () => {
 
   const getShowTitle = (showId?: string) => {
     if (!showId) return null;
-    const show = mockShows.find(s => s.id === showId);
+    const show = shows.find(s => s.id === showId);
     return show ? (isRTL ? show.titleAr : show.titleEn) : null;
   };
+
+  if (isLoading || isLoadingShows) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
+      </div>
+    );
+  }
+
+  if (isError || hasShowsError) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

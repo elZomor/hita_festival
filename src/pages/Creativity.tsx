@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, Plus } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader } from '../components/common';
-import { mockCreativity } from '../data/mockData';
+import { useCreativityEntries } from '../api/hooks';
 
 export const Creativity = () => {
   const { t, i18n } = useTranslation();
@@ -17,6 +17,11 @@ export const Creativity = () => {
     content: '',
   });
   const [showSuccess, setShowSuccess] = useState(false);
+  const {
+    data: creativityEntries = [],
+    isLoading,
+    isError,
+  } = useCreativityEntries();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,11 +189,24 @@ export const Creativity = () => {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockCreativity.map((item) => (
-          <Card key={item.id}>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
+      {isLoading && (
+        <div className="text-center py-16">
+          <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="text-center py-16">
+          <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+        </div>
+      )}
+
+      {!isLoading && !isError && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {creativityEntries.map((item) => (
+            <Card key={item.id}>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
                 <Badge variant="gold">
                   {t(`creativity.submitForm.types.${item.type}`)}
                 </Badge>
@@ -218,10 +236,11 @@ export const Creativity = () => {
               <p className="text-gray-700 dark:text-gray-300 line-clamp-4 leading-relaxed">
                 {item.content}
               </p>
-            </div>
-          </Card>
-        ))}
-      </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

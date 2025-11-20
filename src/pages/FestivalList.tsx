@@ -2,11 +2,42 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar } from 'lucide-react';
 import { Card, Badge, SectionHeader } from '../components/common';
-import { mockEditions } from '../data/mockData';
+import { useFestivalEditions } from '../api/hooks';
 
 export const FestivalList = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const {
+    data: editions = [],
+    isLoading,
+    isError,
+  } = useFestivalEditions();
+  const sortedEditions = [...editions].sort((a, b) => b.year - a.year);
+  const latestEditionYear = sortedEditions[0]?.year;
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+      </div>
+    );
+  }
+
+  if (!editions.length) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.noResults')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -16,7 +47,7 @@ export const FestivalList = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockEditions.map((edition) => (
+        {sortedEditions.map((edition) => (
           <Link key={edition.year} to={`/festival/${edition.year}`}>
             <Card className="h-full">
               <div className="space-y-4">
@@ -24,7 +55,7 @@ export const FestivalList = () => {
                   <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
                     {isRTL ? edition.titleAr : edition.titleEn}
                   </h3>
-                  {edition.year === mockEditions[0].year && (
+                  {edition.year === latestEditionYear && (
                     <Badge variant="red">{t('festival.todayShow')}</Badge>
                   )}
                 </div>

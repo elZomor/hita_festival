@@ -2,9 +2,15 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar, ArrowLeft } from 'lucide-react';
-import { SectionHeader, Badge, Card } from '../components/common';
+import { Badge, Card } from '../components/common';
 import { ShowCard } from '../features/festival/ShowCard';
-import { mockEditions, mockShows, mockArticles, mockSymposia, mockCreativity } from '../data/mockData';
+import {
+  useArticles,
+  useCreativityEntries,
+  useFestivalEditions,
+  useShows,
+  useSymposia,
+} from '../api/hooks';
 
 type Tab = 'shows' | 'articles' | 'symposia' | 'creativity';
 
@@ -17,11 +23,48 @@ export const FestivalEdition = () => {
   const [venueFilter, setVenueFilter] = useState<string>('all');
   const [countryFilter, setCountryFilter] = useState<string>('all');
 
-  const edition = mockEditions.find(e => e.year === Number(year));
-  const shows = mockShows.filter(s => s.editionYear === Number(year));
-  const articles = mockArticles.filter(a => a.editionYear === Number(year));
-  const symposia = mockSymposia.filter(s => s.editionYear === Number(year));
-  const creativity = mockCreativity.filter(c => c.editionYear === Number(year));
+  const editionYear = Number(year);
+  const editionsQuery = useFestivalEditions();
+  const showsQuery = useShows();
+  const articlesQuery = useArticles();
+  const symposiaQuery = useSymposia();
+  const creativityQuery = useCreativityEntries();
+
+  const isLoading =
+    editionsQuery.isLoading ||
+    showsQuery.isLoading ||
+    articlesQuery.isLoading ||
+    symposiaQuery.isLoading ||
+    creativityQuery.isLoading;
+
+  const hasError =
+    editionsQuery.isError ||
+    showsQuery.isError ||
+    articlesQuery.isError ||
+    symposiaQuery.isError ||
+    creativityQuery.isError;
+
+  const edition = editionsQuery.data?.find(e => e.year === editionYear);
+  const shows = (showsQuery.data ?? []).filter(s => s.editionYear === editionYear);
+  const articles = (articlesQuery.data ?? []).filter(a => a.editionYear === editionYear);
+  const symposia = (symposiaQuery.data ?? []).filter(s => s.editionYear === editionYear);
+  const creativity = (creativityQuery.data ?? []).filter(c => c.editionYear === editionYear);
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+      </div>
+    );
+  }
 
   if (!edition) {
     return (

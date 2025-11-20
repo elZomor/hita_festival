@@ -2,18 +2,51 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { Badge, Card } from '../components/common';
-import { mockArticles, mockShows } from '../data/mockData';
+import { useArticles, useShows } from '../api/hooks';
 
 export const ArticleDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
-  const article = mockArticles.find(a => a.slug === slug);
-  const relatedShow = article?.showId ? mockShows.find(s => s.id === article.showId) : null;
-  const relatedArticles = mockArticles.filter(
-    a => a.id !== article?.id && (a.showId === article?.showId || a.editionYear === article?.editionYear)
-  ).slice(0, 3);
+  const articlesQuery = useArticles();
+  const showsQuery = useShows();
+
+  const isLoading = articlesQuery.isLoading || showsQuery.isLoading;
+  const hasError = articlesQuery.isError || showsQuery.isError;
+
+  const article = articlesQuery.data?.find(a => a.slug === slug);
+  const relatedShow = article?.showId
+    ? showsQuery.data?.find(s => s.id === article.showId)
+    : null;
+  const relatedArticles =
+    articlesQuery.data
+      ?.filter(
+        a =>
+          a.id !== article?.id &&
+          (a.showId === article?.showId || a.editionYear === article?.editionYear),
+      )
+      .slice(0, 3) ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t('common.loading')}
+        </h2>
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t('common.error')}
+        </h2>
+      </div>
+    );
+  }
 
   if (!article) {
     return (

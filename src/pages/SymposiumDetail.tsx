@@ -2,17 +2,44 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Calendar, MapPin, Users, User } from 'lucide-react';
 import { Card, SectionHeader } from '../components/common';
-import { mockSymposia, mockShows } from '../data/mockData';
+import { useShows, useSymposia } from '../api/hooks';
 
 export const SymposiumDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
-  const symposium = mockSymposia.find(s => s.id === id);
-  const relatedShows = symposium?.relatedShowIds
-    ? mockShows.filter(s => symposium.relatedShowIds?.includes(s.id))
-    : [];
+  const symposiaQuery = useSymposia();
+  const showsQuery = useShows();
+
+  const isLoading = symposiaQuery.isLoading || showsQuery.isLoading;
+  const hasError = symposiaQuery.isError || showsQuery.isError;
+
+  const symposium = symposiaQuery.data?.find(s => s.id === id);
+  const relatedShows =
+    symposium?.relatedShowIds && showsQuery.data
+      ? showsQuery.data.filter(show => symposium.relatedShowIds?.includes(show.id))
+      : [];
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t('common.loading')}
+        </h2>
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {t('common.error')}
+        </h2>
+      </div>
+    );
+  }
 
   if (!symposium) {
     return (

@@ -2,13 +2,48 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar, FileText, Sparkles, ArrowRight } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader } from '../components/common';
-import { mockEditions, mockArticles } from '../data/mockData';
+import { useFestivalEditions, useLatestArticles } from '../api/hooks';
 
 export const Home = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const currentEdition = mockEditions[0];
-  const latestArticles = mockArticles.slice(0, 3);
+  const {
+    data: editions = [],
+    isLoading: isLoadingEditions,
+    isError: hasEditionError,
+  } = useFestivalEditions();
+  const {
+    data: latestArticles = [],
+    isLoading: isLoadingArticles,
+    isError: hasArticleError,
+  } = useLatestArticles();
+
+  const sortedEditions = [...editions].sort((a, b) => b.year - a.year);
+  const currentEdition = sortedEditions[0];
+
+  if (isLoadingEditions || isLoadingArticles) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
+      </div>
+    );
+  }
+
+  if (hasEditionError || hasArticleError) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+      </div>
+    );
+  }
+
+  if (!currentEdition) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.noResults')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-16">
@@ -64,7 +99,7 @@ export const Home = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockEditions.map((edition) => (
+          {sortedEditions.map((edition) => (
             <Link key={edition.year} to={`/festival/${edition.year}`}>
               <Card className="h-full">
                 <div className="space-y-4">
