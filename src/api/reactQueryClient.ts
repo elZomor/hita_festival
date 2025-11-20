@@ -41,6 +41,47 @@ export type UseApiMutationConfig<TResponse, TVariables = void, TContext = unknow
   bodySerializer?: (variables: TVariables) => BodyInit | undefined;
 } & Omit<UseMutationOptions<TResponse, ApiError, TVariables, TContext>, 'mutationFn'>;
 
+/* ---------- snake_case / camelCase helpers ---------- */
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const toCamelCase = (key: string) =>
+    key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+
+const toSnakeCase = (key: string) =>
+    key.replace(/[A-Z]/g, c => `_${c.toLowerCase()}`);
+
+const transformKeysToCamel = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map(transformKeysToCamel);
+  }
+  if (isPlainObject(value)) {
+    const result: Record<string, unknown> = {};
+    Object.entries(value).forEach(([k, v]) => {
+      result[toCamelCase(k)] = transformKeysToCamel(v);
+    });
+    return result;
+  }
+  return value;
+};
+
+const transformKeysToSnake = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map(transformKeysToSnake);
+  }
+  if (isPlainObject(value)) {
+    const result: Record<string, unknown> = {};
+    Object.entries(value).forEach(([k, v]) => {
+      result[toSnakeCase(k)] = transformKeysToSnake(v);
+    });
+    return result;
+  }
+  return value;
+};
+
+/* ---------------------------------------------------- */
+
 export class ReactQueryApiClient {
   private baseUrl: string;
   private defaultHeaders: HeadersInit;
@@ -61,7 +102,10 @@ export class ReactQueryApiClient {
     return this.queryDefaults;
   }
 
-  buildBody<TVariables>(variables: TVariables, bodySerializer?: (variables: TVariables) => BodyInit | undefined) {
+  buildBody<TVariables>(
+      variables: TVariables,
+      bodySerializer?: (variables: TVariables) => BodyInit | undefined,
+  ) {
     if (bodySerializer) {
       return bodySerializer(variables);
     }
@@ -94,17 +138,23 @@ export class ReactQueryApiClient {
 
   private stringifyBody(variables: unknown) {
     if (variables === undefined || variables === null) return undefined;
+
     if (
-      variables instanceof FormData ||
-      variables instanceof Blob ||
-      variables instanceof URLSearchParams
+        variables instanceof FormData ||
+        variables instanceof Blob ||
+        variables instanceof URLSearchParams
     ) {
+      // اترك المفاتيح زي ما هي في الفورم داتا/البلوب
       return variables;
     }
+
     if (typeof variables === 'string') {
       return variables;
     }
-    return JSON.stringify(variables);
+
+    // هنا نحول camelCase -> snake_case قبل الإرسال
+    const transformed = transformKeysToSnake(variables);
+    return JSON.stringify(transformed);
   }
 
   private buildHeaders(headers?: HeadersInit, body?: BodyInit | null) {
@@ -134,7 +184,11 @@ export class ReactQueryApiClient {
   private extractErrorMessage(payload: unknown) {
     if (!payload) return undefined;
     if (typeof payload === 'string') return payload;
-    if (typeof payload === 'object' && 'message' in payload && typeof (payload as { message?: unknown }).message === 'string') {
+    if (
+        typeof payload === 'object' &&
+        'message' in payload &&
+        typeof (payload as { message?: unknown }).message === 'string'
+    ) {
       return (payload as { message: string }).message;
     }
     return undefined;
@@ -146,7 +200,9 @@ export class ReactQueryApiClient {
     if (!text) return undefined;
 
     try {
-      return JSON.parse(text);
+      const parsed = JSON.parse(text);
+      // هنا نحول snake_case -> camelCase قبل ما يوصل للفرونت
+      return transformKeysToCamel(parsed);
     } catch {
       return text;
     }
@@ -156,13 +212,14 @@ export class ReactQueryApiClient {
 export const apiQueryClient = new ReactQueryApiClient();
 
 export const useApiQuery = <TResponse, TVariables = void>(
-  config: UseApiQueryConfig<TResponse, TVariables>,
+    config: UseApiQueryConfig<TResponse, TVariables>,
 ): UseQueryResult<TResponse, ApiError> => {
   const { variables, queryKey, path, requestInit, enabled, ...queryOptions } = config;
 
   const resolvedKey = typeof queryKey === 'function' ? queryKey(variables) : queryKey;
   const resolvedPath = typeof path === 'function' ? path(variables) : path;
-  const resolvedInit = (typeof requestInit === 'function' ? requestInit(variables) : requestInit) ?? {};
+  const resolvedInit =
+      (typeof requestInit === 'function' ? requestInit(variables) : requestInit) ?? {};
   const resolvedEnabled = typeof enabled === 'function' ? enabled(variables) : enabled;
 
   return useQuery<TResponse, ApiError>({
@@ -175,7 +232,7 @@ export const useApiQuery = <TResponse, TVariables = void>(
 };
 
 export const useApiMutation = <TResponse, TVariables = void, TContext = unknown>(
-  config: UseApiMutationConfig<TResponse, TVariables, TContext>,
+    config: UseApiMutationConfig<TResponse, TVariables, TContext>,
 ): UseMutationResult<TResponse, ApiError, TVariables, TContext> => {
   const { path, method = 'POST', requestInit, bodySerializer, ...mutationOptions } = config;
 
@@ -183,7 +240,8 @@ export const useApiMutation = <TResponse, TVariables = void, TContext = unknown>
     ...mutationOptions,
     mutationFn: async variables => {
       const resolvedPath = typeof path === 'function' ? path(variables) : path;
-      const resolvedInit = (typeof requestInit === 'function' ? requestInit(variables) : requestInit) ?? {};
+      const resolvedInit =
+          (typeof requestInit === 'function' ? requestInit(variables) : requestInit) ?? {};
 
       const body = apiQueryClient.buildBody(variables, bodySerializer);
 
@@ -198,12 +256,14 @@ export const useApiMutation = <TResponse, TVariables = void, TContext = unknown>
   });
 };
 
-export const buildQueryKey = (...parts: Array<string | number | boolean | undefined | null>): QueryKey =>
-  parts.filter(part => part !== undefined && part !== null) as QueryKey;
+export const buildQueryKey = (
+    ...parts: Array<string | number | boolean | undefined | null>
+): QueryKey =>
+    parts.filter(part => part !== undefined && part !== null) as QueryKey;
 
 export const withQueryParams = (
-  path: string,
-  params?: Record<string, string | number | boolean | undefined | null>,
+    path: string,
+    params?: Record<string, string | number | boolean | undefined | null>,
 ) => {
   if (!params) return path;
 
