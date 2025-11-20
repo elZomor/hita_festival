@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
-import { Badge, Card } from '../components/common';
+import { Badge, Card, LoadingState } from '../components/common';
 import { useArticles, useShows } from '../api/hooks';
 
 export const ArticleDetail = () => {
@@ -29,13 +29,7 @@ export const ArticleDetail = () => {
       .slice(0, 3) ?? [];
 
   if (isLoading) {
-    return (
-      <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('common.loading')}
-        </h2>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (hasError) {

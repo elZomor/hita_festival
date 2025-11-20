@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Calendar, MapPin, Users, User } from 'lucide-react';
-import { Card, SectionHeader } from '../components/common';
+import { Card, SectionHeader, LoadingState } from '../components/common';
 import { useShows, useSymposia } from '../api/hooks';
 
 export const SymposiumDetail = () => {
@@ -22,13 +22,7 @@ export const SymposiumDetail = () => {
       : [];
 
   if (isLoading) {
-    return (
-      <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('common.loading')}
-        </h2>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (hasError) {

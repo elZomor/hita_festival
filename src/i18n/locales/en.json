@@ -113,6 +113,7 @@
     "filter": "Filter",
     "reset": "Reset",
     "loading": "Loading...",
+    "loadingMessage": "Setting the stage for the next act...",
     "error": "An error occurred",
     "noResults": "No results found",
     "viewDetails": "View Details",

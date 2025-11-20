@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar } from 'lucide-react';
-import { Card, Badge, SectionHeader } from '../components/common';
+import { Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useFestivalEditions } from '../api/hooks';
 
 export const FestivalList = () => {
@@ -16,11 +16,7 @@ export const FestivalList = () => {
   const latestEditionYear = sortedEditions[0]?.year;
 
   if (isLoading) {
-    return (
-      <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (isError) {

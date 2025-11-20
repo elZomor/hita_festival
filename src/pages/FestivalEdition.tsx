@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar, ArrowLeft } from 'lucide-react';
-import { Badge, Card } from '../components/common';
+import { Badge, Card, LoadingState } from '../components/common';
 import { ShowCard } from '../features/festival/ShowCard';
 import {
   useArticles,
@@ -51,11 +51,7 @@ export const FestivalEdition = () => {
   const creativity = (creativityQuery.data ?? []).filter(c => c.editionYear === editionYear);
 
   if (isLoading) {
-    return (
-      <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (hasError) {

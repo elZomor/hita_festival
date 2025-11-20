@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar, FileText, Sparkles, ArrowRight } from 'lucide-react';
-import { Button, Card, Badge, SectionHeader } from '../components/common';
+import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useFestivalEditions, useLatestArticles } from '../api/hooks';
 
 export const Home = () => {
@@ -22,11 +22,7 @@ export const Home = () => {
   const currentEdition = sortedEditions[0];
 
   if (isLoadingEditions || isLoadingArticles) {
-    return (
-      <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (hasEditionError || hasArticleError) {

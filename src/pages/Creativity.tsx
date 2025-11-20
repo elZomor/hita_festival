@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, Plus } from 'lucide-react';
-import { Button, Card, Badge, SectionHeader } from '../components/common';
+import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useCreativityEntries } from '../api/hooks';
 
 export const Creativity = () => {
@@ -189,11 +189,7 @@ export const Creativity = () => {
         </Card>
       )}
 
-      {isLoading && (
-        <div className="text-center py-16">
-          <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
-        </div>
-      )}
+      {isLoading && <LoadingState fullscreen={false} />}
 
       {isError && (
         <div className="text-center py-16">

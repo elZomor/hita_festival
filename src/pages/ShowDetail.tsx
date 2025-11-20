@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Calendar, MapPin, Globe, User, Users, ExternalLink } from 'lucide-react';
-import { Button, Card, Badge, SectionHeader } from '../components/common';
+import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useArticles, useShows, useSymposia } from '../api/hooks';
 
 export const ShowDetail = () => {
@@ -25,13 +25,7 @@ export const ShowDetail = () => {
   );
 
   if (isLoading) {
-    return (
-      <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('common.loading')}
-        </h2>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (hasError) {
