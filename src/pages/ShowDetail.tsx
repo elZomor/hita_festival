@@ -2,22 +2,27 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Calendar, MapPin, Globe, User, Users, ExternalLink } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
-import { useArticles, useShows, useSymposia } from '../api/hooks';
+import { useArticles, useFestivalEditions, useShows, useSymposia } from '../api/hooks';
 
 export const ShowDetail = () => {
   const { year, slug } = useParams<{ year: string; slug: string }>();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
-  const showsQuery = useShows();
+  const editionYear = Number(year);
+  const editionsQuery = useFestivalEditions();
+  const edition = editionsQuery.data?.find(e => e.year === editionYear);
+  const showsQuery = useShows(edition?.slug, { enabled: Boolean(edition?.slug) });
   const articlesQuery = useArticles();
   const symposiaQuery = useSymposia();
 
-  const isLoading = showsQuery.isLoading || articlesQuery.isLoading || symposiaQuery.isLoading;
-  const hasError = showsQuery.isError || articlesQuery.isError || symposiaQuery.isError;
+  const isLoading =
+    editionsQuery.isLoading || showsQuery.isLoading || articlesQuery.isLoading || symposiaQuery.isLoading;
+  const hasError =
+    editionsQuery.isError || showsQuery.isError || articlesQuery.isError || symposiaQuery.isError;
 
   const show = showsQuery.data?.find(
-    s => s.slug === slug && s.editionYear === Number(year),
+    s => s.slug === slug && s.editionYear === editionYear,
   );
   const relatedArticles = (articlesQuery.data ?? []).filter(a => a.showId === show?.id);
   const relatedSymposium = (symposiaQuery.data ?? []).find(s =>
@@ -212,26 +217,26 @@ export const ShowDetail = () => {
       )}
 
       {relatedSymposium && (
-        <div>
-          <SectionHeader>{t('show.symposium')}</SectionHeader>
-          <Link to={`/symposia/${relatedSymposium.id}`}>
-            <Card>
-              <div className="space-y-3">
-                <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
-                  {isRTL ? relatedSymposium.titleAr : relatedSymposium.titleEn}
-                </h3>
-                <div className="flex flex-wrap gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <span>{new Date(relatedSymposium.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US')}</span>
-                  <span>•</span>
-                  <span>{relatedSymposium.hall}</span>
+          <div>
+            <SectionHeader>{t('show.symposium')}</SectionHeader>
+            <Link to={`/symposia/${relatedSymposium.id}`}>
+              <Card>
+                <div className="space-y-3">
+                  <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
+                    {isRTL ? relatedSymposium.titleAr : relatedSymposium.titleEn}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <span>{new Date(relatedSymposium.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US')}</span>
+                    <span>•</span>
+                    <span>{relatedSymposium.hall}</span>
+                  </div>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    {relatedSymposium.summaryAr.substring(0, 200)}...
+                  </p>
                 </div>
-                <p className="text-gray-700 dark:text-gray-300">
-                  {relatedSymposium.summaryAr.substring(0, 200)}...
-                </p>
-              </div>
-            </Card>
-          </Link>
-        </div>
+              </Card>
+            </Link>
+          </div>
       )}
     </div>
   );

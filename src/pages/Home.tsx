@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Calendar, FileText, Sparkles, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useFestivalEditions, useLatestArticles } from '../api/hooks';
 
@@ -13,7 +13,7 @@ export const Home = () => {
     isError: hasEditionError,
   } = useFestivalEditions();
   const {
-    data: latestArticles = [],
+    // data: latestArticles = [],
     isLoading: isLoadingArticles,
     isError: hasArticleError,
   } = useLatestArticles();
@@ -132,73 +132,73 @@ export const Home = () => {
         </div>
       </section>
 
-      <section>
-        <div className="flex items-center justify-between mb-8">
-          <SectionHeader>
-            <FileText className={`inline ${isRTL ? 'ml-3' : 'mr-3'}`} size={32} />
-            {t('home.latestArticles')}
-          </SectionHeader>
-          <Link to="/articles">
-            <Button variant="ghost" className="hidden sm:block">
-              {t('common.viewDetails')}
-            </Button>
-          </Link>
-        </div>
+      {/*<section>*/}
+      {/*  <div className="flex items-center justify-between mb-8">*/}
+      {/*    <SectionHeader>*/}
+      {/*      <FileText className={`inline ${isRTL ? 'ml-3' : 'mr-3'}`} size={32} />*/}
+      {/*      {t('home.latestArticles')}*/}
+      {/*    </SectionHeader>*/}
+      {/*    <Link to="/articles">*/}
+      {/*      <Button variant="ghost" className="hidden sm:block">*/}
+      {/*        {t('common.viewDetails')}*/}
+      {/*      </Button>*/}
+      {/*    </Link>*/}
+      {/*  </div>*/}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {latestArticles.map((article) => (
-            <Link key={article.id} to={`/articles/${article.slug}`}>
-              <Card className="h-full">
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <Badge variant="gold">
-                      {t(`articles.types.${article.type}`)}
-                    </Badge>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {article.editionYear}
-                    </span>
-                  </div>
+      {/*  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">*/}
+      {/*    {latestArticles.map((article) => (*/}
+      {/*      <Link key={article.id} to={`/articles/${article.slug}`}>*/}
+      {/*        <Card className="h-full">*/}
+      {/*          <div className="space-y-3">*/}
+      {/*            <div className="flex items-start justify-between gap-2">*/}
+      {/*              <Badge variant="gold">*/}
+      {/*                {t(`articles.types.${article.type}`)}*/}
+      {/*              </Badge>*/}
+      {/*              <span className="text-xs text-gray-500 dark:text-gray-400">*/}
+      {/*                {article.editionYear}*/}
+      {/*              </span>*/}
+      {/*            </div>*/}
 
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">
-                    {isRTL ? article.titleAr : article.titleEn}
-                  </h3>
+      {/*            <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">*/}
+      {/*              {isRTL ? article.titleAr : article.titleEn}*/}
+      {/*            </h3>*/}
 
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {t('articles.author')}: {article.author}
-                  </p>
+      {/*            <p className="text-sm text-gray-600 dark:text-gray-400">*/}
+      {/*              {t('articles.author')}: {article.author}*/}
+      {/*            </p>*/}
 
-                  <p className="text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed">
-                    {isRTL ? article.contentAr.substring(0, 150) : article.contentEn?.substring(0, 150)}...
-                  </p>
-                </div>
-              </Card>
-            </Link>
-          ))}
-        </div>
+      {/*            <p className="text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed">*/}
+      {/*              {isRTL ? article.contentAr.substring(0, 150) : article.contentEn?.substring(0, 150)}...*/}
+      {/*            </p>*/}
+      {/*          </div>*/}
+      {/*        </Card>*/}
+      {/*      </Link>*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
 
-        <div className="text-center mt-8 sm:hidden">
-          <Link to="/articles">
-            <Button variant="ghost">
-              {t('common.viewDetails')}
-            </Button>
-          </Link>
-        </div>
-      </section>
+      {/*  <div className="text-center mt-8 sm:hidden">*/}
+      {/*    <Link to="/articles">*/}
+      {/*      <Button variant="ghost">*/}
+      {/*        {t('common.viewDetails')}*/}
+      {/*      </Button>*/}
+      {/*    </Link>*/}
+      {/*  </div>*/}
+      {/*</section>*/}
 
-      <section className="bg-gradient-to-r from-theatre-gold to-theatre-gold-light rounded-2xl p-8 md:p-12 text-center shadow-2xl">
-        <Sparkles className="inline-block mb-4 text-theatre-black" size={48} />
-        <h2 className="text-3xl md:text-4xl font-bold text-theatre-black mb-4">
-          {t('home.creativityTitle')}
-        </h2>
-        <p className="text-lg text-theatre-black/80 max-w-2xl mx-auto mb-8">
-          {t('home.creativityText')}
-        </p>
-        <Link to="/creativity">
-          <Button variant="primary">
-            {t('home.exploreCreativity')}
-          </Button>
-        </Link>
-      </section>
+      {/*<section className="bg-gradient-to-r from-theatre-gold to-theatre-gold-light rounded-2xl p-8 md:p-12 text-center shadow-2xl">*/}
+      {/*  <Sparkles className="inline-block mb-4 text-theatre-black" size={48} />*/}
+      {/*  <h2 className="text-3xl md:text-4xl font-bold text-theatre-black mb-4">*/}
+      {/*    {t('home.creativityTitle')}*/}
+      {/*  </h2>*/}
+      {/*  <p className="text-lg text-theatre-black/80 max-w-2xl mx-auto mb-8">*/}
+      {/*    {t('home.creativityText')}*/}
+      {/*  </p>*/}
+      {/*  <Link to="/creativity">*/}
+      {/*    <Button variant="primary">*/}
+      {/*      {t('home.exploreCreativity')}*/}
+      {/*    </Button>*/}
+      {/*  </Link>*/}
+      {/*</section>*/}
     </div>
   );
 };

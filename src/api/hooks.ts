@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { buildQueryKey, useApiQuery } from './reactQueryClient';
+import { buildQueryKey, useApiQuery, withQueryParams } from './reactQueryClient';
 import type {
   Article,
   CreativitySubmission,
@@ -29,6 +29,36 @@ type FestivalApiResponse = {
   results: FestivalApiResult[];
 };
 
+type ShowApiResult = {
+  id: number;
+  name: string;
+  link?: string | null;
+  poster?: string | null;
+  author?: string | null;
+  director?: string | null;
+  reservedSeats?: number | null;
+  status?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  notes?: string | null;
+  cast?: string | null;
+  crew?: string | null;
+  castWord?: string | null;
+  showDescription?: string | null;
+  date?: string | null;
+  time?: string | null;
+  festival?: number | null;
+};
+
+type PaginatedResponse<T> = {
+  count: number;
+  totalPages: number;
+  currentPage: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+};
+
 const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdition => {
   const startDate = festival.startDate ?? festival.endDate ?? '';
   const endDate = festival.endDate ?? festival.startDate ?? '';
@@ -48,6 +78,35 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
   };
 };
 
+const mapShowApiResultToShow = (show: ShowApiResult): Show => {
+  const datePart = show.date ?? '';
+  const timePart = show.time ?? '';
+  const dateTime = datePart ? `${datePart}${timePart ? `T${timePart}` : ''}` : '';
+  const editionYear = datePart ? new Date(datePart).getFullYear() : new Date().getFullYear();
+  const title = show.name ?? 'عرض مسرحي';
+
+  return {
+    id: String(show.id),
+    slug: `show-${show.id}`,
+    titleAr: title,
+    titleEn: title,
+    editionYear,
+    groupName: show.castWord || 'غير محدد',
+    country: '',
+    director: show.director ?? 'غير معروف',
+    dramaturg: undefined,
+    cast: show.cast
+      ? show.cast.split(',').map(member => member.trim()).filter(Boolean)
+      : undefined,
+    dateTime,
+    venue: show.notes ?? '',
+    synopsisAr: show.showDescription ?? '',
+    synopsisEn: show.showDescription ?? '',
+    posterUrl: show.poster ?? undefined,
+    bookingUrl: show.link ?? undefined,
+  };
+};
+
 export const useFestivalEditions = () =>
   useApiQuery<FestivalApiResponse, FestivalEdition[]>({
     queryKey: buildQueryKey('festival-editions'),
@@ -55,12 +114,18 @@ export const useFestivalEditions = () =>
     select: data => (data.results ?? []).map(mapFestivalApiResultToEdition),
   });
 
-export const useShows = () =>
-  useApiQuery<Show[]>({
-    queryKey: buildQueryKey('shows'),
-    path: '/api/shows.json',
-    useBaseUrl: false,
-    placeholderData: emptyArray,
+type UseShowsOptions = {
+  enabled?: boolean;
+};
+
+export const useShows = (festivalId?: string | number, options?: UseShowsOptions) =>
+  useApiQuery<PaginatedResponse<ShowApiResult>, Show[]>({
+    queryKey: buildQueryKey('shows', festivalId ?? 'all'),
+    path: festivalId
+      ? withQueryParams('/hita_arab_festival/shows', { festival: festivalId })
+      : '/hita_arab_festival/shows',
+    select: data => (data.results ?? []).map(mapShowApiResultToShow),
+    enabled: options?.enabled,
   });
 
 export const useArticles = () =>

@@ -8,3 +8,4 @@ export { Symposia } from './Symposia';
 export { SymposiumDetail } from './SymposiumDetail';
 export { Creativity } from './Creativity';
 export { About } from './About';
+export { ComingSoon } from './ComingSoon';

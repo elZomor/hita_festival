@@ -102,7 +102,7 @@
   "about": {
     "title": "About the Festival",
     "whatIsTitle": "What is the Arab Festival?",
-    "whatIsText": "The Arab Theatre Festival is an annual event hosted by the Higher Institute of Theatrical Arts in Cairo, bringing together theatrical performances from various Arab countries and providing a platform for critical dialogue and cultural exchange among Arab theatre practitioners.",
+    "whatIsText": "The Arab Theatre Festival is an annual event hosted by the Higher Institute of Theatrical Arts in Cairo.",
     "whyArchiveTitle": "Why This Archive?",
     "whyArchiveText": "This website aims to comprehensively document the festival's history, preserve the theatrical criticism accompanying the performances, and provide a research reference for scholars and those interested in contemporary Arab theatre.",
     "contactTitle": "Contact Us",
@@ -118,6 +118,10 @@
     "noResults": "No results found",
     "viewDetails": "View Details",
     "backToList": "Back to List",
-    "share": "Share"
+    "share": "Share",
+    "comingSoon": "Coming Soon",
+    "comingSoonMessage": "We are putting the final touches on this experience. Stay tuned!",
+    "stayTuned": "Stay Tuned",
+    "backHome": "Back to Home"
   }
 }

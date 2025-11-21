@@ -25,7 +25,8 @@ export const FestivalEdition = () => {
 
   const editionYear = Number(year);
   const editionsQuery = useFestivalEditions();
-  const showsQuery = useShows();
+  const edition = editionsQuery.data?.find(e => e.year === editionYear);
+  const showsQuery = useShows(edition?.slug, { enabled: Boolean(edition?.slug) });
   const articlesQuery = useArticles();
   const symposiaQuery = useSymposia();
   const creativityQuery = useCreativityEntries();
@@ -44,7 +45,6 @@ export const FestivalEdition = () => {
     symposiaQuery.isError ||
     creativityQuery.isError;
 
-  const edition = editionsQuery.data?.find(e => e.year === editionYear);
   const shows = (showsQuery.data ?? []).filter(s => s.editionYear === editionYear);
   const articles = (articlesQuery.data ?? []).filter(a => a.editionYear === editionYear);
   const symposia = (symposiaQuery.data ?? []).filter(s => s.editionYear === editionYear);
