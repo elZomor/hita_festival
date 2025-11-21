@@ -64,9 +64,9 @@ src/
 
 ## Mock API
 
-- Development data now lives under `public/api/*.json` and is automatically served at `/api/<resource>.json` (e.g. `/api/festival-editions.json`).
-- The shared React Query hooks (`src/api/hooks.ts`) consume those endpoints, so every page now fetches data via the reusable client instead of importing static objects.
-- Set `VITE_API_BASE_URL` (see `.env`) to point at your real backend when ready; replace or remove the JSON files once true endpoints exist.
+- Development data originally lived under `public/api/*.json`, but you can now point `VITE_API_BASE_URL` to the live backend (default: `http://localhost:8005`).
+- The festivals listing already consumes `GET /hita_arab_festival/festivals`, mapping the BE response into the UI-friendly `FestivalEdition` type.
+- Other resources still read from the local JSON mocks; migrate them gradually by updating `src/api/hooks.ts`.
 
 ## API Utility
 

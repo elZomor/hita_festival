@@ -26,19 +26,28 @@ export type ApiClientOptions = {
   defaultQueryOptions?: QueryBehaviourOptions;
 };
 
-export type UseApiQueryConfig<TResponse, TVariables = void> = {
+type RequestOptions = {
+  useBaseUrl?: boolean;
+};
+
+export type UseApiQueryConfig<TQueryFnData, TData = TQueryFnData, TVariables = void> = {
   queryKey: QueryKey | ((variables: TVariables | undefined) => QueryKey);
   path: string | ((variables: TVariables | undefined) => string);
   variables?: TVariables;
   requestInit?: RequestInit | ((variables: TVariables | undefined) => RequestInit);
   enabled?: boolean | ((variables: TVariables | undefined) => boolean);
-} & Omit<UseQueryOptions<TResponse, ApiError, TResponse, QueryKey>, 'queryKey' | 'queryFn' | 'enabled'>;
+  useBaseUrl?: boolean;
+} & Omit<
+  UseQueryOptions<TQueryFnData, ApiError, TData, QueryKey>,
+  'queryKey' | 'queryFn' | 'enabled'
+>;
 
 export type UseApiMutationConfig<TResponse, TVariables = void, TContext = unknown> = {
   path: string | ((variables: TVariables) => string);
   method?: 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   requestInit?: RequestInit | ((variables: TVariables) => RequestInit);
   bodySerializer?: (variables: TVariables) => BodyInit | undefined;
+  useBaseUrl?: boolean;
 } & Omit<UseMutationOptions<TResponse, ApiError, TVariables, TContext>, 'mutationFn'>;
 
 /* ---------- snake_case / camelCase helpers ---------- */
@@ -112,17 +121,17 @@ export class ReactQueryApiClient {
     return this.stringifyBody(variables);
   }
 
-  async get<TResponse>(path: string, init?: RequestInit) {
-    return this.request<TResponse>(path, init);
+  async get<TResponse>(path: string, init?: RequestInit, options?: RequestOptions) {
+    return this.request<TResponse>(path, init, options);
   }
 
-  async request<TResponse>(path: string, init?: RequestInit) {
+  async request<TResponse>(path: string, init?: RequestInit, options?: RequestOptions) {
     const finalInit: RequestInit = {
       ...init,
       headers: this.buildHeaders(init?.headers, init?.body ?? null),
     };
 
-    const response = await fetch(this.buildUrl(path), finalInit);
+    const response = await fetch(this.buildUrl(path, options), finalInit);
     const payload = await this.parseResponse(response);
 
     if (!response.ok) {
@@ -173,8 +182,11 @@ export class ReactQueryApiClient {
     return finalHeaders;
   }
 
-  private buildUrl(path: string) {
+  private buildUrl(path: string, options?: RequestOptions) {
     if (!path) throw new Error('API path is required');
+    if (options?.useBaseUrl === false) {
+      return path;
+    }
     if (/^https?:\/\//i.test(path) || !this.baseUrl) {
       return path;
     }
@@ -211,10 +223,10 @@ export class ReactQueryApiClient {
 
 export const apiQueryClient = new ReactQueryApiClient();
 
-export const useApiQuery = <TResponse, TVariables = void>(
-    config: UseApiQueryConfig<TResponse, TVariables>,
-): UseQueryResult<TResponse, ApiError> => {
-  const { variables, queryKey, path, requestInit, enabled, ...queryOptions } = config;
+export const useApiQuery = <TQueryFnData, TData = TQueryFnData, TVariables = void>(
+    config: UseApiQueryConfig<TQueryFnData, TData, TVariables>,
+): UseQueryResult<TData, ApiError> => {
+  const { variables, queryKey, path, requestInit, enabled, useBaseUrl, ...queryOptions } = config;
 
   const resolvedKey = typeof queryKey === 'function' ? queryKey(variables) : queryKey;
   const resolvedPath = typeof path === 'function' ? path(variables) : path;
@@ -222,19 +234,19 @@ export const useApiQuery = <TResponse, TVariables = void>(
       (typeof requestInit === 'function' ? requestInit(variables) : requestInit) ?? {};
   const resolvedEnabled = typeof enabled === 'function' ? enabled(variables) : enabled;
 
-  return useQuery<TResponse, ApiError>({
+  return useQuery<TQueryFnData, ApiError, TData, QueryKey>({
     ...apiQueryClient.getQueryDefaults(),
     ...queryOptions,
     queryKey: resolvedKey,
     enabled: resolvedEnabled ?? true,
-    queryFn: () => apiQueryClient.request<TResponse>(resolvedPath, resolvedInit),
+    queryFn: () => apiQueryClient.request<TQueryFnData>(resolvedPath, resolvedInit, { useBaseUrl }),
   });
 };
 
 export const useApiMutation = <TResponse, TVariables = void, TContext = unknown>(
     config: UseApiMutationConfig<TResponse, TVariables, TContext>,
 ): UseMutationResult<TResponse, ApiError, TVariables, TContext> => {
-  const { path, method = 'POST', requestInit, bodySerializer, ...mutationOptions } = config;
+  const { path, method = 'POST', requestInit, bodySerializer, useBaseUrl, ...mutationOptions } = config;
 
   return useMutation<TResponse, ApiError, TVariables, TContext>({
     ...mutationOptions,
@@ -251,7 +263,7 @@ export const useApiMutation = <TResponse, TVariables = void, TContext = unknown>
         body,
       };
 
-      return apiQueryClient.request<TResponse>(resolvedPath, finalInit);
+      return apiQueryClient.request<TResponse>(resolvedPath, finalInit, { useBaseUrl });
     },
   });
 };

@@ -10,38 +10,80 @@ import type {
 
 const emptyArray: never[] = [];
 
+type FestivalApiResult = {
+  id: number;
+  name: string;
+  description?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  extraDetails?: string | null;
+  logo?: string | null;
+};
+
+type FestivalApiResponse = {
+  count: number;
+  totalPages: number;
+  currentPage: number;
+  next: string | null;
+  previous: string | null;
+  results: FestivalApiResult[];
+};
+
+const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdition => {
+  const startDate = festival.startDate ?? festival.endDate ?? '';
+  const endDate = festival.endDate ?? festival.startDate ?? '';
+  const year = startDate ? new Date(startDate).getFullYear() : new Date().getFullYear();
+
+  return {
+    year,
+    slug: String(festival.id),
+    titleAr: festival.name,
+    titleEn: festival.name,
+    descriptionAr: festival.description ?? '',
+    descriptionEn: festival.description ?? '',
+    startDate,
+    endDate,
+    numberOfShows: 0,
+    numberOfArticles: 0,
+  };
+};
+
 export const useFestivalEditions = () =>
-  useApiQuery<FestivalEdition[]>({
+  useApiQuery<FestivalApiResponse, FestivalEdition[]>({
     queryKey: buildQueryKey('festival-editions'),
-    path: '/festival-editions.json',
-    placeholderData: emptyArray,
+    path: '/hita_arab_festival/festivals',
+    select: data => (data.results ?? []).map(mapFestivalApiResultToEdition),
   });
 
 export const useShows = () =>
   useApiQuery<Show[]>({
     queryKey: buildQueryKey('shows'),
-    path: '/shows.json',
+    path: '/api/shows.json',
+    useBaseUrl: false,
     placeholderData: emptyArray,
   });
 
 export const useArticles = () =>
   useApiQuery<Article[]>({
     queryKey: buildQueryKey('articles'),
-    path: '/articles.json',
+    path: '/api/articles.json',
+    useBaseUrl: false,
     placeholderData: emptyArray,
   });
 
 export const useSymposia = () =>
   useApiQuery<Symposium[]>({
     queryKey: buildQueryKey('symposia'),
-    path: '/symposia.json',
+    path: '/api/symposia.json',
+    useBaseUrl: false,
     placeholderData: emptyArray,
   });
 
 export const useCreativityEntries = () =>
   useApiQuery<CreativitySubmission[]>({
     queryKey: buildQueryKey('creativity'),
-    path: '/creativity.json',
+    path: '/api/creativity.json',
+    useBaseUrl: false,
     placeholderData: emptyArray,
   });
 
