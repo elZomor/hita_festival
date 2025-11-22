@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Calendar, MapPin, Globe, User, Users, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, User, Users, ExternalLink } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useArticles, useFestivalEditions, useShows, useSymposia } from '../api/hooks';
 
@@ -36,7 +36,7 @@ export const ShowDetail = () => {
   if (hasError) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
           {t('common.error')}
         </h2>
       </div>
@@ -46,20 +46,21 @@ export const ShowDetail = () => {
   if (!show) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
           {t('common.noResults')}
         </h2>
       </div>
     );
   }
 
-  const showDate = new Date(show.dateTime);
+  const showDate = new Date(show.date);
+  // const showTime = new Date(show.time);
 
   return (
     <div className="space-y-8">
       <Link
         to={`/festival/${year}`}
-        className="inline-flex items-center gap-2 text-theatre-gold hover:text-theatre-gold-light transition-colors"
+        className="inline-flex items-center gap-2 text-secondary-500 hover:text-secondary-400 transition-colors"
       >
         <ArrowLeft size={20} className={isRTL ? 'rotate-180' : ''} />
         {t('common.backToList')}
@@ -67,11 +68,11 @@ export const ShowDetail = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          {show.posterUrl && (
+          {show.poster && (
             <div className="rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src={show.posterUrl}
-                alt={isRTL ? show.titleAr : show.titleEn}
+                src={show.poster}
+                alt={show.name}
                 className="w-full h-auto"
               />
             </div>
@@ -80,57 +81,36 @@ export const ShowDetail = () => {
 
         <div className="space-y-6">
           <div>
-            <h1 className="text-4xl font-bold text-theatre-red dark:text-theatre-gold mb-2">
-              {isRTL ? show.titleAr : show.titleEn}
+            <h1 className="text-4xl font-bold text-accent-600 dark:text-secondary-500 mb-2">
+              {show.name}
             </h1>
-            {isRTL !== true && show.titleAr !== show.titleEn && (
-              <p className="text-xl text-gray-600 dark:text-gray-400">
-                {isRTL ? show.titleEn : show.titleAr}
-              </p>
-            )}
           </div>
 
           <div className="space-y-4">
             <div className="flex items-start gap-3">
-              <Users size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <User size={20} className="text-secondary-500 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.group')}</p>
-                <p className="font-medium text-gray-900 dark:text-white">{show.groupName}</p>
+                <p className="text-sm text-primary-600 dark:text-primary-400">{t('show.director')}</p>
+                <p className="font-medium text-primary-900 dark:text-white">{show.director}</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <Globe size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.country')}</p>
-                <p className="font-medium text-gray-900 dark:text-white">{show.country}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <User size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.director')}</p>
-                <p className="font-medium text-gray-900 dark:text-white">{show.director}</p>
-              </div>
-            </div>
-
-            {show.dramaturg && (
+            {show.author && (
               <div className="flex items-start gap-3">
-                <User size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+                <User size={20} className="text-secondary-500 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.dramaturg')}</p>
-                  <p className="font-medium text-gray-900 dark:text-white">{show.dramaturg}</p>
+                  <p className="text-sm text-primary-600 dark:text-primary-400">{t('show.dramaturg')}</p>
+                  <p className="font-medium text-primary-900 dark:text-white">{show.author}</p>
                 </div>
               </div>
             )}
 
             {show.cast && show.cast.length > 0 && (
               <div className="flex items-start gap-3">
-                <Users size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+                <Users size={20} className="text-secondary-500 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.cast')}</p>
-                  <p className="font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm text-primary-600 dark:text-primary-400">{t('show.cast')}</p>
+                  <p className="font-medium text-primary-900 dark:text-white">
                     {show.cast.join(', ')}
                   </p>
                 </div>
@@ -138,10 +118,10 @@ export const ShowDetail = () => {
             )}
 
             <div className="flex items-start gap-3">
-              <Calendar size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <Calendar size={20} className="text-secondary-500 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.dateTime')}</p>
-                <p className="font-medium text-gray-900 dark:text-white">
+                <p className="text-sm text-primary-600 dark:text-primary-400">{t('show.dateTime')}</p>
+                <p className="font-medium text-primary-900 dark:text-white">
                   {showDate.toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -155,10 +135,10 @@ export const ShowDetail = () => {
             </div>
 
             <div className="flex items-start gap-3">
-              <MapPin size={20} className="text-theatre-gold mt-1 flex-shrink-0" />
+              <MapPin size={20} className="text-secondary-500 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('show.venue')}</p>
-                <p className="font-medium text-gray-900 dark:text-white">{show.venue}</p>
+                <p className="text-sm text-primary-600 dark:text-primary-400">{t('show.venue')}</p>
+                <p className="font-medium text-primary-900 dark:text-white">{show.venueName}</p>
               </div>
             </div>
           </div>
@@ -179,12 +159,12 @@ export const ShowDetail = () => {
         </div>
       </div>
 
-      <Card className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900" hover={false}>
-        <h2 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold mb-4">
+      <Card className="bg-gradient-to-br from-primary-50 to-white dark:from-primary-800 dark:to-primary-900" hover={false}>
+        <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-4">
           {t('show.synopsis')}
         </h2>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
-          {isRTL ? show.synopsisAr : show.synopsisEn}
+        <p className="text-primary-700 dark:text-primary-300 leading-relaxed text-lg">
+          {show.showDescription}
         </p>
       </Card>
 
@@ -199,13 +179,13 @@ export const ShowDetail = () => {
                     <Badge variant="gold">
                       {t(`articles.types.${article.type}`)}
                     </Badge>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    <h3 className="text-xl font-bold text-primary-900 dark:text-white">
                       {isRTL ? article.titleAr : article.titleEn}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-primary-600 dark:text-primary-400">
                       {t('articles.author')}: {article.author}
                     </p>
-                    <p className="text-gray-700 dark:text-gray-300 line-clamp-2">
+                    <p className="text-primary-700 dark:text-primary-300 line-clamp-2">
                       {isRTL ? article.contentAr.substring(0, 120) : article.contentEn?.substring(0, 120)}...
                     </p>
                   </div>
@@ -222,15 +202,15 @@ export const ShowDetail = () => {
             <Link to={`/symposia/${relatedSymposium.id}`}>
               <Card>
                 <div className="space-y-3">
-                  <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
+                  <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
                     {isRTL ? relatedSymposium.titleAr : relatedSymposium.titleEn}
                   </h3>
-                  <div className="flex flex-wrap gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex flex-wrap gap-2 text-sm text-primary-600 dark:text-primary-400">
                     <span>{new Date(relatedSymposium.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US')}</span>
                     <span>•</span>
                     <span>{relatedSymposium.hall}</span>
                   </div>
-                  <p className="text-gray-700 dark:text-gray-300">
+                  <p className="text-primary-700 dark:text-primary-300">
                     {relatedSymposium.summaryAr.substring(0, 200)}...
                   </p>
                 </div>

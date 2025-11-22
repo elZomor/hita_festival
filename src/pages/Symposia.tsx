@@ -32,7 +32,7 @@ export const Symposia = () => {
   if (isError) {
     return (
       <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+        <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.error')}</p>
       </div>
     );
   }
@@ -40,7 +40,7 @@ export const Symposia = () => {
   if (!symposia.length) {
     return (
       <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.noResults')}</p>
+        <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.noResults')}</p>
       </div>
     );
   }
@@ -51,7 +51,7 @@ export const Symposia = () => {
 
       {years.map(year => (
         <div key={year} className="space-y-4">
-          <h2 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
+          <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
             {year}
           </h2>
 
@@ -60,13 +60,13 @@ export const Symposia = () => {
               <Link key={symposium.id} to={`/symposia/${symposium.id}`}>
                 <Card>
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h3 className="text-2xl font-bold text-primary-900 dark:text-white">
                       {isRTL ? symposium.titleAr : symposium.titleEn}
                     </h3>
 
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex flex-wrap gap-4 text-sm text-primary-600 dark:text-primary-400">
                       <div className="flex items-center gap-2">
-                        <Calendar size={16} className="text-theatre-gold" />
+                        <Calendar size={16} className="text-secondary-500" />
                         <span>
                           {new Date(symposium.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
                             month: 'long',
@@ -79,30 +79,30 @@ export const Symposia = () => {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <MapPin size={16} className="text-theatre-gold" />
+                        <MapPin size={16} className="text-secondary-500" />
                         <span>{symposium.hall}</span>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <Users size={18} className="text-theatre-gold mt-1 flex-shrink-0" />
+                      <Users size={18} className="text-secondary-500 mt-1 flex-shrink-0" />
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                        <p className="text-sm text-primary-600 dark:text-primary-400 mb-1">
                           {t('symposia.panelists')}:
                         </p>
-                        <p className="text-gray-800 dark:text-gray-200">
+                        <p className="text-primary-800 dark:text-primary-200">
                           {symposium.panelists.join(' • ')}
                         </p>
                       </div>
                     </div>
 
                     {symposium.moderator && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-primary-600 dark:text-primary-400">
                         {t('symposia.moderator')}: <span className="font-medium">{symposium.moderator}</span>
                       </p>
                     )}
 
-                    <p className="text-gray-700 dark:text-gray-300 line-clamp-2 leading-relaxed">
+                    <p className="text-primary-700 dark:text-primary-300 line-clamp-2 leading-relaxed">
                       {symposium.summaryAr}
                     </p>
                   </div>

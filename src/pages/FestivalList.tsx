@@ -22,7 +22,7 @@ export const FestivalList = () => {
   if (isError) {
     return (
       <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+        <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.error')}</p>
       </div>
     );
   }
@@ -30,7 +30,7 @@ export const FestivalList = () => {
   if (!editions.length) {
     return (
       <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.noResults')}</p>
+        <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.noResults')}</p>
       </div>
     );
   }
@@ -38,7 +38,7 @@ export const FestivalList = () => {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-3">
-        <Calendar size={40} className="text-theatre-red dark:text-theatre-gold" />
+        <Calendar size={40} className="text-accent-600 dark:text-secondary-500" />
         <SectionHeader className="mb-0">{t('home.editionsTitle')}</SectionHeader>
       </div>
 
@@ -48,7 +48,7 @@ export const FestivalList = () => {
             <Card className="h-full">
               <div className="space-y-4">
                 <div className="flex items-start justify-between">
-                  <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
+                  <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
                     {isRTL ? edition.titleAr : edition.titleEn}
                   </h3>
                   {edition.year === latestEditionYear && (
@@ -56,11 +56,11 @@ export const FestivalList = () => {
                   )}
                 </div>
 
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p className="text-primary-700 dark:text-primary-300 leading-relaxed">
                   {isRTL ? edition.descriptionAr : edition.descriptionEn}
                 </p>
 
-                <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex gap-4 text-sm text-primary-600 dark:text-primary-400">
                   <span className="flex items-center gap-1">
                     <Calendar size={16} />
                     {new Date(edition.startDate).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {

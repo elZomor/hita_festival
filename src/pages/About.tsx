@@ -12,22 +12,22 @@ export const About = () => {
         <SectionHeader>{t('about.title')}</SectionHeader>
       </div>
 
-      <Card className="bg-gradient-to-br from-theatre-red/10 to-theatre-gold/10" hover={false}>
+      <Card className="bg-gradient-to-br from-accent-600/10 to-secondary-500/10" hover={false}>
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold mb-4">
+            <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-4">
               {t('about.whatIsTitle')}
             </h2>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+            <p className="text-primary-800 dark:text-primary-200 leading-relaxed text-lg">
               {t('about.whatIsText')}
             </p>
           </div>
 
-          <div className="border-t border-gray-300 dark:border-gray-700 pt-6">
-            <h2 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold mb-4">
+          <div className="border-t border-primary-300 dark:border-primary-700 pt-6">
+            <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-4">
               {t('about.whyArchiveTitle')}
             </h2>
-            <p className="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+            <p className="text-primary-800 dark:text-primary-200 leading-relaxed text-lg">
               {t('about.whyArchiveText')}
             </p>
           </div>
@@ -35,20 +35,20 @@ export const About = () => {
       </Card>
 
       <Card hover={false}>
-        <h2 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold mb-6">
+        <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-6">
           {t('about.contactTitle')}
         </h2>
 
         <div className="space-y-4">
           <div className="flex items-start gap-4">
-            <Mail size={24} className="text-theatre-gold mt-1 flex-shrink-0" />
+            <Mail size={24} className="text-secondary-500 mt-1 flex-shrink-0" />
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+              <p className="text-sm text-primary-600 dark:text-primary-400 mb-1">
                 البريد الإلكتروني / Email
               </p>
               <a
                 href="mailto:info@arabfestival.edu.eg"
-                className="text-theatre-gold hover:text-theatre-gold-light font-medium"
+                className="text-secondary-500 hover:text-secondary-400 font-medium"
               >
                 info@arabfestival.edu.eg
               </a>
@@ -56,24 +56,24 @@ export const About = () => {
           </div>
 
           <div className="flex items-start gap-4">
-            <Phone size={24} className="text-theatre-gold mt-1 flex-shrink-0" />
+            <Phone size={24} className="text-secondary-500 mt-1 flex-shrink-0" />
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+              <p className="text-sm text-primary-600 dark:text-primary-400 mb-1">
                 الهاتف / Phone
               </p>
-              <p className="text-gray-800 dark:text-gray-200 font-medium">
+              <p className="text-primary-800 dark:text-primary-200 font-medium">
                 +20 2 1234 5678
               </p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <MapPin size={24} className="text-theatre-gold mt-1 flex-shrink-0" />
+            <MapPin size={24} className="text-secondary-500 mt-1 flex-shrink-0" />
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+              <p className="text-sm text-primary-600 dark:text-primary-400 mb-1">
                 العنوان / Address
               </p>
-              <p className="text-gray-800 dark:text-gray-200 font-medium leading-relaxed">
+              <p className="text-primary-800 dark:text-primary-200 font-medium leading-relaxed">
                 المعهد العالي للفنون المسرحية<br />
                 أكاديمية الفنون - الهرم<br />
                 القاهرة، مصر
@@ -83,11 +83,11 @@ export const About = () => {
         </div>
       </Card>
 
-      <div className="bg-gradient-to-r from-theatre-black to-theatre-red-dark rounded-2xl p-8 text-center shadow-2xl">
-        <h3 className="text-2xl font-bold text-theatre-gold mb-4">
+      <div className="bg-gradient-to-r from-primary-950 to-accent-700 rounded-2xl p-8 text-center shadow-2xl">
+        <h3 className="text-2xl font-bold text-secondary-500 mb-4">
           انضم إلينا في الاحتفال بالمسرح العربي
         </h3>
-        <p className="text-gray-300 text-lg">
+        <p className="text-primary-300 text-lg">
           Join us in celebrating Arab theatre
         </p>
       </div>

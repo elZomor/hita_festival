@@ -28,7 +28,7 @@ export const Home = () => {
   if (hasEditionError || hasArticleError) {
     return (
       <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+        <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.error')}</p>
       </div>
     );
   }
@@ -36,14 +36,14 @@ export const Home = () => {
   if (!currentEdition) {
     return (
       <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.noResults')}</p>
+        <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.noResults')}</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-16">
-      <section className="relative overflow-hidden bg-gradient-to-br from-theatre-black via-theatre-red-dark to-theatre-black rounded-2xl shadow-2xl">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-950 via-accent-700 to-primary-950 rounded-2xl shadow-2xl">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
@@ -61,11 +61,11 @@ export const Home = () => {
               {t('home.title')}
             </h1>
 
-            <p className="text-xl md:text-2xl text-theatre-gold font-medium">
+            <p className="text-xl md:text-2xl text-secondary-500 font-medium">
               {t('home.subtitle')}
             </p>
 
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-primary-300 max-w-2xl mx-auto leading-relaxed">
               {t('home.tagline')}
             </p>
 
@@ -100,7 +100,7 @@ export const Home = () => {
               <Card className="h-full">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
-                    <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold">
+                    <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
                       {isRTL ? edition.titleAr : edition.titleEn}
                     </h3>
                     {edition.year === currentEdition.year && (
@@ -108,11 +108,11 @@ export const Home = () => {
                     )}
                   </div>
 
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p className="text-primary-700 dark:text-primary-300 leading-relaxed">
                     {isRTL ? edition.descriptionAr : edition.descriptionEn}
                   </p>
 
-                  <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex gap-4 text-sm text-primary-600 dark:text-primary-400">
                     <span className="flex items-center gap-1">
                       <Calendar size={16} />
                       {new Date(edition.startDate).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
@@ -154,20 +154,20 @@ export const Home = () => {
       {/*              <Badge variant="gold">*/}
       {/*                {t(`articles.types.${article.type}`)}*/}
       {/*              </Badge>*/}
-      {/*              <span className="text-xs text-gray-500 dark:text-gray-400">*/}
+      {/*              <span className="text-xs text-primary-500 dark:text-primary-400">*/}
       {/*                {article.editionYear}*/}
       {/*              </span>*/}
       {/*            </div>*/}
 
-      {/*            <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">*/}
+      {/*            <h3 className="text-xl font-bold text-primary-900 dark:text-white line-clamp-2">*/}
       {/*              {isRTL ? article.titleAr : article.titleEn}*/}
       {/*            </h3>*/}
 
-      {/*            <p className="text-sm text-gray-600 dark:text-gray-400">*/}
+      {/*            <p className="text-sm text-primary-600 dark:text-primary-400">*/}
       {/*              {t('articles.author')}: {article.author}*/}
       {/*            </p>*/}
 
-      {/*            <p className="text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed">*/}
+      {/*            <p className="text-primary-700 dark:text-primary-300 line-clamp-3 leading-relaxed">*/}
       {/*              {isRTL ? article.contentAr.substring(0, 150) : article.contentEn?.substring(0, 150)}...*/}
       {/*            </p>*/}
       {/*          </div>*/}
@@ -185,12 +185,12 @@ export const Home = () => {
       {/*  </div>*/}
       {/*</section>*/}
 
-      {/*<section className="bg-gradient-to-r from-theatre-gold to-theatre-gold-light rounded-2xl p-8 md:p-12 text-center shadow-2xl">*/}
-      {/*  <Sparkles className="inline-block mb-4 text-theatre-black" size={48} />*/}
-      {/*  <h2 className="text-3xl md:text-4xl font-bold text-theatre-black mb-4">*/}
+      {/*<section className="bg-gradient-to-r from-secondary-500 to-secondary-400 rounded-2xl p-8 md:p-12 text-center shadow-2xl">*/}
+      {/*  <Sparkles className="inline-block mb-4 text-primary-950" size={48} />*/}
+      {/*  <h2 className="text-3xl md:text-4xl font-bold text-primary-950 mb-4">*/}
       {/*    {t('home.creativityTitle')}*/}
       {/*  </h2>*/}
-      {/*  <p className="text-lg text-theatre-black/80 max-w-2xl mx-auto mb-8">*/}
+      {/*  <p className="text-lg text-primary-950/80 max-w-2xl mx-auto mb-8">*/}
       {/*    {t('home.creativityText')}*/}
       {/*  </p>*/}
       {/*  <Link to="/creativity">*/}

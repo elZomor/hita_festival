@@ -43,12 +43,12 @@ export const Creativity = () => {
 
   return (
     <div className="space-y-8">
-      <div className="bg-gradient-to-r from-theatre-gold to-theatre-gold-light rounded-2xl p-8 text-center shadow-2xl">
-        <Sparkles className="inline-block mb-4 text-theatre-black" size={48} />
-        <SectionHeader className="mb-4 text-theatre-black">
+      <div className="bg-gradient-to-r from-secondary-500 to-secondary-400 rounded-2xl p-8 text-center shadow-2xl">
+        <Sparkles className="inline-block mb-4 text-primary-950" size={48} />
+        <SectionHeader className="mb-4 text-primary-950">
           {t('creativity.title')}
         </SectionHeader>
-        <p className="text-lg text-theatre-black/80 max-w-3xl mx-auto mb-6 leading-relaxed">
+        <p className="text-lg text-primary-950/80 max-w-3xl mx-auto mb-6 leading-relaxed">
           {t('creativity.description')}
         </p>
         <Button
@@ -62,8 +62,8 @@ export const Creativity = () => {
       </div>
 
       {showSubmitForm && (
-        <Card className="bg-white dark:bg-gray-800 border-2 border-theatre-gold" hover={false}>
-          <h3 className="text-2xl font-bold text-theatre-red dark:text-theatre-gold mb-6">
+        <Card className="bg-white dark:bg-primary-800 border-2 border-secondary-500" hover={false}>
+          <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-6">
             {t('creativity.submitForm.title')}
           </h3>
 
@@ -78,7 +78,7 @@ export const Creativity = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-2 text-primary-700 dark:text-primary-300">
                   {t('creativity.submitForm.name')} *
                 </label>
                 <input
@@ -86,12 +86,12 @@ export const Creativity = () => {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-theatre-gold"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-2 text-primary-700 dark:text-primary-300">
                   {t('creativity.submitForm.email')} *
                 </label>
                 <input
@@ -99,13 +99,13 @@ export const Creativity = () => {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-theatre-gold"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-primary-700 dark:text-primary-300">
                 {t('creativity.submitForm.workTitle')} *
               </label>
               <input
@@ -113,20 +113,20 @@ export const Creativity = () => {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-theatre-gold"
+                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-2 text-primary-700 dark:text-primary-300">
                   {t('creativity.submitForm.type')} *
                 </label>
                 <select
                   required
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value as typeof formData.type })}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-theatre-gold"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
                 >
                   <option value="story">{t('creativity.submitForm.types.story')}</option>
                   <option value="essay">{t('creativity.submitForm.types.essay')}</option>
@@ -136,21 +136,21 @@ export const Creativity = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-2 text-primary-700 dark:text-primary-300">
                   {t('creativity.submitForm.editionYear')}
                 </label>
                 <input
                   type="number"
                   value={formData.editionYear}
                   onChange={(e) => setFormData({ ...formData, editionYear: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-theatre-gold"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
                   placeholder="2025"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-primary-700 dark:text-primary-300">
                 {t('creativity.submitForm.content')} *
               </label>
               <textarea
@@ -158,18 +158,18 @@ export const Creativity = () => {
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 rows={10}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-theatre-gold"
+                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-primary-700 dark:text-primary-300">
                 {t('creativity.submitForm.file')}
               </label>
               <input
                 type="file"
                 accept=".pdf,.doc,.docx,.txt"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white"
               />
             </div>
 
@@ -193,7 +193,7 @@ export const Creativity = () => {
 
       {isError && (
         <div className="text-center py-16">
-          <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+          <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.error')}</p>
         </div>
       )}
 
@@ -217,11 +217,11 @@ export const Creativity = () => {
                 {item.title}
               </h3>
 
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-primary-600 dark:text-primary-400">
                 {t('creativity.by')} {item.author}
               </p>
 
-              <p className="text-sm text-gray-500 dark:text-gray-500">
+              <p className="text-sm text-primary-500 dark:text-primary-500">
                 {new Date(item.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -229,7 +229,7 @@ export const Creativity = () => {
                 })}
               </p>
 
-              <p className="text-gray-700 dark:text-gray-300 line-clamp-4 leading-relaxed">
+              <p className="text-primary-700 dark:text-primary-300 line-clamp-4 leading-relaxed">
                 {item.content}
               </p>
               </div>

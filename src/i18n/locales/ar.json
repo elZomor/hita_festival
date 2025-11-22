@@ -36,6 +36,7 @@
   "show": {
     "bookTicket": "احجز تذكرتك",
     "director": "المخرج",
+    "for_director": "للمخرج",
     "dramaturg": "الدراماتورج",
     "cast": "التمثيل",
     "group": "الفرقة",
@@ -44,7 +45,12 @@
     "venue": "المكان",
     "synopsis": "نبذة عن العرض",
     "criticalArticles": "مقالات نقدية عن العرض",
-    "symposium": "الندوة النقدية"
+    "symposium": "الندوة النقدية",
+    "viewDetails": "عرض التفاصيل",
+    "reserve": "حجز",
+    "today": "النهارده",
+    "available": "قريباً",
+    "finished": "اتعرضت"
   },
   "articles": {
     "title": "المقالات النقدية",

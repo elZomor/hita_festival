@@ -45,7 +45,7 @@ export const Articles = () => {
   if (isError || hasShowsError) {
     return (
       <div className="text-center py-16">
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('common.error')}</p>
+        <p className="text-lg text-primary-600 dark:text-primary-300">{t('common.error')}</p>
       </div>
     );
   }
@@ -53,15 +53,15 @@ export const Articles = () => {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-3">
-        <FileText size={40} className="text-theatre-red dark:text-theatre-gold" />
+        <FileText size={40} className="text-accent-600 dark:text-secondary-500" />
         <SectionHeader className="mb-0">{t('articles.title')}</SectionHeader>
       </div>
 
-      <div className="flex flex-wrap gap-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg">
+      <div className="flex flex-wrap gap-4 bg-white dark:bg-primary-800 p-4 rounded-lg shadow-lg">
         <select
           value={yearFilter}
           onChange={(e) => setYearFilter(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white"
         >
           <option value="all">{t('articles.allYears')}</option>
           {uniqueYears.slice(1).map(year => (
@@ -72,7 +72,7 @@ export const Articles = () => {
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value as ArticleType | 'all')}
-          className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white"
         >
           <option value="all">{t('articles.allTypes')}</option>
           {articleTypes.slice(1).map(type => (
@@ -102,11 +102,11 @@ export const Articles = () => {
                   )}
                 </div>
 
-                <h2 className="text-2xl md:text-3xl font-bold text-theatre-red dark:text-theatre-gold">
+                <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
                   {isRTL ? article.titleAr : article.titleEn}
                 </h2>
 
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-primary-600 dark:text-primary-400">
                   {t('articles.author')}: <span className="font-medium">{article.author}</span>
                   <span className="mx-2">•</span>
                   {new Date(article.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
@@ -116,11 +116,11 @@ export const Articles = () => {
                   })}
                 </p>
 
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
+                <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
                   {isRTL ? article.contentAr.substring(0, 250) : article.contentEn?.substring(0, 250)}...
                 </p>
 
-                <p className="text-theatre-gold hover:text-theatre-gold-light font-medium">
+                <p className="text-secondary-500 hover:text-secondary-400 font-medium">
                   {t('articles.readMore')} →
                 </p>
               </div>
@@ -131,7 +131,7 @@ export const Articles = () => {
 
       {filteredArticles.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
+          <p className="text-primary-600 dark:text-primary-400 text-lg">
             {t('common.noResults')}
           </p>
         </div>

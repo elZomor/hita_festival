@@ -12,22 +12,23 @@ export type FestivalEdition = {
 };
 
 export type Show = {
+  isOpenForReservation: string;
   id: string;
   slug: string;
-  titleAr: string;
-  titleEn: string;
+  name: string;
   editionYear: number;
-  groupName: string;
-  country: string;
   director: string;
-  dramaturg?: string;
+  author?: string;
   cast?: string[];
-  dateTime: string;
-  venue: string;
-  synopsisAr: string;
-  synopsisEn: string;
-  posterUrl?: string;
+  date: string;
+  time: string;
+  venueName: string;
+  venueLocation?: string | null;
+  showDescription: string;
+  poster?: string;
   bookingUrl?: string;
+  link?: string;
+  reversedSeats: number;
 };
 
 export type ArticleType = "review" | "symposium_coverage" | "analysis" | "general";

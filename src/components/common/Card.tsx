@@ -7,12 +7,12 @@ interface CardProps {
 }
 
 export const Card = ({ children, className = '', hover = true }: CardProps) => {
-  const hoverStyles = hover ? 'hover:scale-105 hover:shadow-2xl cursor-pointer' : '';
+  const hoverStyles = hover ? 'hover:scale-105 hover:shadow-2xl' : '';
 
   return (
     <div
       className={`
-        bg-white dark:bg-gray-800
+        bg-white dark:bg-primary-800
         rounded-lg shadow-lg
         p-6
         transition-all duration-300

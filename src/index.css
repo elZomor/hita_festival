@@ -32,3 +32,25 @@
     animation: fadeIn 0.3s ease-out;
   }
 }
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent-500 text-white font-bold hover:bg-secondary-400;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary-600 text-white hover:bg-secondary-700;
+  }
+
+  .btn-accent {
+    @apply btn bg-accent-500 text-white hover:bg-accent-600;
+  }
+
+  .btn-outline {
+    @apply btn border border-primary-600 text-primary-600 hover:bg-primary-50;
+  }
+}
