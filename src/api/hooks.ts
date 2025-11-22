@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import {buildQueryKey, useApiQuery, withQueryParams} from './reactQueryClient';
+import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
 import type {
     Article,
     CreativitySubmission,
@@ -167,3 +167,22 @@ export const useLatestArticles = (limit = 3) => {
 
     return {...query, data};
 };
+
+type ReserveShowVariables = {
+    showId: string;
+    name: string;
+    email: string;
+    mobile: string;
+};
+
+export const useReserveShow = () =>
+    useApiMutation<unknown, ReserveShowVariables>({
+        path: ({showId}) => `/hita_arab_festival/shows/${showId}/reserve`,
+        method: 'POST',
+        bodySerializer: ({name, email, mobile}) =>
+            JSON.stringify({
+                name: name,
+                email,
+                mobile,
+            }),
+    });

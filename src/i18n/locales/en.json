@@ -122,6 +122,26 @@
     "comingSoon": "Coming Soon",
     "comingSoonMessage": "We are putting the final touches on this experience. Stay tuned!",
     "stayTuned": "Stay Tuned",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "cancel": "Cancel"
+  },
+  "reservation": {
+    "label": "Reservation",
+    "subtitle": "Reserve your seat by sharing your information",
+    "button": "Reserve Your Seat",
+    "fields": {
+      "fullName": "Full Name",
+      "email": "Email",
+      "mobile": "Mobile Number"
+    },
+    "submit": "Submit Reservation",
+    "submitting": "Submitting...",
+    "success": "Reservation submitted successfully!",
+    "errors": {
+      "fullName": "Please enter your full name.",
+      "email": "Please provide a valid email address.",
+      "mobile": "Please enter your mobile number.",
+      "generic": "Unable to complete the reservation. Please try again."
+    }
   }
 }

@@ -1,13 +1,17 @@
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { ArrowLeft, Calendar, MapPin, User, Users, ExternalLink } from 'lucide-react';
-import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
+import { Button, Card, Badge, SectionHeader, LoadingState, Snackbar } from '../components/common';
 import { useArticles, useFestivalEditions, useShows, useSymposia } from '../api/hooks';
+import { ReservationModal } from '../features/reservations/ReservationModal';
 
 export const ShowDetail = () => {
   const { year, slug } = useParams<{ year: string; slug: string }>();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const [isReservationOpen, setReservationOpen] = useState(false);
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
 
   const editionYear = Number(year);
   const editionsQuery = useFestivalEditions();
@@ -54,7 +58,9 @@ export const ShowDetail = () => {
   }
 
   const showDate = new Date(show.date);
-  // const showTime = new Date(show.time);
+  const canReserve = !['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(
+    show.isOpenForReservation,
+  );
 
   return (
     <div className="space-y-8">
@@ -143,19 +149,32 @@ export const ShowDetail = () => {
             </div>
           </div>
 
-          {show.bookingUrl && (
-            <a
-              href={show.bookingUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="block"
-            >
-              <Button variant="primary" className="w-full group">
-                {t('show.bookTicket')}
-                <ExternalLink className={`${isRTL ? 'mr-2' : 'ml-2'} group-hover:translate-x-1 transition-transform`} size={20} />
+          <div className="space-y-3">
+            {show.bookingUrl && (
+              <a
+                href={show.bookingUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="block"
+              >
+                <Button variant="primary" className="w-full group">
+                  {t('show.bookTicket')}
+                  <ExternalLink className={`${isRTL ? 'mr-2' : 'ml-2'} group-hover:translate-x-1 transition-transform`} size={20} />
+                </Button>
+              </a>
+            )}
+
+            {canReserve && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full"
+                onClick={() => setReservationOpen(true)}
+              >
+                {t('reservation.button')}
               </Button>
-            </a>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
@@ -195,6 +214,21 @@ export const ShowDetail = () => {
           </div>
         </div>
       )}
+
+      {canReserve && (
+        <ReservationModal
+          showId={show.id}
+          showName={show.name}
+          isOpen={isReservationOpen}
+          onClose={() => setReservationOpen(false)}
+          onSuccess={() => setSnackbarOpen(true)}
+        />
+      )}
+      <Snackbar
+        message={t('reservation.success')}
+        isOpen={isSnackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+      />
 
       {relatedSymposium && (
           <div>
