@@ -16,7 +16,8 @@ export const ShowCard = ({show}: ShowCardProps) => {
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [isSnackbarOpen, setSnackbarOpen] = useState(false);
 
-    const isOpenForReservation = !['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(show.isOpenForReservation)
+    const isOpenForReservation =    ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(show.isOpenForReservation)
+    const isReservationComplete = show.isOpenForReservation === 'COMPLETE'
     const getShowStatusName = (showDate: string) => {
         const comparisonResult = compareWithToday(new Date(showDate))
         switch (comparisonResult) {
@@ -38,6 +39,17 @@ export const ShowCard = ({show}: ShowCardProps) => {
                 return 'red'
             case "EQUALS":
                 return 'gold'
+        }
+    }
+
+    const getReservationStatusClass = (status: string) => {
+        switch (status) {
+            case 'OPEN_FOR_RESERVATION':
+                return 'reservation'
+            case 'OPEN_FOR_WAITING_LIST':
+                return 'primary'
+            case 'COMPLETE':
+                return 'disabled'
         }
     }
 
@@ -110,9 +122,10 @@ export const ShowCard = ({show}: ShowCardProps) => {
 
                     {isOpenForReservation && (
                         <Button
-                            variant="reservation"
+                            variant={getReservationStatusClass(show.isOpenForReservation)}
                             className="w-full mt-5"
                             onClick={() => setReservationOpen(true)}
+                            disabled={isReservationComplete}
                         >
                             {t('show.reserve')}
                         </Button>

@@ -18,6 +18,7 @@ type FestivalApiResult = {
     endDate?: string | null;
     extraDetails?: string | null;
     logo?: string | null;
+    totalShows: number
 };
 
 type FestivalApiResponse = {
@@ -76,7 +77,7 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
         descriptionEn: festival.description ?? '',
         startDate,
         endDate,
-        numberOfShows: 0,
+        totalShows: festival.totalShows,
         numberOfArticles: 0,
     };
 };

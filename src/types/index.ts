@@ -1,4 +1,5 @@
 export type FestivalEdition = {
+  totalShows: number;
   year: number;
   slug: string;
   titleAr: string;
@@ -7,7 +8,6 @@ export type FestivalEdition = {
   descriptionEn: string;
   startDate: string;
   endDate: string;
-  numberOfShows: number;
   numberOfArticles: number;
 };
 

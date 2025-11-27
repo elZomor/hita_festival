@@ -11,6 +11,7 @@ import {
     useShows,
     useSymposia,
 } from '../api/hooks';
+import {formatLocalizedNumber, localizeDigitsInString} from '../utils/numberUtils';
 
 type Tab = 'shows' | 'articles' | 'symposia' | 'creativity';
 
@@ -76,6 +77,15 @@ export const FestivalEdition = () => {
         {key: 'creativity', label: t('festival.creativity')},
     ];
 
+    const localizedTitle = localizeDigitsInString(
+        isRTL ? edition.titleAr : edition.titleEn,
+        i18n.language
+    );
+    const localizedDescription = localizeDigitsInString(
+        isRTL ? edition.descriptionAr : edition.descriptionEn,
+        i18n.language
+    );
+
     return (
         <div className="space-y-8">
             <Link
@@ -91,12 +101,12 @@ export const FestivalEdition = () => {
                 <div className="flex items-center gap-3 mb-4">
                     <Calendar size={32} className="text-secondary-500"/>
                     <h1 className="text-3xl md:text-4xl font-bold">
-                        {isRTL ? edition.titleAr : edition.titleEn}
+                        {localizedTitle}
                     </h1>
                 </div>
 
                 <p className="text-lg text-primary-200 mb-4">
-                    {isRTL ? edition.descriptionAr : edition.descriptionEn}
+                    {localizedDescription}
                 </p>
 
                 <div className="flex flex-wrap gap-4 text-sm">
@@ -111,7 +121,7 @@ export const FestivalEdition = () => {
                     })}
                     </Badge>
                     <Badge variant="default">
-                        {edition.numberOfShows} {t('festival.numberOfShows')}
+                        {formatLocalizedNumber(edition.totalShows, i18n.language)} {t('festival.numberOfShows')}
                     </Badge>
                     <Badge variant="default">
                         {edition.numberOfArticles} {t('festival.numberOfArticles')}

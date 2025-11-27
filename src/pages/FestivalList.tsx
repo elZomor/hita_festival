@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar } from 'lucide-react';
-import { Card, Badge, SectionHeader, LoadingState } from '../components/common';
+import { Card, SectionHeader, LoadingState } from '../components/common';
 import { useFestivalEditions } from '../api/hooks';
+import { formatLocalizedNumber, localizeDigitsInString } from '../utils/numberUtils';
 
 export const FestivalList = () => {
   const { t, i18n } = useTranslation();
@@ -13,7 +14,6 @@ export const FestivalList = () => {
     isError,
   } = useFestivalEditions();
   const sortedEditions = [...editions].sort((a, b) => b.year - a.year);
-  const latestEditionYear = sortedEditions[0]?.year;
 
   if (isLoading) {
     return <LoadingState />;
@@ -43,22 +43,29 @@ export const FestivalList = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedEditions.map((edition) => (
-          <Link key={edition.year} to={`/festival/${edition.year}`}>
-            <Card className="h-full">
-              <div className="space-y-4">
-                <div className="flex items-start justify-between">
-                  <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
-                    {isRTL ? edition.titleAr : edition.titleEn}
-                  </h3>
-                  {edition.year === latestEditionYear && (
-                    <Badge variant="red">{t('festival.todayShow')}</Badge>
-                  )}
-                </div>
+        {sortedEditions.map((edition) => {
+          const localizedTitle = localizeDigitsInString(
+            isRTL ? edition.titleAr : edition.titleEn,
+            i18n.language
+          );
+          const localizedDescription = localizeDigitsInString(
+            isRTL ? edition.descriptionAr : edition.descriptionEn,
+            i18n.language
+          );
 
-                <p className="text-primary-700 dark:text-primary-300 leading-relaxed">
-                  {isRTL ? edition.descriptionAr : edition.descriptionEn}
-                </p>
+          return (
+            <Link key={edition.year} to={`/festival/${edition.year}`}>
+              <Card className="h-full">
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between">
+                    <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
+                      {localizedTitle}
+                    </h3>
+                  </div>
+
+                  <p className="text-primary-700 dark:text-primary-300 leading-relaxed">
+                    {localizedDescription}
+                  </p>
 
                 <div className="flex gap-4 text-sm text-primary-600 dark:text-primary-400">
                   <span className="flex items-center gap-1">
@@ -69,14 +76,15 @@ export const FestivalList = () => {
                     })}
                   </span>
                   <span>•</span>
-                  <span>{edition.numberOfShows} {t('festival.numberOfShows')}</span>
+                  <span>{formatLocalizedNumber(edition.totalShows, i18n.language)} {t('festival.numberOfShows')}</span>
                   <span>•</span>
                   <span>{edition.numberOfArticles} {t('festival.numberOfArticles')}</span>
                 </div>
               </div>
-            </Card>
-          </Link>
-        ))}
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
