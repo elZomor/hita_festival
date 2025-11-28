@@ -13,13 +13,13 @@ type ShowInfoTabProps = {
     additionalSection?: ShowDetailSection;
 };
 
-type DetailVariant = 'text' | 'default' | 'cast';
+type DetailVariant = 'text' | 'default' | 'role';
 
 export const ShowInfoTab = ({descriptionSection, actorsSection, crewSection, additionalSection}: ShowInfoTabProps) => {
     const sections = [
+        {key: 'actors', section: actorsSection, variant: 'role' as DetailVariant},
+        {key: 'crew', section: crewSection, variant: 'role' as DetailVariant},
         {key: 'description', section: descriptionSection, variant: 'text' as DetailVariant},
-        {key: 'actors', section: actorsSection, variant: 'cast' as DetailVariant},
-        {key: 'crew', section: crewSection, variant: 'default' as DetailVariant},
         {key: 'additional', section: additionalSection, variant: 'text' as DetailVariant},
     ].filter(({section}) => section && section.items.length > 0) as {
         key: string;
@@ -66,13 +66,14 @@ const DetailList = ({
     variant: DetailVariant;
     depth?: number;
 }) => {
+    const isRoleRoot = variant === 'role' && depth === 0;
     const listStyle = depth === 0 ? 'list-disc' : 'list-[circle]';
     const margin = depth === 0 ? 'ms-5' : 'ms-6';
 
     return (
         <ul
             className={`${listStyle} ${margin} space-y-3 ${
-                variant === 'cast' && depth === 0 ? 'text-theatre-gold-500' : 'text-primary-800 dark:text-primary-100'
+                isRoleRoot ? 'text-theatre-gold-500' : 'text-primary-800 dark:text-primary-100'
             }`}
         >
             {items.map((item, index) => (
@@ -96,13 +97,13 @@ const DetailListItem = ({
     variant: DetailVariant;
     depth: number;
 }) => {
-    if (variant === 'cast' && depth === 0) {
-        const actorValue = getCastValue(item);
+    if (variant === 'role' && depth === 0) {
+        const roleValue = getRoleValue(item);
         return (
             <li>
                 <div className="flex gap-2">
                     <span className="text-theatre-gold-500 font-semibold italic">{item.text}</span>
-                    {actorValue && <span className="text-primary-500 dark:text-primary-200">{actorValue}</span>}
+                    {roleValue && <span className="text-primary-500 dark:text-primary-200">{roleValue}</span>}
                 </div>
                 {item.children && item.children.length > 0 && (
                     <div className="mt-2 ms-4">
@@ -160,7 +161,7 @@ const renderValue = (value?: string | string[], options: {inline?: boolean} = {}
 const buildItemKey = (item: ShowDetailEntry, index: number) =>
     `${item.text}-${Array.isArray(item.value) ? item.value.join('-') : item.value ?? 'value'}-${index}`;
 
-const getCastValue = (item: ShowDetailEntry): string | undefined => {
+const getRoleValue = (item: ShowDetailEntry): string | undefined => {
     if (Array.isArray(item.value)) {
         const values = item.value.filter(Boolean);
         if (values.length > 0) {
