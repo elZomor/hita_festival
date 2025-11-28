@@ -50,7 +50,30 @@
     "reserve": "حجز",
     "today": "النهارده",
     "available": "قريباً",
-    "finished": "اتعرضت"
+    "finished": "اتعرضت ✔",
+    "tabs": {
+      "info": "معلومات",
+      "articles": "مقالات",
+      "symposia": "ندوات",
+      "comments": "تعليقات"
+    },
+    "noArticles": "لا توجد مقالات مرتبطة بعد.",
+    "noSymposia": "لا توجد ندوات مرتبطة.",
+    "commentsComingSoon": "سيتم إتاحة التعليقات قريباً.",
+    "statusLabel": "الحالة",
+    "eventLink": "لينك الإيفنت",
+    "openEventLink": "افتح لينك العرض",
+    "noEventLink": "لا يوجد رابط",
+    "festivalName": "اسم المهرجان",
+    "authorLabel": "المؤلف",
+    "viewMap": "اعرض الخريطة",
+    "nightsLabel": "ليالي العرض",
+    "dateLabel": "التاريخ",
+    "timeLabel": "الوقت",
+    "timeTBD": "يحدد لاحقاً",
+    "festivalFallback": "مهرجان الدورة {{year}}",
+    "unknownFestival": "بيانات المهرجان غير متاحة",
+    "notAvailable": "غير متوفر"
   },
   "articles": {
     "title": "المقالات النقدية",
@@ -137,16 +160,18 @@
     "button": "احجز مقعدك",
     "fields": {
       "fullName": "الاسم الكامل",
-      "email": "البريد الإلكتروني",
-      "mobile": "رقم الهاتف"
+      "email": "البريد الإلكتروني"
     },
+    "emailNote": "سيصلك رقم الحجز على بريدك الإلكتروني.",
     "submit": "تأكيد الحجز",
     "submitting": "جاري الإرسال...",
     "success": "تم إرسال الحجز بنجاح!",
     "errors": {
-      "fullName": "يرجى إدخال اسمك الكامل.",
+      "fullNameRequired": "يرجى إدخال اسمك الكامل.",
+      "fullNameArabic": "يجب أن يكون الاسم بالحروف العربية فقط.",
+      "fullNameMaxLength": "يجب ألا يتجاوز الاسم ١٠٠ حرف.",
+      "emailRequired": "يرجى إدخال بريدك الإلكتروني.",
       "email": "يرجى إدخال بريد إلكتروني صالح.",
-      "mobile": "يرجى إدخال رقم الهاتف.",
       "generic": "تعذر إتمام الحجز. حاول مرة أخرى."
     }
   }

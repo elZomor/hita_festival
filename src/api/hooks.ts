@@ -48,7 +48,8 @@ type ShowApiResult = {
     showDescription?: string | null;
     date?: string | null;
     time?: string | null;
-    festival?: number | null;
+    festivalSlug?: number | null;
+    festivalName?: string | null;
     venueName?: string | null;
     venueLocation?: string | null;
     isOpenForReservation: string;
@@ -93,6 +94,8 @@ const mapShowApiResultToShow = (show: ShowApiResult): Show => {
         slug: `show-${show.id}`,
         name: title,
         editionYear,
+        festivalSlug: show.festivalSlug ? String(show.festivalSlug) : undefined,
+        festivalName: show.festivalName ?? undefined,
         director: show.director ?? 'غير معروف',
         author: show.author,
         cast: show.cast
@@ -117,7 +120,18 @@ export const useFestivalEditions = () =>
         select: data => (data.results ?? []).map(mapFestivalApiResultToEdition),
     });
 
+export const useFestivalEditionById = (festivalId?: string | number, options?: UseSingleEntityOptions) =>
+    useApiQuery<FestivalApiResult, FestivalEdition>({
+        queryKey: buildQueryKey('festival-edition', festivalId ?? 'detail'),
+        path: () => `/hita_arab_festival/festivals/${festivalId}`,
+        select: data => mapFestivalApiResultToEdition(data),
+        enabled: Boolean(festivalId) && (options?.enabled ?? true),
+    });
+
 type UseShowsOptions = {
+    enabled?: boolean;
+};
+type UseSingleEntityOptions = {
     enabled?: boolean;
 };
 
@@ -129,6 +143,14 @@ export const useShows = (festivalId?: string | number, options?: UseShowsOptions
             : '/hita_arab_festival/shows',
         select: data => (data.results ?? []).map(mapShowApiResultToShow),
         enabled: options?.enabled,
+    });
+
+export const useShow = (showId?: string | number, options?: UseSingleEntityOptions) =>
+    useApiQuery<ShowApiResult, Show>({
+        queryKey: buildQueryKey('show', showId ?? 'detail'),
+        path: () => `/hita_arab_festival/shows/${showId}`,
+        select: data => mapShowApiResultToShow(data),
+        enabled: Boolean(showId) && (options?.enabled ?? true),
     });
 
 export const useArticles = () =>
@@ -173,17 +195,15 @@ type ReserveShowVariables = {
     showId: string;
     name: string;
     email: string;
-    mobile: string;
 };
 
 export const useReserveShow = () =>
     useApiMutation<unknown, ReserveShowVariables>({
         path: ({showId}) => `/hita_arab_festival/shows/${showId}/reserve`,
         method: 'POST',
-        bodySerializer: ({name, email, mobile}) =>
+        bodySerializer: ({name, email}) =>
             JSON.stringify({
                 name: name,
                 email,
-                mobile,
             }),
     });

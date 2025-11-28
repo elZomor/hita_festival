@@ -44,7 +44,35 @@
     "venue": "Venue",
     "synopsis": "Synopsis",
     "criticalArticles": "Critical Articles About This Show",
-    "symposium": "Critical Symposium"
+    "symposium": "Critical Symposium",
+    "viewDetails": "view details",
+    "reserve": "reserve",
+    "today": "Today",
+    "available": "Soon",
+    "finished": "Done ✔",
+    "tabs": {
+      "info": "Info",
+      "articles": "Articles",
+      "symposia": "Symposia",
+      "comments": "Comments"
+    },
+    "noArticles": "No related articles yet.",
+    "noSymposia": "No related symposia.",
+    "commentsComingSoon": "Comments will be available soon.",
+    "statusLabel": "Status",
+    "eventLink": "Event Link",
+    "openEventLink": "Open event link",
+    "noEventLink": "No link available",
+    "festivalName": "Festival",
+    "authorLabel": "Author",
+    "viewMap": "View map",
+    "nightsLabel": "Show nights",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "timeTBD": "To be announced",
+    "festivalFallback": "Festival edition {{year}}",
+    "unknownFestival": "Festival info unavailable",
+    "notAvailable": "Not available"
   },
   "articles": {
     "title": "Critical Articles",
@@ -131,16 +159,18 @@
     "button": "Reserve Your Seat",
     "fields": {
       "fullName": "Full Name",
-      "email": "Email",
-      "mobile": "Mobile Number"
+      "email": "Email"
     },
+    "emailNote": "You shall receive your reservation number on your email.",
     "submit": "Submit Reservation",
     "submitting": "Submitting...",
     "success": "Reservation submitted successfully!",
     "errors": {
-      "fullName": "Please enter your full name.",
+      "fullNameRequired": "Please enter your full name.",
+      "fullNameArabic": "Name must be written using Arabic characters only.",
+      "fullNameMaxLength": "Name must be 100 characters or fewer.",
+      "emailRequired": "Please enter your email address.",
       "email": "Please provide a valid email address.",
-      "mobile": "Please enter your mobile number.",
       "generic": "Unable to complete the reservation. Please try again."
     }
   }

@@ -17,6 +17,8 @@ export type Show = {
   slug: string;
   name: string;
   editionYear: number;
+  festivalSlug?: string;
+  festivalName?: string;
   director: string;
   author?: string;
   cast?: string[];
