@@ -101,8 +101,8 @@ const DetailListItem = ({
         return (
             <li>
                 <div className="flex gap-2">
-                    <span className="text-theatre-gold-500 font-semibold">{item.text}</span>
-                    {actorValue && <span className="text-primary-200">{actorValue}</span>}
+                    <span className="text-theatre-gold-500 font-semibold italic">{item.text}</span>
+                    {actorValue && <span className="text-primary-500 dark:text-primary-200">{actorValue}</span>}
                 </div>
                 {item.children && item.children.length > 0 && (
                     <div className="mt-2 ms-4">
@@ -119,7 +119,7 @@ const DetailListItem = ({
         <li>
             <div className="flex flex-wrap items-baseline gap-2">
                 <span
-                    className={isTextVariant ? 'text-primary-800 dark:text-primary-100' : 'font-semibold text-primary-500 dark:text-primary-200'}
+                    className={isTextVariant ? 'text-primary-800 dark:text-primary-100' : ' text-primary-500 dark:text-primary-200'}
                 >
                     {item.text}
                 </span>
@@ -170,15 +170,6 @@ const getCastValue = (item: ShowDetailEntry): string | undefined => {
 
     if (typeof item.value === 'string' && item.value.trim()) {
         return item.value;
-    }
-
-    if (item.children && item.children.length > 0) {
-        const childNames = item.children
-            .map(child => child.text?.trim())
-            .filter((name): name is string => Boolean(name));
-        if (childNames.length > 0) {
-            return childNames.join(', ');
-        }
     }
 
     return undefined;
