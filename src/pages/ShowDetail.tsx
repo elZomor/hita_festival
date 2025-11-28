@@ -154,13 +154,11 @@ export const ShowDetail = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                     {show.poster && (
-                        <div className="rounded-2xl overflow-hidden shadow-2xl">
-                            <img
-                                src={show.poster}
-                                alt={show.name}
-                                className="w-full h-auto"
-                            />
-                        </div>
+                        <img
+                            src={show.poster}
+                            alt={show.name}
+                            className="w-full h-auto max-h-[500px] object-contain"
+                        />
                     )}
                 </div>
 
