@@ -66,9 +66,18 @@ const DetailList = ({
     variant: DetailVariant;
     depth?: number;
 }) => {
-    const isRoleRoot = variant === 'role' && depth === 0;
+    const hasSingleUnlabeledItem = items.length === 1 && !items[0].value && !items[0].children;
     const listStyle = depth === 0 ? 'list-disc' : 'list-[circle]';
     const margin = depth === 0 ? 'ms-5' : 'ms-6';
+    const isRoleRoot = variant === 'role' && depth === 0;
+
+    if (hasSingleUnlabeledItem && variant !== 'role') {
+        return (
+            <div className="text-primary-800 dark:text-primary-100">
+                {items[0].text}
+            </div>
+        );
+    }
 
     return (
         <ul

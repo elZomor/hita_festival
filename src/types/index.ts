@@ -39,6 +39,7 @@ export type Show = {
   bookingUrl?: string;
   link?: string;
   reversedSeats: number;
+  castWord?: string | null
 };
 
 export type ArticleType = "review" | "symposium_coverage" | "analysis" | "general";

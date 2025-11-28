@@ -236,7 +236,8 @@ const mapShowApiResultToShow = (show: ShowApiResult): Show => {
         bookingUrl: show.link ?? undefined,
         venueLocation: show.venueLocation,
         reversedSeats: show.reservedSeats,
-        isOpenForReservation: show.isOpenForReservation
+        isOpenForReservation: show.isOpenForReservation,
+        castWord: show.castWord
     };
 };
 

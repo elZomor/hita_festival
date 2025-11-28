@@ -51,6 +51,9 @@ export const ShowHero = ({
                 <h1 className="text-4xl font-bold text-accent-600 dark:text-secondary-500 mb-2">
                     {show.name}
                 </h1>
+                { show.castWord && (<h3 className="mb-2 text-primary-500 flex items-center gap-2 italic">
+                    "{show.castWord}"
+                </h3>)}
                 <h3 className="text-xl font-bold mb-6 text-accent-500 flex items-center gap-2">
                     {showStatusLabel}
                 </h3>
