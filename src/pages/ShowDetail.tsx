@@ -15,6 +15,7 @@ import {
     ShowCommentsTab,
     type ShowTab,
     type ShowTabKey,
+    type ShowDetailSection,
 } from './show-detail';
 
 export const ShowDetail = () => {
@@ -136,18 +137,38 @@ export const ShowDetail = () => {
     </span>
     );
 
-    const infoItems: {label: string; value: ReactNode}[] = [
+    const infoItems: { label: string; value: ReactNode }[] = [
         {label: t('show.eventLink'), value: eventLinkValue},
         {label: t('show.festivalName'), value: festivalLinkValue},
         {label: t('show.authorLabel'), value: show.author ?? t('show.notAvailable')},
         {label: t('show.director'), value: show.director ?? t('show.notAvailable')},
-        ...(show.cast && show.cast.length > 0
-            ? [{label: t('show.cast'), value: show.cast.join(', ')}]
-            : []),
         {label: t('show.venue'), value: venueValue},
         {label: t('show.dateLabel'), value: formattedDate},
         {label: t('show.timeLabel'), value: formattedTime},
     ];
+
+    const buildDetailSection = (title: string, items?: ShowDetailSection['items'] | string): ShowDetailSection | undefined => {
+        if (!items || (Array.isArray(items) && items.length === 0)) {
+            return undefined;
+        }
+
+        if (typeof items === 'string') {
+            return {
+                title,
+                items: [{text: items}],
+            };
+        }
+
+        return {
+            title,
+            items,
+        };
+    }
+
+    const descriptionSection = buildDetailSection(t('show.sections.synopsis'), show.showDescription);
+    const actorsSection = buildDetailSection(t('show.sections.actors'), show.cast);
+    const crewSection = buildDetailSection(t('show.sections.crew'), show.crew);
+    const additionalSection = buildDetailSection(t('show.sections.additional'), show.notes);
 
     const reservationButtonVariant = getReservationStatusClass(show.isOpenForReservation);
     const renderActiveTab = () => {
@@ -176,7 +197,14 @@ export const ShowDetail = () => {
                 return <ShowCommentsTab message={t('show.commentsComingSoon')}/>;
             case 'info':
             default:
-                return <ShowInfoTab title={t('show.synopsis')} description={show.showDescription}/>;
+                return (
+                    <ShowInfoTab
+                        descriptionSection={descriptionSection}
+                        actorsSection={actorsSection}
+                        crewSection={crewSection}
+                        additionalSection={additionalSection}
+                    />
+                );
         }
     };
 

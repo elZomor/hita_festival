@@ -11,6 +11,12 @@ export type FestivalEdition = {
   numberOfArticles: number;
 };
 
+export type ShowDetailEntry = {
+  text: string;
+  value?: string;
+  children?: ShowDetailEntry[];
+};
+
 export type Show = {
   isOpenForReservation: string;
   id: string;
@@ -21,7 +27,9 @@ export type Show = {
   festivalName?: string;
   director: string;
   author?: string;
-  cast?: string[];
+  cast?: ShowDetailEntry[];
+  crew?: ShowDetailEntry[];
+  notes?: ShowDetailEntry[];
   date: string;
   time: string;
   venueName: string;

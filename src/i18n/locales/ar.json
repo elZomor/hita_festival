@@ -73,7 +73,13 @@
     "timeTBD": "يحدد لاحقاً",
     "festivalFallback": "مهرجان الدورة {{year}}",
     "unknownFestival": "بيانات المهرجان غير متاحة",
-    "notAvailable": "غير متوفر"
+    "notAvailable": "غير متوفر",
+    "sections": {
+      "actors": "التمثيل",
+      "crew": "فريق العمل",
+      "additional": "معلومات إضافية",
+      "synopsis": "نبذة عن العرض"
+    }
   },
   "articles": {
     "title": "المقالات النقدية",

@@ -72,7 +72,13 @@
     "timeTBD": "To be announced",
     "festivalFallback": "Festival edition {{year}}",
     "unknownFestival": "Festival info unavailable",
-    "notAvailable": "Not available"
+    "notAvailable": "Not available",
+    "sections": {
+      "actors": "Actors",
+      "crew": "Crew",
+      "additional": "Additional Info",
+      "synopsis": "Synopsis"
+    }
   },
   "articles": {
     "title": "Critical Articles",
