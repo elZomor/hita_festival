@@ -1,13 +1,21 @@
 import {Link, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useState, type ReactNode} from 'react';
-import {ArrowLeft, ExternalLink} from 'lucide-react';
-import {Button, Card, Badge, SectionHeader, LoadingState, Snackbar} from '../components/common';
+import {ArrowLeft} from 'lucide-react';
+import {LoadingState, Snackbar} from '../components/common';
 import {useArticles, useShow, useSymposia} from '../api/hooks';
 import {ReservationModal} from '../features/reservations/ReservationModal';
 import {compareWithToday, getLongFormattedDate, translateTime} from '../utils/dateUtils';
-
-type Tab = 'info' | 'articles' | 'symposia' | 'comments';
+import {
+    ShowHero,
+    ShowTabsNavigation,
+    ShowInfoTab,
+    ShowArticlesTab,
+    ShowSymposiaTab,
+    ShowCommentsTab,
+    type ShowTab,
+    type ShowTabKey,
+} from './show-detail';
 
 export const ShowDetail = () => {
     const {year, slug} = useParams<{ year: string; slug: string }>();
@@ -15,7 +23,7 @@ export const ShowDetail = () => {
     const isRTL = i18n.language === 'ar';
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [isSnackbarOpen, setSnackbarOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<Tab>('info');
+    const [activeTab, setActiveTab] = useState<ShowTabKey>('info');
 
     const rawSlug = slug ?? '';
     const showIdParam = rawSlug.startsWith('show-') ? rawSlug.slice(5) : rawSlug;
@@ -74,7 +82,7 @@ export const ShowDetail = () => {
                 return 'secondary';
         }
     };
-    const tabs: { key: Tab; label: string }[] = [
+    const tabs: ShowTab[] = [
         {key: 'info', label: t('show.tabs.info')},
         {key: 'articles', label: t('show.tabs.articles')},
         {key: 'symposia', label: t('show.tabs.symposia')},
@@ -111,7 +119,7 @@ export const ShowDetail = () => {
         >
             {t('show.openEventLink')}
         </a>
-    )
+    );
     const venueValue = (
         <span className="inline-flex items-center gap-2 flex-wrap">
       {show.venueName}
@@ -141,6 +149,37 @@ export const ShowDetail = () => {
         {label: t('show.timeLabel'), value: formattedTime},
     ];
 
+    const reservationButtonVariant = getReservationStatusClass(show.isOpenForReservation);
+    const renderActiveTab = () => {
+        switch (activeTab) {
+            case 'articles':
+                return (
+                    <ShowArticlesTab
+                        title={t('show.criticalArticles')}
+                        emptyLabel={t('show.noArticles')}
+                        authorLabel={t('articles.author')}
+                        isRTL={isRTL}
+                        articles={relatedArticles}
+                        getTypeLabel={type => t(`articles.types.${type}`)}
+                    />
+                );
+            case 'symposia':
+                return (
+                    <ShowSymposiaTab
+                        title={t('show.symposium')}
+                        emptyLabel={t('show.noSymposia')}
+                        symposia={relatedSymposia}
+                        isRTL={isRTL}
+                    />
+                );
+            case 'comments':
+                return <ShowCommentsTab message={t('show.commentsComingSoon')}/>;
+            case 'info':
+            default:
+                return <ShowInfoTab title={t('show.synopsis')} description={show.showDescription}/>;
+        }
+    };
+
     return (
         <div className="space-y-8">
             <Link
@@ -151,180 +190,22 @@ export const ShowDetail = () => {
                 {t('common.backToList')}
             </Link>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    {show.poster && (
-                        <img
-                            src={show.poster}
-                            alt={show.name}
-                            className="w-full h-auto max-h-[500px] object-contain"
-                        />
-                    )}
-                </div>
+            <ShowHero
+                show={show}
+                infoItems={infoItems}
+                showStatusLabel={showStatusLabel}
+                isRTL={isRTL}
+                isReservationStatus={isReservationStatus}
+                isReservationComplete={isReservationComplete}
+                reservationButtonVariant={reservationButtonVariant}
+                reserveLabel={t('show.reserve')}
+                bookTicketLabel={t('show.bookTicket')}
+                onReservationClick={() => setReservationOpen(true)}
+            />
 
-                <div className="space-y-6">
-                    <div>
-                        <h1 className="text-4xl font-bold text-accent-600 dark:text-secondary-500 mb-2">
-                            {show.name}
-                        </h1>
-                        <h3
-                            className={`text-xl font-bold mb-6 text-accent-500 flex items-center gap-2`}
-                        >
-                            {showStatusLabel}
-                        </h3>
-                    </div>
+            <ShowTabsNavigation tabs={tabs} activeTab={activeTab} onTabChange={tab => setActiveTab(tab)}/>
 
-                    <div className="space-y-3 text-lg text-white">
-                        {infoItems.map(item => (
-                            item.value && (
-                                <div key={item.label} className="grid grid-cols-1 sm:grid-cols-9 gap-3 items-center">
-                                    <span className="font-semibold text-primary-400 sm:col-span-2">{item.label}:</span>
-                                    <span
-                                        className="inline-flex flex-wrap items-center gap-2 text-white sm:col-span-7">{item.value}</span>
-                                </div>)
-                        ))}
-                    </div>
-
-                    <div className="space-y-3 flex flex-col items-center">
-                        {show.bookingUrl && (
-                            <a
-                                href={show.bookingUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="block"
-                            >
-                                <Button variant="primary" className="w-full group">
-                                    {t('show.bookTicket')}
-                                    <ExternalLink
-                                        className={`${isRTL ? 'mr-2' : 'ml-2'} group-hover:translate-x-1 transition-transform`}
-                                        size={20}/>
-                                </Button>
-                            </a>
-                        )}
-
-                        {isReservationStatus && (
-                            <Button
-                                type="button"
-                                variant={getReservationStatusClass(show.isOpenForReservation)}
-                                className="w-[70%]"
-                                onClick={() => setReservationOpen(true)}
-                                disabled={isReservationComplete}
-                            >
-                                {t('show.reserve')}
-                            </Button>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <div className="border-b border-primary-300 dark:border-primary-700">
-                <div className="flex gap-2 overflow-x-auto">
-                    {tabs.map(tab => (
-                        <button
-                            key={tab.key}
-                            onClick={() => setActiveTab(tab.key)}
-                            className={`
-                px-6 py-3 font-medium transition-all duration-300
-                border-b-2 whitespace-nowrap
-                ${activeTab === tab.key
-                                ? 'border-secondary-500 text-accent-600 dark:text-secondary-500'
-                                : 'border-transparent text-primary-600 dark:text-primary-400 hover:text-accent-600 dark:hover:text-secondary-500'
-                            }
-              `}
-                        >
-                            {tab.label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {activeTab === 'info' && (
-                <Card className="bg-gradient-to-br from-primary-50 to-white dark:from-primary-800 dark:to-primary-900"
-                      hover={false}>
-                    <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-4">
-                        {t('show.synopsis')}
-                    </h2>
-                    <p className="text-primary-700 dark:text-primary-300 leading-relaxed text-lg">
-                        {show.showDescription}
-                    </p>
-                </Card>
-            )}
-
-            {activeTab === 'articles' && (
-                <div className="space-y-6">
-                    <SectionHeader>{t('show.criticalArticles')}</SectionHeader>
-                    {relatedArticles.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {relatedArticles.map(article => (
-                                <Link key={article.id} to={`/articles/${article.slug}`}>
-                                    <Card>
-                                        <div className="space-y-3">
-                                            <Badge variant="gold">
-                                                {t(`articles.types.${article.type}`)}
-                                            </Badge>
-                                            <h3 className="text-xl font-bold text-primary-900 dark:text-white">
-                                                {isRTL ? article.titleAr : article.titleEn}
-                                            </h3>
-                                            <p className="text-sm text-primary-600 dark:text-primary-400">
-                                                {t('articles.author')}: {article.author}
-                                            </p>
-                                            <p className="text-primary-700 dark:text-primary-300 line-clamp-2">
-                                                {isRTL ? article.contentAr.substring(0, 120) : article.contentEn?.substring(0, 120)}...
-                                            </p>
-                                        </div>
-                                    </Card>
-                                </Link>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-16">
-                            <p className="text-primary-600 dark:text-primary-400">{t('show.noArticles')}</p>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {activeTab === 'symposia' && (
-                <div className="space-y-6">
-                    <SectionHeader>{t('show.symposium')}</SectionHeader>
-                    {relatedSymposia.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-6">
-                            {relatedSymposia.map(symposium => (
-                                <Link key={symposium.id} to={`/symposia/${symposium.id}`}>
-                                    <Card>
-                                        <div className="space-y-3">
-                                            <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
-                                                {isRTL ? symposium.titleAr : symposium.titleEn}
-                                            </h3>
-                                            <div
-                                                className="flex flex-wrap gap-2 text-sm text-primary-600 dark:text-primary-400">
-                                                <span>{new Date(symposium.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US')}</span>
-                                                <span>•</span>
-                                                <span>{symposium.hall}</span>
-                                            </div>
-                                            <p className="text-primary-700 dark:text-primary-300">
-                                                {symposium.summaryAr.substring(0, 200)}...
-                                            </p>
-                                        </div>
-                                    </Card>
-                                </Link>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-16">
-                            <p className="text-primary-600 dark:text-primary-400">{t('show.noSymposia')}</p>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {activeTab === 'comments' && (
-                <Card>
-                    <p className="text-primary-700 dark:text-primary-300 leading-relaxed">
-                        {t('show.commentsComingSoon')}
-                    </p>
-                </Card>
-            )}
+            {renderActiveTab()}
 
             {isReservationStatus && (
                 <ReservationModal
