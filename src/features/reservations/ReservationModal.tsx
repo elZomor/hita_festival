@@ -93,7 +93,7 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
               </label>
               <input
                 type="text"
-                className="w-full rounded-lg border border-primary-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-4 py-3 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                className="w-full rounded-lg border border-primary-200 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 px-4 py-3 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
                 value={name}
                 onChange={event => setName(event.target.value)}
               />
@@ -106,7 +106,7 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
               </label>
               <input
                 type="email"
-                className="w-full rounded-lg border border-primary-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-4 py-3 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                className="w-full rounded-lg border border-primary-200 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 px-4 py-3 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
                 value={email}
                 onChange={event => setEmail(event.target.value)}
               />

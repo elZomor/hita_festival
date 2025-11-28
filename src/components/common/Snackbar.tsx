@@ -17,8 +17,8 @@ export const Snackbar = ({ message, isOpen, onClose, variant = 'success' }: Snac
   if (!isOpen) return null;
 
   const variantStyles: Record<typeof variant, string> = {
-    success: 'bg-green-600 text-white',
-    error: 'bg-accent-600 text-white',
+    success: 'bg-secondary-500 text-theatre-black-950 dark:bg-secondary-400 dark:text-theatre-black-900',
+    error: 'bg-accent-600 text-primary-50 dark:bg-accent-500 dark:text-primary-50',
   };
 
   return (

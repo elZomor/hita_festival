@@ -63,7 +63,7 @@ export const FestivalEdition = () => {
     if (!edition) {
         return (
             <div className="text-center py-16">
-                <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
                     {t('common.noResults')}
                 </h2>
             </div>
@@ -97,7 +97,7 @@ export const FestivalEdition = () => {
             </Link>
 
             <div
-                className="bg-gradient-to-r from-accent-600 to-accent-700 rounded-2xl p-8 text-white shadow-2xl">
+                className="bg-gradient-to-r from-accent-600 to-accent-700 dark:from-accent-700 dark:to-accent-800 rounded-2xl p-8 text-primary-50 shadow-2xl">
                 <div className="flex items-center gap-3 mb-4">
                     <Calendar size={32} className="text-secondary-500"/>
                     <h1 className="text-3xl md:text-4xl font-bold">
@@ -105,7 +105,7 @@ export const FestivalEdition = () => {
                     </h1>
                 </div>
 
-                <p className="text-lg text-primary-200 mb-4">
+                <p className="text-lg text-primary-100 dark:text-primary-200 mb-4">
                     {localizedDescription}
                 </p>
 
@@ -177,7 +177,7 @@ export const FestivalEdition = () => {
                                     <Badge variant="gold">
                                         {t(`articles.types.${article.type}`)}
                                     </Badge>
-                                    <h3 className="text-xl font-bold text-primary-900 dark:text-white">
+                                    <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
                                         {isRTL ? article.titleAr : article.titleEn}
                                     </h3>
                                     <p className="text-sm text-primary-600 dark:text-primary-400">
@@ -222,7 +222,7 @@ export const FestivalEdition = () => {
                                 <Badge variant="gold">
                                     {t(`creativity.submitForm.types.${item.type}`)}
                                 </Badge>
-                                <h3 className="text-xl font-bold text-primary-900 dark:text-white">
+                                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-primary-600 dark:text-primary-400">

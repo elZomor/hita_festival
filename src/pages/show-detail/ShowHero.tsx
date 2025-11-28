@@ -59,13 +59,13 @@ export const ShowHero = ({
                 </h3>
             </div>
 
-            <div className="space-y-3 text-lg text-white">
+            <div className="space-y-3 text-lg text-primary-800 dark:text-primary-100">
                 {infoItems.map(
                     item =>
                         item.value && (
                             <div key={item.label} className="grid grid-cols-1 sm:grid-cols-9 gap-3 items-center">
-                                <span className="font-semibold text-primary-400 sm:col-span-2">{item.label}:</span>
-                                <span className="inline-flex flex-wrap items-center gap-2 text-white sm:col-span-7">
+                                <span className="font-semibold text-primary-600 dark:text-primary-300 sm:col-span-2">{item.label}:</span>
+                                <span className="inline-flex flex-wrap items-center gap-2 text-primary-900 dark:text-primary-100 sm:col-span-7">
                                     {item.value}
                                 </span>
                             </div>

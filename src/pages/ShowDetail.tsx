@@ -50,7 +50,7 @@ export const ShowDetail = () => {
     if (hasError) {
         return (
             <div className="text-center py-16">
-                <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
                     {t('common.error')}
                 </h2>
             </div>
@@ -60,7 +60,7 @@ export const ShowDetail = () => {
     if (!show) {
         return (
             <div className="text-center py-16">
-                <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
                     {t('common.noResults')}
                 </h2>
             </div>
@@ -104,32 +104,32 @@ export const ShowDetail = () => {
     const festivalLinkValue = festivalDisplayName && festivalRouteParam ? (
         <Link
             to={`/festival/${festivalRouteParam}`}
-            className="text-secondary-500 underline"
+            className="text-secondary-600 dark:text-secondary-400 underline"
         >
             {festivalDisplayName}
         </Link>
     ) : (
-        <span className="text-primary-500">{t('show.unknownFestival')}</span>
+        <span className="text-primary-600 dark:text-primary-300">{t('show.unknownFestival')}</span>
     );
     const eventLinkValue = show.bookingUrl && (
         <a
             href={show.bookingUrl}
             target="_blank"
             rel="noreferrer"
-            className="text-secondary-500 underline"
+            className="text-secondary-600 dark:text-secondary-400 underline"
         >
             {t('show.openEventLink')}
         </a>
     );
     const venueValue = (
-        <span className="inline-flex items-center gap-2 flex-wrap">
+        <span className="inline-flex items-center gap-2 flex-wrap text-primary-800 dark:text-primary-100">
       {show.venueName}
             {show.venueLocation && (
                 <a
                     href={show.venueLocation}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-secondary-500 text-sm underline"
+                    className="text-secondary-600 dark:text-secondary-400 text-sm underline"
                 >
                     {t('show.viewMap')}
                 </a>

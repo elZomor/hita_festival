@@ -7,7 +7,7 @@ export const ComingSoon = () => {
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <Card className="w-full max-w-3xl text-center bg-gradient-to-br from-primary-950 via-accent-600 to-primary-950 text-white shadow-2xl">
+      <Card className="w-full max-w-3xl text-center bg-gradient-to-br from-primary-900 via-accent-600 to-primary-900 dark:from-primary-950 dark:via-accent-700 dark:to-primary-950 text-primary-50 shadow-2xl">
         <div className="space-y-6 py-16 px-8">
           <div className="flex justify-center gap-3 text-secondary-500">
             <Sparkles size={40} className="animate-pulse" />
@@ -21,7 +21,7 @@ export const ComingSoon = () => {
           </p>
 
           <Button variant="secondary"
-                  className="border border-secondary-500 text-white hover:bg-secondary-500/10"
+                  className="border border-secondary-500 text-primary-900 dark:text-theatre-black-950 bg-primary-50 dark:bg-secondary-500/20 hover:bg-secondary-500/10 dark:hover:bg-secondary-500/40"
                   onClick={() => window.location.href = '/'}
           >
             {t('common.backHome')}

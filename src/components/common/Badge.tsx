@@ -8,10 +8,10 @@ interface BadgeProps {
 
 export const Badge = ({children, variant = 'default', className = ''}: BadgeProps) => {
     const variants = {
-        default: 'bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-200',
-        gold: 'bg-secondary-500 text-primary-950',
-        red: 'bg-accent-600 text-white',
-        green: 'bg-green-500 text-white',
+        default: 'bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-100',
+        gold: 'bg-theatre-gold-500 text-theatre-black-950 dark:bg-theatre-gold-400 dark:text-theatre-black-900',
+        red: 'bg-accent-600 text-primary-50 dark:bg-accent-500 dark:text-primary-50',
+        green: 'bg-secondary-500 text-theatre-black-950 dark:bg-secondary-400 dark:text-theatre-black-900',
     };
 
     return (

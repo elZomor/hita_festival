@@ -43,7 +43,7 @@ export const Home = () => {
 
   return (
     <div className="space-y-16">
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-950 via-accent-700 to-primary-950 rounded-2xl shadow-2xl">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-accent-600 to-primary-900 dark:from-primary-950 dark:via-accent-700 dark:to-primary-950 rounded-2xl shadow-2xl text-primary-50">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
@@ -57,7 +57,7 @@ export const Home = () => {
               <div className="text-7xl animate-pulse">🎭</div>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-primary-50 mb-4">
               {t('home.title')}
             </h1>
 

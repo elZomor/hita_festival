@@ -60,7 +60,7 @@ export const Symposia = () => {
               <Link key={symposium.id} to={`/symposia/${symposium.id}`}>
                 <Card>
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-primary-900 dark:text-white">
+                    <h3 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
                       {isRTL ? symposium.titleAr : symposium.titleEn}
                     </h3>
 

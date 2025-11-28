@@ -62,7 +62,7 @@ export const Creativity = () => {
       </div>
 
       {showSubmitForm && (
-        <Card className="bg-white dark:bg-primary-800 border-2 border-secondary-500" hover={false}>
+        <Card className="bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 border-2 border-secondary-500" hover={false}>
           <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-6">
             {t('creativity.submitForm.title')}
           </h3>
@@ -86,7 +86,7 @@ export const Creativity = () => {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
                 />
               </div>
 
@@ -99,7 +99,7 @@ export const Creativity = () => {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
                 />
               </div>
             </div>
@@ -113,7 +113,7 @@ export const Creativity = () => {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
               />
             </div>
 
@@ -126,7 +126,7 @@ export const Creativity = () => {
                   required
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value as typeof formData.type })}
-                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
                 >
                   <option value="story">{t('creativity.submitForm.types.story')}</option>
                   <option value="essay">{t('creativity.submitForm.types.essay')}</option>
@@ -143,7 +143,7 @@ export const Creativity = () => {
                   type="number"
                   value={formData.editionYear}
                   onChange={(e) => setFormData({ ...formData, editionYear: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                  className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
                   placeholder="2025"
                 />
               </div>
@@ -158,7 +158,7 @@ export const Creativity = () => {
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 rows={10}
-                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white focus:ring-2 focus:ring-secondary-500"
+                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400"
               />
             </div>
 
@@ -169,7 +169,7 @@ export const Creativity = () => {
               <input
                 type="file"
                 accept=".pdf,.doc,.docx,.txt"
-                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white"
+                className="w-full px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900 text-primary-900 dark:text-primary-50"
               />
             </div>
 
@@ -213,7 +213,7 @@ export const Creativity = () => {
                 )}
               </div>
 
-              <h3 className="text-xl font-bold text-grey-900 dark:text-white">
+              <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
                 {item.title}
               </h3>
 

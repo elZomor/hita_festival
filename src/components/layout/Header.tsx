@@ -28,18 +28,18 @@ export const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-primary-950 dark:bg-primary-950 border-b-2 border-secondary-500 shadow-xl transition-all duration-300">
+    <header className="sticky top-0 z-50 bg-primary-50 text-primary-900 dark:bg-primary-950 dark:text-primary-50 border-b border-primary-100 dark:border-primary-800 shadow-xl transition-all duration-300">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 bg-accent-600 rounded-full flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
-              <span className="text-2xl text-white">🎭</span>
+            <div className="w-12 h-12 bg-accent-600 rounded-full flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 text-primary-50">
+              <span className="text-2xl">🎭</span>
             </div>
             <div className={`hidden md:block ${isRTL ? 'text-right' : 'text-left'}`}>
-              <h1 className="text-xl font-bold text-secondary-500">
+              <h1 className="text-xl font-bold text-secondary-600 dark:text-secondary-400">
                 {t('home.title')}
               </h1>
-              <p className="text-xs text-primary-400">
+              <p className="text-xs text-primary-600 dark:text-primary-300">
                 {t('home.subtitle')}
               </p>
             </div>
@@ -50,10 +50,10 @@ export const Header = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-white hover:text-secondary-500 transition-colors duration-300 font-medium relative group"
+                className="text-primary-900 dark:text-primary-100 hover:text-secondary-500 dark:hover:text-secondary-400 transition-colors duration-300 font-medium relative group"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-500 dark:bg-secondary-400 group-hover:w-full transition-all duration-300"></span>
               </Link>
             ))}
           </div>
@@ -61,7 +61,7 @@ export const Header = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={toggleLanguage}
-              className="p-2 rounded-lg hover:bg-accent-600 transition-colors duration-300 text-white"
+              className="p-2 rounded-lg bg-primary-100 text-primary-900 hover:bg-accent-600 hover:text-primary-50 dark:bg-primary-800 dark:text-primary-100 dark:hover:bg-accent-600 transition-colors duration-300"
               aria-label="Toggle language"
             >
               <Languages size={20} />
@@ -69,7 +69,7 @@ export const Header = () => {
 
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-accent-600 transition-colors duration-300 text-white"
+              className="p-2 rounded-lg bg-primary-100 text-primary-900 hover:bg-accent-600 hover:text-primary-50 dark:bg-primary-800 dark:text-primary-100 dark:hover:bg-accent-600 transition-colors duration-300"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
@@ -77,7 +77,7 @@ export const Header = () => {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-accent-600 transition-colors duration-300 text-white"
+              className="md:hidden p-2 rounded-lg bg-primary-100 text-primary-900 hover:bg-accent-600 hover:text-primary-50 dark:bg-primary-800 dark:text-primary-100 dark:hover:bg-accent-600 transition-colors duration-300"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -92,7 +92,7 @@ export const Header = () => {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 px-4 text-white hover:bg-accent-600 rounded-lg transition-colors duration-300"
+                className="block py-3 px-4 text-primary-900 dark:text-primary-100 hover:bg-accent-600 hover:text-primary-50 rounded-lg transition-colors duration-300"
               >
                 {link.label}
               </Link>

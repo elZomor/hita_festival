@@ -30,7 +30,7 @@ export const ShowArticlesTab = ({
                                 <Badge variant="gold">
                                     {getTypeLabel(article.type)}
                                 </Badge>
-                                <h3 className="text-xl font-bold text-primary-900 dark:text-white">
+                                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
                                     {isRTL ? article.titleAr : article.titleEn}
                                 </h3>
                                 <p className="text-sm text-primary-600 dark:text-primary-400">

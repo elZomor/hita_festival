@@ -28,7 +28,7 @@ export const SymposiumDetail = () => {
   if (hasError) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
+        <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
           {t('common.error')}
         </h2>
       </div>
@@ -38,7 +38,7 @@ export const SymposiumDetail = () => {
   if (!symposium) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
+        <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
           {t('common.noResults')}
         </h2>
       </div>
@@ -56,11 +56,11 @@ export const SymposiumDetail = () => {
       </Link>
 
       <div className="space-y-6">
-        <h1 className="text-3xl md:text-5xl font-bold text-accent-600 dark:text-secondary-500 leading-tight">
+        <h1 className="text-3xl md:text-5xl font-bold text-accent-600 dark:text-secondary-400 leading-tight">
           {isRTL ? symposium.titleAr : symposium.titleEn}
         </h1>
 
-        <div className="flex flex-wrap gap-6 text-primary-600 dark:text-primary-400">
+        <div className="flex flex-wrap gap-6 text-primary-700 dark:text-primary-300">
           <div className="flex items-center gap-2">
             <Calendar size={20} className="text-secondary-500" />
             <span>
@@ -82,7 +82,7 @@ export const SymposiumDetail = () => {
         </div>
       </div>
 
-      <Card className="bg-gradient-to-br from-secondary-500/10 to-accent-600/10" hover={false}>
+      <Card className="bg-gradient-to-br from-secondary-500/10 to-accent-600/10 dark:from-secondary-500/5 dark:to-accent-600/5" hover={false}>
         <div className="space-y-4">
           <div className="flex items-start gap-3">
             <Users size={24} className="text-secondary-500 mt-1 flex-shrink-0" />
@@ -94,7 +94,7 @@ export const SymposiumDetail = () => {
                 {symposium.panelists.map((panelist, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-white dark:bg-primary-800 rounded-full text-sm font-medium"
+                    className="px-3 py-1 bg-primary-50 dark:bg-primary-900 text-primary-800 dark:text-primary-100 rounded-full text-sm font-medium"
                   >
                     {panelist}
                   </span>
@@ -120,7 +120,7 @@ export const SymposiumDetail = () => {
       </Card>
 
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
+        <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-400">
           {t('symposia.summary')}
         </h2>
         <div className="prose prose-lg dark:prose-invert max-w-none">
@@ -147,7 +147,7 @@ export const SymposiumDetail = () => {
                     </div>
                   )}
                   <div className="space-y-2">
-                    <h3 className="text-xl font-bold text-primary-900 dark:text-white">
+                    <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
                       {show.name}
                     </h3>
                   </div>

@@ -35,7 +35,7 @@ export const ArticleDetail = () => {
   if (hasError) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
+        <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
           {t('common.error')}
         </h2>
       </div>
@@ -45,7 +45,7 @@ export const ArticleDetail = () => {
   if (!article) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-primary-900 dark:text-white">
+        <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
           {t('common.noResults')}
         </h2>
       </div>
@@ -152,7 +152,7 @@ export const ArticleDetail = () => {
                     <Badge variant="gold">
                       {t(`articles.types.${relatedArticle.type}`)}
                     </Badge>
-                    <h3 className="text-lg font-bold text-primary-900 dark:text-white line-clamp-2">
+                    <h3 className="text-lg font-bold text-primary-900 dark:text-primary-50 line-clamp-2">
                       {isRTL ? relatedArticle.titleAr : relatedArticle.titleEn}
                     </h3>
                     <p className="text-sm text-primary-600 dark:text-primary-400">

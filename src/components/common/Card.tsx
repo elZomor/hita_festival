@@ -12,10 +12,9 @@ export const Card = ({ children, className = '', hover = true }: CardProps) => {
   return (
     <div
       className={`
-        bg-white dark:bg-primary-800
-        rounded-lg shadow-lg
-        p-6
-        transition-all duration-300
+        bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50
+        rounded-lg shadow-lg border border-primary-100 dark:border-primary-700
+        p-6 transition-all duration-300
         ${hoverStyles}
         ${className}
       `}

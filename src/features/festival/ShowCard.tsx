@@ -56,11 +56,7 @@ export const ShowCard = ({show}: ShowCardProps) => {
     return (
         <>
         <Card className="h-full flex flex-col relative">
-            <div className="absolute top-3 right-3">
-                <Badge variant={getShowStatusClass(show.date)}>
-                    {t(getShowStatusName(show.date))}
-                </Badge>
-            </div>
+
 
             <div className="relative">
                 <img
@@ -73,22 +69,26 @@ export const ShowCard = ({show}: ShowCardProps) => {
                     className="w-full h-80 object-contain"
                 />
             </div>
-
+            <div className="absolute top-3 right-3">
+                <Badge variant={getShowStatusClass(show.date)}>
+                    {t(getShowStatusName(show.date))}
+                </Badge>
+            </div>
             {/* make this a flex column that can stretch */}
             <div className="space-y-3 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold text-primary-900 dark:text-white">
+                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
                     {show.name}
                 </h3>
 
                 {/* info block grows, pushes buttons down when needed */}
                 <div className="space-y-2 text-sm flex-1">
-                    <div className="flex items-center text-primary-300 mb-2">
+                    <div className="flex items-center text-primary-600 dark:text-primary-300 mb-2">
                         <UserCog size={16} className="text-secondary-500 mx-2" />
                         <span className="text-sm">
           {t('show.for_director')}: {show.director}
         </span>
                     </div>
-                    <div className="flex items-center text-primary-300 mb-2">
+                    <div className="flex items-center text-primary-600 dark:text-primary-300 mb-2">
                         <MapPin size={16} className="text-secondary-500 mx-2" />
                         <span className="text-sm">{show.venueName}</span>
                     </div>

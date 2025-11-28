@@ -57,11 +57,11 @@ export const Articles = () => {
         <SectionHeader className="mb-0">{t('articles.title')}</SectionHeader>
       </div>
 
-      <div className="flex flex-wrap gap-4 bg-white dark:bg-primary-800 p-4 rounded-lg shadow-lg">
+      <div className="flex flex-wrap gap-4 bg-primary-50 dark:bg-primary-900 p-4 rounded-lg shadow-lg border border-primary-100 dark:border-primary-700">
         <select
           value={yearFilter}
           onChange={(e) => setYearFilter(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white"
+          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50"
         >
           <option value="all">{t('articles.allYears')}</option>
           {uniqueYears.slice(1).map(year => (
@@ -72,7 +72,7 @@ export const Articles = () => {
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value as ArticleType | 'all')}
-          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-white dark:bg-primary-900 text-primary-900 dark:text-white"
+          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50"
         >
           <option value="all">{t('articles.allTypes')}</option>
           {articleTypes.slice(1).map(type => (

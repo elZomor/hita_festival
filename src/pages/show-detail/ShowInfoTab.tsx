@@ -110,9 +110,9 @@ const DetailListItem = ({
         const roleValue = getRoleValue(item);
         return (
             <li>
-                <div className="flex gap-2">
-                    <span className="text-theatre-gold-500 font-semibold italic">{item.text}</span>
-                    {roleValue && <span className="text-primary-500 dark:text-primary-200">{roleValue}</span>}
+                <div className="flex gap-2 text-sm md:text-base">
+                    <span className="text-theatre-gold-500 font-semibold">{item.text}</span>
+                    {roleValue && <span className="text-primary-700 dark:text-primary-200">{roleValue}</span>}
                 </div>
                 {item.children && item.children.length > 0 && (
                     <div className="mt-2 ms-4">
