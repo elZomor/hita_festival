@@ -13,16 +13,18 @@ type ShowInfoTabProps = {
     additionalSection?: ShowDetailSection;
 };
 
+type DetailVariant = 'text' | 'default' | 'cast';
+
 export const ShowInfoTab = ({descriptionSection, actorsSection, crewSection, additionalSection}: ShowInfoTabProps) => {
     const sections = [
-        {key: 'description', section: descriptionSection, fullText: true},
-        {key: 'actors', section: actorsSection, fullText: false},
-        {key: 'crew', section: crewSection, fullText: false},
-        {key: 'additional', section: additionalSection, fullText: true},
+        {key: 'description', section: descriptionSection, variant: 'text' as DetailVariant},
+        {key: 'actors', section: actorsSection, variant: 'cast' as DetailVariant},
+        {key: 'crew', section: crewSection, variant: 'default' as DetailVariant},
+        {key: 'additional', section: additionalSection, variant: 'text' as DetailVariant},
     ].filter(({section}) => section && section.items.length > 0) as {
         key: string;
         section: ShowDetailSection;
-        fullText: boolean;
+        variant: DetailVariant;
     }[];
 
     if (sections.length === 0) {
@@ -31,16 +33,16 @@ export const ShowInfoTab = ({descriptionSection, actorsSection, crewSection, add
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {sections.map(({key, section, fullText}) => (
+            {sections.map(({key, section, variant}) => (
                 <div key={key} className="h-full">
-                    <DetailSection section={section} fullText={fullText}/>
+                    <DetailSection section={section} variant={variant}/>
                 </div>
             ))}
         </div>
     );
 };
 
-const DetailSection = ({section, fullText}: {section?: ShowDetailSection; fullText: boolean}) => {
+const DetailSection = ({section, variant}: {section?: ShowDetailSection; variant: DetailVariant}) => {
     if (!section || !section.items.length) {
         return null;
     }
@@ -50,25 +52,36 @@ const DetailSection = ({section, fullText}: {section?: ShowDetailSection; fullTe
             <h3 className="text-xl font-semibold text-accent-600 dark:text-secondary-500 mb-4">
                 {section.title}
             </h3>
-            <DetailList items={section.items} fullText={fullText}/>
+            <DetailList items={section.items} variant={variant}/>
         </Card>
     );
 };
 
 const DetailList = ({
     items,
-    fullText,
+    variant,
     depth = 0,
 }: {
     items: ShowDetailEntry[];
-    fullText: boolean;
+    variant: DetailVariant;
     depth?: number;
 }) => {
     const listStyle = depth === 0 ? 'list-disc' : 'list-[circle]';
+    const margin = depth === 0 ? 'ms-5' : 'ms-6';
+
     return (
-        <ul className={`${listStyle} ${depth === 0 ? 'ms-5' : 'ms-6'} space-y-3 text-primary-800 dark:text-primary-100`}>
+        <ul
+            className={`${listStyle} ${margin} space-y-3 ${
+                variant === 'cast' && depth === 0 ? 'text-theatre-gold-500' : 'text-primary-800 dark:text-primary-100'
+            }`}
+        >
             {items.map((item, index) => (
-                <DetailListItem key={buildItemKey(item, index)} item={item} fullText={fullText} depth={depth}/>
+                <DetailListItem
+                    key={buildItemKey(item, index)}
+                    item={item}
+                    variant={variant}
+                    depth={depth}
+                />
             ))}
         </ul>
     );
@@ -76,30 +89,51 @@ const DetailList = ({
 
 const DetailListItem = ({
     item,
-    fullText,
+    variant,
     depth,
 }: {
     item: ShowDetailEntry;
-    fullText: boolean;
+    variant: DetailVariant;
     depth: number;
-}) => (
-    <li>
-        <div className="flex flex-wrap items-baseline gap-2">
-            <span
-                className={fullText ? 'text-primary-800 dark:text-primary-100' : 'font-semibold text-primary-500 dark:text-primary-200'}
-            >
-                {item.text}
-            </span>
-            {renderValue(item.value, {inline: true})}
-        </div>
+}) => {
+    if (variant === 'cast' && depth === 0) {
+        const actorValue = getCastValue(item);
+        return (
+            <li>
+                <div className="flex gap-2">
+                    <span className="text-theatre-gold-500 font-semibold">{item.text}</span>
+                    {actorValue && <span className="text-primary-200">{actorValue}</span>}
+                </div>
+                {item.children && item.children.length > 0 && (
+                    <div className="mt-2 ms-4">
+                        <DetailList items={item.children} variant="default" depth={depth + 1}/>
+                    </div>
+                )}
+            </li>
+        );
+    }
 
-        {item.children && item.children.length > 0 && (
-            <div className="mt-2">
-                <DetailList items={item.children} fullText={false} depth={depth + 1}/>
+    const isTextVariant = variant === 'text';
+
+    return (
+        <li>
+            <div className="flex flex-wrap items-baseline gap-2">
+                <span
+                    className={isTextVariant ? 'text-primary-800 dark:text-primary-100' : 'font-semibold text-primary-500 dark:text-primary-200'}
+                >
+                    {item.text}
+                </span>
+                {renderValue(item.value, {inline: true})}
             </div>
-        )}
-    </li>
-);
+
+            {item.children && item.children.length > 0 && (
+                <div className="mt-2">
+                    <DetailList items={item.children} variant="default" depth={depth + 1}/>
+                </div>
+            )}
+        </li>
+    );
+};
 
 const renderValue = (value?: string | string[], options: {inline?: boolean} = {}) => {
     if (!value) {
@@ -125,3 +159,27 @@ const renderValue = (value?: string | string[], options: {inline?: boolean} = {}
 
 const buildItemKey = (item: ShowDetailEntry, index: number) =>
     `${item.text}-${Array.isArray(item.value) ? item.value.join('-') : item.value ?? 'value'}-${index}`;
+
+const getCastValue = (item: ShowDetailEntry): string | undefined => {
+    if (Array.isArray(item.value)) {
+        const values = item.value.filter(Boolean);
+        if (values.length > 0) {
+            return values.join(', ');
+        }
+    }
+
+    if (typeof item.value === 'string' && item.value.trim()) {
+        return item.value;
+    }
+
+    if (item.children && item.children.length > 0) {
+        const childNames = item.children
+            .map(child => child.text?.trim())
+            .filter((name): name is string => Boolean(name));
+        if (childNames.length > 0) {
+            return childNames.join(', ');
+        }
+    }
+
+    return undefined;
+};
