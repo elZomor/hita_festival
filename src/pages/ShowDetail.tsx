@@ -147,23 +147,55 @@ export const ShowDetail = () => {
         {label: t('show.timeLabel'), value: formattedTime},
     ];
 
-    const buildDetailSection = (title: string, items?: ShowDetailSection['items'] | string): ShowDetailSection | undefined => {
-        if (!items || (Array.isArray(items) && items.length === 0)) {
+    type DetailSectionSource = ShowDetailSection['items'] | string | string[] | undefined;
+    const buildDetailSection = (title: string, source?: DetailSectionSource): ShowDetailSection | undefined => {
+        if (!source) {
             return undefined;
         }
 
-        if (typeof items === 'string') {
+        if (Array.isArray(source)) {
+            if (source.length === 0) {
+                return undefined;
+            }
+
+            if (isShowDetailEntryArray(source)) {
+                return {title, items: source};
+            }
+
+            const normalized = source
+                .map(value => (typeof value === 'string' ? value.trim() : ''))
+                .filter(Boolean);
+
+            if (normalized.length === 0) {
+                return undefined;
+            }
+
             return {
                 title,
-                items: [{text: items}],
+                items: normalized.map(text => ({text})),
+            };
+        }
+
+        if (typeof source === 'string') {
+            const trimmed = source.trim();
+            if (!trimmed) {
+                return undefined;
+            }
+
+            return {
+                title,
+                items: [{text: trimmed}],
             };
         }
 
         return {
             title,
-            items,
+            items: source,
         };
-    }
+    };
+
+    const isShowDetailEntryArray = (items: unknown[]): items is ShowDetailSection['items'] =>
+        items.every(item => typeof item === 'object' && item !== null && 'text' in item);
 
     const descriptionSection = buildDetailSection(t('show.sections.synopsis'), show.showDescription);
     const actorsSection = buildDetailSection(t('show.sections.actors'), show.cast);

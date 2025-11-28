@@ -34,7 +34,7 @@ type FestivalApiResponse = {
 type ShowDetailFieldApi = {
     text: string;
     value?: string | null;
-    children?: ShowDetailFieldApi[] | null;
+    children?: Array<ShowDetailFieldApi | string> | null;
 };
 
 type ShowApiResult = {
@@ -52,7 +52,7 @@ type ShowApiResult = {
     cast?: ShowDetailFieldApi[] | string | null;
     crew?: ShowDetailFieldApi[] | string | null;
     castWord?: string | null;
-    showDescription?: string | null;
+    showDescription?: string | string[] | null;
     date?: string | null;
     time?: string | null;
     festivalSlug?: number | null;
@@ -112,20 +112,71 @@ const mapStructuredItem = (item?: ShowDetailFieldApi | null): ShowDetailEntry | 
         return null;
     }
 
-    const children = item.children
-        ? item.children
-            .map(mapStructuredItem)
-            .filter((child): child is ShowDetailEntry => Boolean(child))
-        : undefined;
+    const children = mapChildren(item.children);
 
-    return {
+    const baseEntry: ShowDetailEntry = {
         text: item.text,
-        ...(item.value ? {value: item.value} : {}),
+        ...(item.value ? {value: mapItemValue(item.value)} : {}),
         ...(children && children.length > 0 ? {children} : {}),
     };
+
+    return baseEntry;
 };
 
-const mapStructuredField = (field?: ShowDetailFieldApi[] | string | null): ShowDetailEntry[] | undefined => {
+const mapItemValue = (value?: string | null): string | string[] | undefined => {
+    if (!value) {
+        return undefined;
+    }
+
+    try {
+        const parsed = JSON.parse(value);
+        if (typeof parsed === 'string') {
+            return parsed;
+        }
+        if (Array.isArray(parsed)) {
+            const strings = parsed.filter(item => typeof item === 'string');
+            return strings.length > 0 ? strings : undefined;
+        }
+    } catch {
+        // fallback to raw string
+    }
+
+    return value;
+};
+
+const mapChildren = (children?: Array<ShowDetailFieldApi | string> | null): ShowDetailEntry[] | undefined => {
+    if (!children) {
+        return undefined;
+    }
+
+    const mapped = children
+        .map(child => {
+            if (typeof child === 'string') {
+                return {text: child};
+            }
+            return mapStructuredItem(child);
+        })
+        .filter((child): child is ShowDetailEntry => Boolean(child));
+
+    return mapped.length > 0 ? mapped : undefined;
+};
+
+const mapStructuredField = (
+    field?: ShowDetailFieldApi[] | string | null,
+    fallbackLabel?: string,
+): ShowDetailEntry[] | undefined => {
+    if (typeof field === 'string') {
+        const mappedValue = mapItemValue(field);
+        if (mappedValue) {
+            return [
+                {
+                    text: fallbackLabel ?? '',
+                    value: mappedValue,
+                },
+            ];
+        }
+    }
+
     const rawItems = parseStructuredField(field);
     if (!rawItems) {
         return undefined;
@@ -136,6 +187,27 @@ const mapStructuredField = (field?: ShowDetailFieldApi[] | string | null): ShowD
         .filter((item): item is ShowDetailEntry => Boolean(item));
 
     return mapped.length > 0 ? mapped : undefined;
+};
+
+const parseDescriptionField = (description?: string | string[] | null): string | string[] => {
+    if (!description) {
+        return '';
+    }
+
+    if (Array.isArray(description)) {
+        return description;
+    }
+
+    try {
+        const parsed = JSON.parse(description);
+        if (typeof parsed === 'string' || Array.isArray(parsed)) {
+            return parsed;
+        }
+    } catch {
+        // ignore, fallback to raw string
+    }
+
+    return description;
 };
 
 const mapShowApiResultToShow = (show: ShowApiResult): Show => {
@@ -153,13 +225,13 @@ const mapShowApiResultToShow = (show: ShowApiResult): Show => {
         festivalName: show.festivalName ?? undefined,
         director: show.director ?? 'غير معروف',
         author: show.author ?? undefined,
-        cast: mapStructuredField(show.cast),
-        crew: mapStructuredField(show.crew),
-        notes: mapStructuredField(show.notes),
+        cast: mapStructuredField(show.cast, show.castWord ?? undefined),
+        crew: mapStructuredField(show.crew, undefined),
+        notes: mapStructuredField(show.notes, undefined),
         date: datePart,
         time: timePart,
         venueName: show.venueName ?? '',
-        showDescription: show.showDescription ?? '',
+        showDescription: parseDescriptionField(show.showDescription),
         poster: show.poster ?? undefined,
         bookingUrl: show.link ?? undefined,
         venueLocation: show.venueLocation,

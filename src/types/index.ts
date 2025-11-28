@@ -13,7 +13,7 @@ export type FestivalEdition = {
 
 export type ShowDetailEntry = {
   text: string;
-  value?: string;
+  value?: string | string[];
   children?: ShowDetailEntry[];
 };
 
@@ -34,7 +34,7 @@ export type Show = {
   time: string;
   venueName: string;
   venueLocation?: string | null;
-  showDescription: string;
+  showDescription: string | string[];
   poster?: string;
   bookingUrl?: string;
   link?: string;
