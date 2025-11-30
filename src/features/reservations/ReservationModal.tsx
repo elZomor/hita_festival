@@ -1,14 +1,14 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card } from '../../components/common';
-import { useReserveShow } from '../../api/hooks';
+import { ReserveShowResponse, useReserveShow } from '../../api/hooks';
 
 interface ReservationModalProps {
   showId: string;
   showName: string;
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (response: ReserveShowResponse) => void;
 }
 
 export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess }: ReservationModalProps) => {
@@ -60,13 +60,13 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
     if (hasErrors) return;
 
     try {
-      await reserveMutation.mutateAsync({
+      const response = await reserveMutation.mutateAsync({
         showId,
         name: name.trim(),
         email: email.trim(),
       });
       handleClose();
-      onSuccess?.();
+      onSuccess?.(response?.data);
     } catch {
       // handled via mutation error state
     }

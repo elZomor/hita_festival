@@ -171,6 +171,13 @@
     "submit": "Submit Reservation",
     "submitting": "Submitting...",
     "success": "Reservation submitted successfully!",
+    "successModal": {
+      "title": "Your reservation is done successfully!",
+      "nameLabel": "Name",
+      "reservationNumberLabel": "Reservation Number",
+      "instruction": "Please keep this as this is your ticket, take a screenshot.",
+      "close": "Close"
+    },
     "errors": {
       "fullNameRequired": "Please enter your full name.",
       "fullNameArabic": "Name must be written using Arabic characters only.",

@@ -2,9 +2,10 @@ import {Link, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useState, type ReactNode} from 'react';
 import {ArrowLeft} from 'lucide-react';
-import {LoadingState, Snackbar} from '../components/common';
-import {useArticles, useShow, useSymposia} from '../api/hooks';
+import {LoadingState} from '../components/common';
+import {useArticles, useShow, useSymposia, type ReserveShowResponse} from '../api/hooks';
 import {ReservationModal} from '../features/reservations/ReservationModal';
+import {ReservationSuccessModal} from '../features/reservations/ReservationSuccessModal';
 import {compareWithToday, getLongFormattedDate, translateTime} from '../utils/dateUtils';
 import {
     ShowHero,
@@ -23,7 +24,7 @@ export const ShowDetail = () => {
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
     const [isReservationOpen, setReservationOpen] = useState(false);
-    const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+    const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
     const [activeTab, setActiveTab] = useState<ShowTabKey>('info');
 
     const rawSlug = slug ?? '';
@@ -273,13 +274,13 @@ export const ShowDetail = () => {
                     showName={show.name}
                     isOpen={isReservationOpen}
                     onClose={() => setReservationOpen(false)}
-                    onSuccess={() => setSnackbarOpen(true)}
+                    onSuccess={response => setReservationSuccess(response)}
                 />
             )}
-            <Snackbar
-                message={t('reservation.success')}
-                isOpen={isSnackbarOpen}
-                onClose={() => setSnackbarOpen(false)}
+            <ReservationSuccessModal
+                isOpen={Boolean(reservationSuccess)}
+                reservation={reservationSuccess}
+                onClose={() => setReservationSuccess(null)}
             />
 
         </div>

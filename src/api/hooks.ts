@@ -325,8 +325,21 @@ type ReserveShowVariables = {
     email: string;
 };
 
+export type ReserveShowResponse = {
+    id: number;
+    name: string;
+    reservationNumber: number | string;
+    reservationStatus: string;
+};
+
+export type ReserveShowDataResponse = {
+    data: ReserveShowResponse;
+};
+
+
+
 export const useReserveShow = () =>
-    useApiMutation<unknown, ReserveShowVariables>({
+    useApiMutation<ReserveShowDataResponse, ReserveShowVariables>({
         path: ({showId}) => `/hita_arab_festival/shows/${showId}/reserve`,
         method: 'POST',
         bodySerializer: ({name, email}) =>

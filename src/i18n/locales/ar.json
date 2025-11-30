@@ -172,6 +172,13 @@
     "submit": "تأكيد الحجز",
     "submitting": "جاري الإرسال...",
     "success": "تم إرسال الحجز بنجاح!",
+    "successModal": {
+      "title": "تم إتمام حجزك بنجاح!",
+      "nameLabel": "الاسم",
+      "reservationNumberLabel": "رقم الحجز",
+      "instruction": "يرجى الاحتفاظ بهذه المعلومات فهي بمثابة تذكرتك، التقط لقطة شاشة.",
+      "close": "إغلاق"
+    },
     "errors": {
       "fullNameRequired": "يرجى إدخال اسمك الكامل.",
       "fullNameArabic": "يجب أن يكون الاسم بالحروف العربية فقط.",

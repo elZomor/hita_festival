@@ -1,11 +1,13 @@
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Calendar, Clock, MapPin, UserCog} from 'lucide-react';
-import {Badge, Button, Card, Snackbar} from '../../components/common';
+import {Badge, Button, Card} from '../../components/common';
 import {Show} from '../../types';
 import {compareWithToday, getLongFormattedDate, translateTime} from "../../utils/dateUtils.ts";
 import {Link} from "react-router-dom";
 import {ReservationModal} from "../reservations/ReservationModal";
+import {ReservationSuccessModal} from "../reservations/ReservationSuccessModal";
+import type {ReserveShowResponse} from '../../api/hooks';
 
 interface ShowCardProps {
     show: Show;
@@ -14,7 +16,7 @@ interface ShowCardProps {
 export const ShowCard = ({show}: ShowCardProps) => {
     const {t, i18n} = useTranslation();
     const [isReservationOpen, setReservationOpen] = useState(false);
-    const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+    const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
 
     const isOpenForReservation =    ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(show.isOpenForReservation)
     const isReservationComplete = show.isOpenForReservation === 'COMPLETE'
@@ -139,13 +141,13 @@ export const ShowCard = ({show}: ShowCardProps) => {
                     showName={show.name}
                     isOpen={isReservationOpen}
                     onClose={() => setReservationOpen(false)}
-                    onSuccess={() => setSnackbarOpen(true)}
+                    onSuccess={response => setReservationSuccess(response)}
                 />
             )}
-            <Snackbar
-                message={t('reservation.success')}
-                isOpen={isSnackbarOpen}
-                onClose={() => setSnackbarOpen(false)}
+            <ReservationSuccessModal
+                isOpen={Boolean(reservationSuccess)}
+                reservation={reservationSuccess}
+                onClose={() => setReservationSuccess(null)}
             />
         </>
     );
