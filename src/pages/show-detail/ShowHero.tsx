@@ -19,6 +19,8 @@ type ShowHeroProps = {
     isReservationComplete: boolean;
     reservationButtonVariant: ButtonVariant;
     reserveLabel: string;
+    waitingListLabel: string;
+    completeLabel: string;
     bookTicketLabel: string;
     onReservationClick: () => void;
 };
@@ -33,6 +35,8 @@ export const ShowHero = ({
     reservationButtonVariant,
     reserveLabel,
     bookTicketLabel,
+    waitingListLabel,
+    completeLabel,
     onReservationClick,
 }: ShowHeroProps) => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -99,7 +103,11 @@ export const ShowHero = ({
                         onClick={onReservationClick}
                         disabled={isReservationComplete}
                     >
-                        {reserveLabel}
+                        {reservationButtonVariant === 'reservation'
+                            ? reserveLabel
+                            : reservationButtonVariant === 'primary'
+                                ? waitingListLabel
+                                : completeLabel}
                     </Button>
                 )}
             </div>

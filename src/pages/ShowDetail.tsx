@@ -268,6 +268,8 @@ export const ShowDetail = () => {
                 isReservationComplete={isReservationComplete}
                 reservationButtonVariant={reservationButtonVariant}
                 reserveLabel={t('show.reserve')}
+                waitingListLabel={t('show.reserve_waiting_list')}
+                completeLabel={t('show.complete')}
                 bookTicketLabel={t('show.bookTicket')}
                 onReservationClick={() => setReservationOpen(true)}
             />
