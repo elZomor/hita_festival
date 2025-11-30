@@ -11,6 +11,13 @@ interface ReservationModalProps {
   onSuccess?: (response: ReserveShowResponse) => void;
 }
 
+const knownReservationErrorCodes = ['NO_SHOW', 'NO_SEATS', 'DUPLICATE_MAIL', 'UNKNOWN_ERROR'] as const;
+type ReservationErrorCode = (typeof knownReservationErrorCodes)[number];
+const isKnownReservationErrorCode = (value?: string): value is ReservationErrorCode => {
+  if (!value) return false;
+  return (knownReservationErrorCodes as readonly string[]).includes(value);
+};
+
 export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess }: ReservationModalProps) => {
   const { t } = useTranslation();
   const reserveMutation = useReserveShow();
@@ -66,11 +73,22 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
         email: email.trim(),
       });
       handleClose();
-      onSuccess?.(response?.data);
+      onSuccess?.(response);
     } catch {
       // handled via mutation error state
     }
   };
+
+  const getErrorMessage = () => {
+    if (!reserveMutation.error) return null;
+    const rawMessage = reserveMutation.error.message?.toString().toUpperCase();
+    if (isKnownReservationErrorCode(rawMessage)) {
+      return t(`reservation.errors.codes.${rawMessage}`);
+    }
+    return reserveMutation.error.message ?? t('reservation.errors.generic');
+  };
+
+  const reserveErrorMessage = getErrorMessage();
 
   return (
     <div
@@ -113,9 +131,9 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
               {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
             </div>
 
-            {reserveMutation.isError && (
+            {reserveMutation.isError && reserveErrorMessage && (
               <p className="text-sm text-accent-600">
-                {reserveMutation.error?.message ?? t('reservation.errors.generic')}
+                {reserveErrorMessage}
               </p>
             )}
 

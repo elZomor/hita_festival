@@ -186,7 +186,13 @@
       "fullNameMaxLength": "Name must be 100 characters or fewer.",
       "emailRequired": "Please enter your email address.",
       "email": "Please provide a valid email address.",
-      "generic": "Unable to complete the reservation. Please try again."
+      "generic": "Unable to complete the reservation. Please try again.",
+      "codes": {
+        "NO_SHOW": "Unable to find this show. Please refresh and try again.",
+        "NO_SEATS": "All seats for this show are taken.",
+        "DUPLICATE_MAIL": "This email already has a reservation for this show.",
+        "UNKNOWN_ERROR": "Internet Connection Error"
+      }
     }
   }
 }
