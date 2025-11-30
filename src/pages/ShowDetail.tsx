@@ -1,6 +1,7 @@
 import {Link, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useState, type ReactNode} from 'react';
+import {useQueryClient} from '@tanstack/react-query';
 import {ArrowLeft} from 'lucide-react';
 import {LoadingState} from '../components/common';
 import {useArticles, useShow, useSymposia, type ReserveShowResponse} from '../api/hooks';
@@ -26,6 +27,7 @@ export const ShowDetail = () => {
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
     const [activeTab, setActiveTab] = useState<ShowTabKey>('info');
+    const queryClient = useQueryClient();
 
     const rawSlug = slug ?? '';
     const showIdParam = rawSlug.startsWith('show-') ? rawSlug.slice(5) : rawSlug;
@@ -241,6 +243,12 @@ export const ShowDetail = () => {
         }
     };
 
+    const handleSuccessModalClose = () => {
+        setReservationSuccess(null);
+        queryClient.invalidateQueries({queryKey: ['show']});
+        queryClient.invalidateQueries({queryKey: ['shows']});
+    };
+
     return (
         <div className="space-y-8">
             <Link
@@ -280,7 +288,7 @@ export const ShowDetail = () => {
             <ReservationSuccessModal
                 isOpen={Boolean(reservationSuccess)}
                 reservation={reservationSuccess}
-                onClose={() => setReservationSuccess(null)}
+                onClose={handleSuccessModalClose}
             />
 
         </div>

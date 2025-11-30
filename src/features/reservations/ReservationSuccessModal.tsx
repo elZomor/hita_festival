@@ -10,7 +10,7 @@ type ReservationSuccessModalProps = {
 
 export const ReservationSuccessModal = ({isOpen, reservation, onClose}: ReservationSuccessModalProps) => {
     const {t} = useTranslation();
-    const viewData = false;
+    const viewData = true;
 
     if (!isOpen || !reservation) return null;
 

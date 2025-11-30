@@ -11,7 +11,7 @@ export const Button = ({ variant = 'primary', children, className = '', ...props
   const variants = {
     primary: 'bg-accent-500 hover:bg-accent-600 text-primary-50 dark:bg-accent-600 dark:hover:bg-accent-700 dark:text-primary-50 shadow-lg hover:shadow-xl',
     secondary: 'bg-secondary-500 hover:bg-secondary-400 text-primary-950 dark:text-primary-950 shadow-lg hover:shadow-xl',
-    reservation: 'bg-theatre-gold-500 hover:bg-theatre-gold-400 text-theatre-black-950 dark:text-theatre-black-950 shadow-lg hover:shadow-xl',
+    reservation: 'bg-green-500 hover:bg-green-400 text-theatre-black-950 dark:text-theatre-black-950 shadow-lg hover:shadow-xl',
     ghost: 'bg-transparent border-2 border-secondary-500 text-secondary-600 hover:bg-secondary-500 hover:text-primary-950 dark:border-secondary-400 dark:text-secondary-400 dark:hover:bg-secondary-400 dark:hover:text-theatre-black-950',
     disabled: 'bg-primary-200 text-primary-500 dark:bg-primary-700 dark:text-primary-300 cursor-not-allowed opacity-70 shadow-none',
   };

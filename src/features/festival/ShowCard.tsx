@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {useQueryClient} from '@tanstack/react-query';
 import {useTranslation} from 'react-i18next';
 import {Calendar, Clock, MapPin, UserCog} from 'lucide-react';
 import {Badge, Button, Card} from '../../components/common';
@@ -17,6 +18,13 @@ export const ShowCard = ({show}: ShowCardProps) => {
     const {t, i18n} = useTranslation();
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
+    const queryClient = useQueryClient();
+
+    const handleSuccessModalClose = () => {
+        setReservationSuccess(null);
+        queryClient.invalidateQueries({queryKey: ['show']});
+        queryClient.invalidateQueries({queryKey: ['shows']});
+    };
 
     const isOpenForReservation =    ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(show.isOpenForReservation)
     const isReservationComplete = show.isOpenForReservation === 'COMPLETE'
@@ -52,6 +60,17 @@ export const ShowCard = ({show}: ShowCardProps) => {
                 return 'primary'
             case 'COMPLETE':
                 return 'disabled'
+        }
+    }
+
+    const getReservationStatus = (status: string) => {
+        switch (status) {
+            case 'OPEN_FOR_RESERVATION':
+                return t('show.reserve')
+            case 'OPEN_FOR_WAITING_LIST':
+                return t('show.reserve_waiting_list')
+            case 'COMPLETE':
+                return t('show.complete')
         }
     }
 
@@ -129,7 +148,7 @@ export const ShowCard = ({show}: ShowCardProps) => {
                             onClick={() => setReservationOpen(true)}
                             disabled={isReservationComplete}
                         >
-                            {t('show.reserve')}
+                            {getReservationStatus(show.isOpenForReservation)}
                         </Button>
                     )}
                 </div>
@@ -147,7 +166,7 @@ export const ShowCard = ({show}: ShowCardProps) => {
             <ReservationSuccessModal
                 isOpen={Boolean(reservationSuccess)}
                 reservation={reservationSuccess}
-                onClose={() => setReservationSuccess(null)}
+                onClose={handleSuccessModalClose}
             />
         </>
     );

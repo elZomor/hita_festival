@@ -34,6 +34,8 @@
     "todayShow": "Today's Show"
   },
   "show": {
+    "reserve_waiting_list": "Reserve on Waiting List",
+    "complete": "Reservation Complete",
     "bookTicket": "Book Your Ticket",
     "director": "Director",
     "dramaturg": "Dramaturg",

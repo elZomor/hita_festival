@@ -14,10 +14,15 @@ export type ApiError = {
   details?: unknown;
 };
 
+type RefetchBehaviour = boolean | 'always';
+
 type QueryBehaviourOptions = {
   staleTime?: number;
   gcTime?: number;
   retry?: number;
+  refetchOnWindowFocus?: RefetchBehaviour;
+  refetchOnReconnect?: RefetchBehaviour;
+  refetchOnMount?: RefetchBehaviour;
 };
 
 export type ApiClientOptions = {
@@ -101,9 +106,12 @@ export class ReactQueryApiClient {
     this.baseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
     this.defaultHeaders = options.defaultHeaders ?? { 'Content-Type': 'application/json' };
     this.queryDefaults = options.defaultQueryOptions ?? {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 0,
       gcTime: 15 * 60 * 1000,
       retry: 1,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      refetchOnMount: true,
     };
   }
 
