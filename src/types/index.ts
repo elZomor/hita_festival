@@ -18,28 +18,33 @@ export type ShowDetailEntry = {
 };
 
 export type Show = {
-  isOpenForReservation: string;
   id: string;
   slug: string;
   name: string;
   editionYear: number;
+  festivalId?: string;
   festivalSlug?: string;
   festivalName?: string;
   director: string;
   author?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
   cast?: ShowDetailEntry[];
   crew?: ShowDetailEntry[];
   notes?: ShowDetailEntry[];
+  castWord?: string | null;
+  showDescription: string | string[];
   date: string;
   time: string;
   venueName: string;
   venueLocation?: string | null;
-  showDescription: string | string[];
   poster?: string;
   bookingUrl?: string;
-  link?: string;
-  reversedSeats: number;
-  castWord?: string | null
+  reservedSeats?: number;
+  allowedSeats?: number;
+  allowedWaiting?: number;
+  isOpenForReservation: string;
 };
 
 export type ArticleType = "review" | "symposium_coverage" | "analysis" | "general";
@@ -53,9 +58,11 @@ export type Article = {
   editionYear: number;
   type: ArticleType;
   showId?: string;
+  festivalId?: string;
   createdAt: string;
   contentAr: string;
   contentEn?: string;
+  attachments?: string[];
 };
 
 export type Symposium = {

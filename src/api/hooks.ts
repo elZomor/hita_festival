@@ -2,6 +2,7 @@ import {useMemo} from 'react';
 import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
 import type {
     Article,
+    ArticleType,
     CreativitySubmission,
     FestivalEdition,
     Show,
@@ -39,15 +40,16 @@ type ShowDetailFieldApi = {
 
 type ShowApiResult = {
     id: number;
-    name: string;
+    name?: string | null;
+    slug?: string | null;
     link?: string | null;
     poster?: string | null;
-    author?: string;
+    author?: string | null;
     director?: string | null;
-    reservedSeats: number;
+    reservedSeats?: number | null;
     status?: string | null;
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt?: string | null;
+    updatedAt?: string | null;
     notes?: ShowDetailFieldApi[] | string | null;
     cast?: ShowDetailFieldApi[] | string | null;
     crew?: ShowDetailFieldApi[] | string | null;
@@ -55,11 +57,14 @@ type ShowApiResult = {
     showDescription?: string | string[] | null;
     date?: string | null;
     time?: string | null;
-    festivalSlug?: number | null;
+    festivalSlug?: number | string | null;
     festivalName?: string | null;
+    festival?: number | null;
     venueName?: string | null;
     venueLocation?: string | null;
     isOpenForReservation: string;
+    allowedSeats?: number | null;
+    allowedWaiting?: number | null;
 };
 
 type PaginatedResponse<T> = {
@@ -69,6 +74,25 @@ type PaginatedResponse<T> = {
     next: string | null;
     previous: string | null;
     results: T[];
+};
+
+type ArticleApiResult = {
+    id: number;
+    slug?: string | null;
+    title?: string | null;
+    titleAr?: string | null;
+    titleEn?: string | null;
+    content?: string | null;
+    contentAr?: string | null;
+    contentEn?: string | null;
+    author?: string | null;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+    tag?: string | null;
+    show?: number | null;
+    festival?: number | null;
+    festivalYear?: number | null;
+    articleAttachmentsList?: string[] | null;
 };
 
 const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdition => {
@@ -213,18 +237,25 @@ const parseDescriptionField = (description?: string | string[] | null): string |
 const mapShowApiResultToShow = (show: ShowApiResult): Show => {
     const datePart = show.date ?? '';
     const timePart = show.time ?? '';
-    const editionYear = datePart ? new Date(datePart).getFullYear() : new Date().getFullYear();
+    const fallbackYearSource = show.createdAt ?? datePart;
+    const editionYear = fallbackYearSource
+        ? new Date(fallbackYearSource).getFullYear()
+        : new Date().getFullYear();
     const title = show.name ?? 'عرض مسرحي';
 
     return {
         id: String(show.id),
-        slug: `show-${show.id}`,
+        slug: show.slug ?? `show-${show.id}`,
         name: title,
         editionYear,
+        festivalId: show.festival ? String(show.festival) : undefined,
         festivalSlug: show.festivalSlug ? String(show.festivalSlug) : undefined,
         festivalName: show.festivalName ?? undefined,
         director: show.director ?? 'غير معروف',
         author: show.author ?? undefined,
+        status: show.status ?? undefined,
+        createdAt: show.createdAt ?? undefined,
+        updatedAt: show.updatedAt ?? undefined,
         cast: mapStructuredField(show.cast, show.castWord ?? undefined),
         crew: mapStructuredField(show.crew, undefined),
         notes: mapStructuredField(show.notes, undefined),
@@ -235,10 +266,65 @@ const mapShowApiResultToShow = (show: ShowApiResult): Show => {
         poster: show.poster ?? undefined,
         bookingUrl: show.link ?? undefined,
         venueLocation: show.venueLocation,
-        reversedSeats: show.reservedSeats,
-        isOpenForReservation: show.isOpenForReservation,
-        castWord: show.castWord
+        reservedSeats: show.reservedSeats ?? undefined,
+        allowedSeats: show.allowedSeats ?? undefined,
+        allowedWaiting: show.allowedWaiting ?? undefined,
+        isOpenForReservation: show.isOpenForReservation ?? 'CLOSED',
+        castWord: show.castWord && show.castWord.trim() !== '' ? show.castWord : undefined,
     };
+};
+
+const mapArticleTagToType = (tag?: string | null): ArticleType => {
+    if (!tag) {
+        return 'general';
+    }
+
+    switch (tag.toUpperCase()) {
+        case 'SHOW':
+            return 'review';
+        case 'SYMPOSIUM':
+            return 'symposium_coverage';
+        case 'ANALYSIS':
+            return 'analysis';
+        default:
+            return 'general';
+    }
+};
+
+const mapArticleApiResultToArticle = (article: ArticleApiResult): Article => {
+    const createdAt = article.createdAt ?? new Date().toISOString();
+    const editionYear =
+        article.festivalYear ??
+        (article.createdAt ? new Date(article.createdAt).getFullYear() : new Date().getFullYear());
+
+    const baseTitle = article.title ?? 'مقال نقدي';
+
+    return {
+        id: String(article.id),
+        slug: article.slug ?? `article-${article.id}`,
+        titleAr: article.titleAr ?? baseTitle,
+        titleEn: article.titleEn ?? baseTitle,
+        author: article.author ?? 'غير معروف',
+        editionYear,
+        type: mapArticleTagToType(article.tag),
+        ...(article.show ? {showId: String(article.show)} : {}),
+        ...(article.festival ? {festivalId: String(article.festival)} : {}),
+        createdAt,
+        contentAr: article.contentAr ?? article.content ?? '',
+        contentEn: article.contentEn ?? article.content ?? article.contentAr ?? undefined,
+        attachments: Array.isArray(article.articleAttachmentsList)
+            ? article.articleAttachmentsList.filter((path): path is string => typeof path === 'string' && path.trim() !== '')
+            : undefined,
+    };
+};
+
+const emptyArticleResponse: PaginatedResponse<ArticleApiResult> = {
+    count: 0,
+    totalPages: 0,
+    currentPage: 1,
+    next: null,
+    previous: null,
+    results: [],
 };
 
 export const useFestivalEditions = () =>
@@ -282,11 +368,19 @@ export const useShow = (showId?: string | number, options?: UseSingleEntityOptio
     });
 
 export const useArticles = () =>
-    useApiQuery<Article[]>({
+    useApiQuery<PaginatedResponse<ArticleApiResult>, Article[]>({
         queryKey: buildQueryKey('articles'),
-        path: '/api/articles.json',
-        useBaseUrl: false,
-        placeholderData: emptyArray,
+        path: '/hita_arab_festival/articles',
+        select: data => (data.results ?? []).map(mapArticleApiResultToArticle),
+        placeholderData: emptyArticleResponse,
+    });
+
+export const useArticle = (articleId?: string | number, options?: UseSingleEntityOptions) =>
+    useApiQuery<ArticleApiResult, Article>({
+        queryKey: buildQueryKey('article', articleId ?? 'detail'),
+        path: () => `/hita_arab_festival/articles/${articleId}`,
+        select: data => mapArticleApiResultToArticle(data),
+        enabled: Boolean(articleId) && (options?.enabled ?? true),
     });
 
 export const useSymposia = () =>
@@ -332,8 +426,14 @@ export type ReserveShowResponse = {
     reservationStatus: string;
 };
 
+export type ReserveShowResponseData = {
+    data: ReserveShowResponse;
+};
+
+
+
 export const useReserveShow = () =>
-    useApiMutation<ReserveShowResponse, ReserveShowVariables>({
+    useApiMutation<ReserveShowResponseData, ReserveShowVariables>({
         path: ({showId}) => `/hita_arab_festival/shows/${showId}/reserve`,
         method: 'POST',
         expectedStatus: 201,

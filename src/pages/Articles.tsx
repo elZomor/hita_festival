@@ -35,7 +35,7 @@ export const Articles = () => {
   const getShowTitle = (showId?: string) => {
     if (!showId) return null;
     const show = shows.find(s => s.id === showId);
-    return show ? (isRTL ? show.titleAr : show.titleEn) : null;
+    return show ? show.name : null;
   };
 
   if (isLoading || isLoadingShows) {
@@ -51,7 +51,7 @@ export const Articles = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full md:w-[70%] mx-auto">
       <div className="flex items-center gap-3">
         <FileText size={40} className="text-accent-600 dark:text-secondary-500" />
         <SectionHeader className="mb-0">{t('articles.title')}</SectionHeader>
@@ -83,10 +83,10 @@ export const Articles = () => {
         </select>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid gap-6 md:grid-cols-2">
         {filteredArticles.map(article => (
-          <Link key={article.id} to={`/articles/${article.slug}`}>
-            <Card className="transition-all hover:shadow-2xl">
+          <Link key={article.id} to={`/articles/${article.slug}`} className="block h-full">
+            <Card className="transition-all hover:shadow-2xl h-full">
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge variant="gold">

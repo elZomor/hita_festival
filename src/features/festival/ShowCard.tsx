@@ -57,9 +57,11 @@ export const ShowCard = ({show}: ShowCardProps) => {
             case 'OPEN_FOR_RESERVATION':
                 return 'reservation'
             case 'OPEN_FOR_WAITING_LIST':
-                return 'primary'
+                return 'waiting'
             case 'COMPLETE':
-                return 'disabled'
+                return 'complete'
+            default:
+                return 'secondary'
         }
     }
 

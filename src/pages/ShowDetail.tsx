@@ -79,9 +79,9 @@ export const ShowDetail = () => {
             case 'OPEN_FOR_RESERVATION':
                 return 'reservation';
             case 'OPEN_FOR_WAITING_LIST':
-                return 'primary';
+                return 'waiting';
             case 'COMPLETE':
-                return 'disabled';
+                return 'complete';
             default:
                 return 'secondary';
         }
@@ -102,6 +102,19 @@ export const ShowDetail = () => {
     const showStatusLabel = t(statusTranslationKey);
     const formattedDate = showDate ? getLongFormattedDate(i18n.language, showDate) : t('show.notAvailable');
     const formattedTime = show.time ? translateTime(show.time, i18n.language) : t('show.timeTBD');
+    const showStatusClassName = (() => {
+        if (!show.date) return 'text-accent-500';
+        const comparison = compareWithToday(new Date(show.date));
+        switch (comparison) {
+            case 'AFTER':
+                return 'text-secondary-600 dark:text-secondary-400';
+            case 'EQUALS':
+                return 'text-theatre-gold-500 dark:text-theatre-gold-400';
+            case 'BEFORE':
+            default:
+                return 'text-accent-600 dark:text-accent-400';
+        }
+    })();
     const festivalDisplayName = show.festivalName ?? (show.editionYear ? t('show.festivalFallback', {year: show.editionYear}) : undefined);
     const festivalRouteParam = show.festivalSlug ?? show.editionYear ?? (year ? Number(year) : undefined);
     const festivalLinkValue = festivalDisplayName && festivalRouteParam ? (
@@ -263,6 +276,7 @@ export const ShowDetail = () => {
                 show={show}
                 infoItems={infoItems}
                 showStatusLabel={showStatusLabel}
+                showStatusClassName={showStatusClassName}
                 isRTL={isRTL}
                 isReservationStatus={isReservationStatus}
                 isReservationComplete={isReservationComplete}

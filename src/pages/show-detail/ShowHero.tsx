@@ -8,12 +8,13 @@ type InfoItem = {
     value: ReactNode;
 };
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'reservation' | 'disabled';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'reservation' | 'waiting' | 'complete' | 'disabled';
 
 type ShowHeroProps = {
     show: Show;
     infoItems: InfoItem[];
     showStatusLabel: string;
+    showStatusClassName?: string;
     isRTL: boolean;
     isReservationStatus: boolean;
     isReservationComplete: boolean;
@@ -29,6 +30,7 @@ export const ShowHero = ({
     show,
     infoItems,
     showStatusLabel,
+    showStatusClassName = 'text-accent-500',
     isRTL,
     isReservationStatus,
     isReservationComplete,
@@ -58,7 +60,7 @@ export const ShowHero = ({
                 { show.castWord && (<h3 className="mb-2 text-primary-500 flex items-center gap-2 italic">
                     "{show.castWord}"
                 </h3>)}
-                <h3 className="text-xl font-bold mb-6 text-accent-500 flex items-center gap-2">
+                <h3 className={`text-xl font-bold mb-6 flex items-center gap-2 ${showStatusClassName}`}>
                     {showStatusLabel}
                 </h3>
             </div>
@@ -105,7 +107,7 @@ export const ShowHero = ({
                     >
                         {reservationButtonVariant === 'reservation'
                             ? reserveLabel
-                            : reservationButtonVariant === 'primary'
+                            : reservationButtonVariant === 'waiting'
                                 ? waitingListLabel
                                 : completeLabel}
                     </Button>
