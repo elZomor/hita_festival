@@ -73,8 +73,8 @@ const DetailList = ({
 
     if (hasSingleUnlabeledItem && variant !== 'role') {
         return (
-            <div className="text-primary-800 dark:text-primary-100">
-                {items[0].text}
+            <div>
+                {renderLinkedText(items[0], 'text-primary-800 dark:text-primary-100')}
             </div>
         );
     }
@@ -111,7 +111,7 @@ const DetailListItem = ({
         return (
             <li>
                 <div className="flex gap-2 text-sm md:text-base">
-                    <span className="text-theatre-gold-500 font-semibold">{item.text}</span>
+                    {renderLinkedText(item, 'text-theatre-gold-500 font-semibold')}
                     {roleValue && <span className="text-primary-700 dark:text-primary-200">{roleValue}</span>}
                 </div>
                 {item.children && item.children.length > 0 && (
@@ -124,16 +124,19 @@ const DetailListItem = ({
     }
 
     const isTextVariant = variant === 'text';
+    const hasValue = item.value && (
+        (typeof item.value === 'string' && item.value.trim()) ||
+        (Array.isArray(item.value) && item.value.length > 0)
+    );
 
     return (
         <li>
             <div className="flex flex-wrap items-baseline gap-2">
-                <span
-                    className={isTextVariant ? 'text-primary-800 dark:text-primary-100' : ' text-primary-500 dark:text-primary-200'}
-                >
-                    {item.text}
-                </span>
-                {renderValue(item.value, {inline: true})}
+                {renderLinkedText(
+                    item,
+                    isTextVariant ? 'text-primary-800 dark:text-primary-100' : 'text-primary-500 dark:text-primary-200'
+                )}
+                {hasValue && renderValue(item.value, {inline: true})}
             </div>
 
             {item.children && item.children.length > 0 && (
@@ -167,8 +170,30 @@ const renderValue = (value?: string | string[], options: {inline?: boolean} = {}
     return <p className="mt-1">{value}</p>;
 };
 
+const renderLinkedText = (item: ShowDetailEntry, className?: string) => {
+    const link = item.link?.trim();
+    const linkClasses =
+        'text-secondary-600 dark:text-secondary-400 underline hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors';
+
+    if (link) {
+        const combinedClasses = `${className ? `${className} ` : ''}${linkClasses}`;
+        return (
+            <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={combinedClasses}
+            >
+                {item.text}
+            </a>
+        );
+    }
+
+    return <span className={className}>{item.text}</span>;
+};
+
 const buildItemKey = (item: ShowDetailEntry, index: number) =>
-    `${item.text}-${Array.isArray(item.value) ? item.value.join('-') : item.value ?? 'value'}-${index}`;
+    `${item.text}-${Array.isArray(item.value) ? item.value.join('-') : item.value ?? 'value'}-${item.link ?? 'nolink'}-${index}`;
 
 const getRoleValue = (item: ShowDetailEntry): string | undefined => {
     if (Array.isArray(item.value)) {

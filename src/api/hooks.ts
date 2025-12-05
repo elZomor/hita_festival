@@ -32,6 +32,7 @@ type ShowDetailFieldApi = {
     text: string;
     value?: string | null;
     children?: Array<ShowDetailFieldApi | string> | null;
+    link?: string | null;
 };
 
 type ShowApiResult = {
@@ -184,6 +185,7 @@ const mapStructuredItem = (item?: ShowDetailFieldApi | null): ShowDetailEntry | 
         text: item.text,
         ...(item.value ? {value: mapItemValue(item.value)} : {}),
         ...(children && children.length > 0 ? {children} : {}),
+        ...(item.link ? {link: item.link} : {}),
     };
 
     return baseEntry;

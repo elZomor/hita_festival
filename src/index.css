@@ -11,6 +11,20 @@
     @apply font-sans antialiased;
   }
 
+  a {
+    @apply transition-colors duration-300;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: theme('colors.accent.600') !important;
+  }
+
+  .dark a:hover,
+  .dark a:focus-visible {
+    color: theme('colors.accent.400') !important;
+  }
+
   [dir="rtl"] {
     font-family: 'Noto Naskh Arabic', Georgia, serif;
   }

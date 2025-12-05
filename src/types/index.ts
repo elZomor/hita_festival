@@ -21,6 +21,7 @@ export type ShowDetailEntry = {
   text: string;
   value?: string | string[];
   children?: ShowDetailEntry[];
+  link?: string;
 };
 
 export type Show = {
