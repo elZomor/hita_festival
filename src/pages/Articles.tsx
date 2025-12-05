@@ -5,6 +5,7 @@ import { FileText } from 'lucide-react';
 import { Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useArticles, useShows } from '../api/hooks';
 import { ArticleType } from '../types';
+import { buildMediaUrl } from '../utils/mediaUtils';
 
 type ArticleListingPageProps = {
   contentType?: 'ARTICLE' | 'SYMPOSIA';
@@ -35,6 +36,9 @@ export const ArticleListingPage = ({
 
   const uniqueYears = ['all', ...new Set(articles.map(a => a.editionYear))];
   const articleTypes: (ArticleType | 'all')[] = ['all', 'review', 'symposium_coverage', 'analysis', 'general'];
+
+  const getPrimaryAttachment = (attachments?: string[]) =>
+    attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
 
   const filteredArticles = articles.filter(article => {
     if (yearFilter !== 'all' && article.editionYear !== Number(yearFilter)) return false;
@@ -96,49 +100,67 @@ export const ArticleListingPage = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredArticles.map(article => (
-          <Link key={article.id} to={`/${detailPath}/${article.slug}`} className="block h-full">
-            <Card className="transition-all hover:shadow-2xl h-full">
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge variant="gold">
-                    {t(`${translationNamespace}.types.${article.type}`)}
-                  </Badge>
-                  <Badge variant="default">
-                    {article.editionYear}
-                  </Badge>
-                  {article.showId && (
-                    <Badge variant="red">
-                      {getShowTitle(article.showId)}
-                    </Badge>
+        {filteredArticles.map(article => {
+          const attachmentUrl = getPrimaryAttachment(article.attachments);
+          return (
+            <Link key={article.id} to={`/${detailPath}/${article.slug}`} className="block h-full">
+              <Card className="transition-all hover:shadow-2xl h-full">
+                <div className="flex flex-col md:flex-row gap-4 h-full">
+                  {attachmentUrl && (
+                    <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                      <img
+                        src={attachmentUrl}
+                        alt={isRTL ? article.titleAr : article.titleEn}
+                        className="w-full h-48 object-contain"
+                      />
+                    </div>
                   )}
+                  <div className="flex-1 space-y-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Badge variant="gold">
+                        {t(`${translationNamespace}.types.${article.type}`)}
+                      </Badge>
+                      <Badge variant="default">
+                        {article.editionYear}
+                      </Badge>
+                      {article.showId && (
+                        <Badge variant="red">
+                          {getShowTitle(article.showId)}
+                        </Badge>
+                      )}
+                    </div>
+
+                    <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
+                      {isRTL ? article.titleAr : article.titleEn}
+                    </h2>
+
+                    <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
+                      <span>
+                        {t(`${translationNamespace}.author`)}: <span className="font-medium">{article.author}</span>
+                      </span>
+                      <span>•</span>
+                      <span>
+                        {new Date(article.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </span>
+                    </p>
+
+                    <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
+                      {isRTL ? article.contentAr.substring(0, 250) : article.contentEn?.substring(0, 250)}...
+                    </p>
+
+                    <p className="text-secondary-500 hover:text-secondary-400 font-medium">
+                      {t(`${translationNamespace}.readMore`)} →
+                    </p>
+                  </div>
                 </div>
-
-                <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
-                  {isRTL ? article.titleAr : article.titleEn}
-                </h2>
-
-                <p className="text-primary-600 dark:text-primary-400">
-                  {t(`${translationNamespace}.author`)}: <span className="font-medium">{article.author}</span>
-                  <span className="mx-2">•</span>
-                  {new Date(article.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </p>
-
-                <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
-                  {isRTL ? article.contentAr.substring(0, 250) : article.contentEn?.substring(0, 250)}...
-                </p>
-
-                <p className="text-secondary-500 hover:text-secondary-400 font-medium">
-                  {t(`${translationNamespace}.readMore`)} →
-                </p>
-              </div>
-            </Card>
-          </Link>
-        ))}
+              </Card>
+            </Link>
+          );
+        })}
       </div>
 
       {filteredArticles.length === 0 && (

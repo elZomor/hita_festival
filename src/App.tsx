@@ -13,6 +13,8 @@ import {
   ArticleDetail,
   Symposia,
   SymposiumDetail,
+  Creativity,
+  CreativityDetail,
 } from './pages';
 import './i18n';
 
@@ -33,7 +35,8 @@ function App() {
               <Route path="/articles/:slug" element={<ArticleDetail />} />
               <Route path="/symposia" element={<Symposia />} />
               <Route path="/symposia/:slug" element={<SymposiumDetail />} />
-              <Route path="/creativity" element={<ComingSoon />} />
+              <Route path="/creativity" element={<Creativity />} />
+              <Route path="/creativity/:slug" element={<CreativityDetail />} />
               <Route path="/about" element={<About />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
             </Routes>

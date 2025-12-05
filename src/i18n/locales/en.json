@@ -147,7 +147,18 @@
       "cancel": "Cancel",
       "success": "Thank you for your submission! Your work will be reviewed soon."
     },
-    "by": "By"
+    "by": "By",
+    "types": {
+      "story": "Short Story",
+      "essay": "Critical Essay",
+      "poem": "Poem",
+      "other": "Other"
+    },
+    "author": "Author",
+    "relatedShow": "Related Show",
+    "relatedFestival": "Related Festival",
+    "relatedArticles": "Related Creativity",
+    "readMore": "Read More"
   },
   "about": {
     "title": "About the Festival",

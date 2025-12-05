@@ -310,6 +310,51 @@ const mapArticleApiResultToArticle = (article: ArticleApiResult): Article => {
     };
 };
 
+const mapCreativityTagToType = (tag?: string | null): CreativitySubmission['type'] => {
+    if (!tag) {
+        return 'other';
+    }
+
+    switch (tag.toUpperCase()) {
+        case 'STORY':
+            return 'story';
+        case 'ESSAY':
+            return 'essay';
+        case 'POEM':
+            return 'poem';
+        default:
+            return 'other';
+    }
+};
+
+const mapArticleApiResultToCreativity = (article: ArticleApiResult): CreativitySubmission => {
+    const baseTitleAr = article.titleAr ?? article.title ?? 'عمل إبداعي';
+    const baseTitleEn = article.titleEn ?? article.title ?? 'Creative Work';
+    const attachments = Array.isArray(article.articleAttachmentsList)
+        ? article.articleAttachmentsList.filter((path): path is string => typeof path === 'string' && path.trim() !== '')
+        : undefined;
+
+    return {
+        id: String(article.id),
+        slug: article.slug ?? `creativity-${article.id}`,
+        title: baseTitleAr,
+        titleAr: baseTitleAr,
+        titleEn: baseTitleEn,
+        author: article.author ?? 'غير معروف',
+        type: mapCreativityTagToType(article.tag),
+        editionYear:
+            article.festivalYear ??
+            (article.createdAt ? new Date(article.createdAt).getFullYear() : undefined),
+        ...(article.show ? {showId: String(article.show)} : {}),
+        ...(article.festival ? {festivalId: String(article.festival)} : {}),
+        createdAt: article.createdAt ?? new Date().toISOString(),
+        content: article.contentAr ?? article.contentEn ?? article.content ?? '',
+        contentAr: article.contentAr ?? article.content ?? '',
+        contentEn: article.contentEn ?? article.content ?? undefined,
+        attachments,
+    };
+};
+
 const emptyArticleResponse: PaginatedResponse<ArticleApiResult> = {
     count: 0,
     totalPages: 0,
@@ -359,7 +404,7 @@ export const useShow = (showId?: string | number, options?: UseSingleEntityOptio
         enabled: Boolean(showId) && (options?.enabled ?? true),
     });
 
-type ArticleQueryType = 'ARTICLE' | 'SYMPOSIA';
+type ArticleQueryType = 'ARTICLE' | 'SYMPOSIA' | 'CREATIVITY';
 
 const buildArticlesPath = (contentType: ArticleQueryType) =>
     withQueryParams('/hita_arab_festival/articles', {type: contentType});
@@ -383,11 +428,11 @@ export const useArticle = (articleId?: string | number, options?: UseSingleEntit
 export const useSymposia = () => useArticles('SYMPOSIA');
 
 export const useCreativityEntries = () =>
-    useApiQuery<CreativitySubmission[]>({
+    useApiQuery<PaginatedResponse<ArticleApiResult>, CreativitySubmission[]>({
         queryKey: buildQueryKey('creativity'),
-        path: '/api/creativity.json',
-        useBaseUrl: false,
-        placeholderData: emptyArray,
+        path: () => buildArticlesPath('CREATIVITY'),
+        select: data => (data.results ?? []).map(mapArticleApiResultToCreativity),
+        placeholderData: emptyArticleResponse,
     });
 
 export const useLatestArticles = (limit = 3) => {

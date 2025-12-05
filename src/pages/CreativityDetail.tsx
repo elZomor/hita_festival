@@ -2,44 +2,30 @@ import {Link, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {ArrowLeft, Calendar, User} from 'lucide-react';
 import {Badge, Card, LoadingState} from '../components/common';
-import {useArticles, useFestivalEditions, useShows} from '../api/hooks';
+import {useCreativityEntries, useFestivalEditions, useShows} from '../api/hooks';
 import {buildMediaUrl} from '../utils/mediaUtils';
 
-type ArticleDetailPageProps = {
-    contentType?: 'ARTICLE' | 'SYMPOSIA';
-    translationNamespace?: 'articles' | 'symposia';
-    listPath?: string;
-    detailPath?: 'articles' | 'symposia';
-};
-
-export const ArticleDetailPage = ({
-    contentType = 'ARTICLE',
-    translationNamespace = 'articles',
-    listPath = '/articles',
-    detailPath = 'articles',
-}: ArticleDetailPageProps) => {
+export const CreativityDetail = () => {
     const {slug} = useParams<{ slug: string }>();
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
 
-    const articlesQuery = useArticles(contentType);
+    const creativityQuery = useCreativityEntries();
     const showsQuery = useShows();
     const festivalsQuery = useFestivalEditions();
 
-    const isLoading = articlesQuery.isLoading || showsQuery.isLoading || festivalsQuery.isLoading;
-    const hasError = articlesQuery.isError || showsQuery.isError || festivalsQuery.isError;
+    const isLoading = creativityQuery.isLoading || showsQuery.isLoading || festivalsQuery.isLoading;
+    const hasError = creativityQuery.isError || showsQuery.isError || festivalsQuery.isError;
 
-    const article = articlesQuery.data?.find(a => a.slug === slug);
-    const relatedShow = article?.showId ? showsQuery.data?.find(s => s.id === article.showId) : null;
-    const relatedArticles =
-        articlesQuery.data
-            ?.filter(
-                a => a.id !== article?.id && (a.showId === article?.showId || a.editionYear === article?.editionYear),
-            )
+    const entry = creativityQuery.data?.find(item => item.slug === slug || item.id === slug);
+    const relatedShow = entry?.showId ? showsQuery.data?.find(show => show.id === entry.showId) : null;
+    const relatedEntries =
+        creativityQuery.data
+            ?.filter(item => item.id !== entry?.id && item.editionYear === entry?.editionYear)
             .slice(0, 3) ?? [];
-    const relatedFestival = article?.festivalId
+    const relatedFestival = entry?.festivalId
         ? festivalsQuery.data?.find(
-              festival => festival.slug === article.festivalId || String(festival.year) === article.festivalId,
+              festival => festival.slug === entry.festivalId || String(festival.year) === entry.festivalId,
           )
         : null;
 
@@ -57,7 +43,7 @@ export const ArticleDetailPage = ({
         );
     }
 
-    if (!article) {
+    if (!entry) {
         return (
             <div className="text-center py-16">
                 <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-50">
@@ -67,21 +53,20 @@ export const ArticleDetailPage = ({
         );
     }
 
-    const attachmentUrls = (article.attachments ?? []).map(buildMediaUrl).filter(Boolean);
+    const attachmentUrls = (entry.attachments ?? []).map(buildMediaUrl).filter(Boolean);
     const [primaryAttachment, ...extraAttachments] = attachmentUrls;
-    const localizedTitle = isRTL ? article.titleAr : article.titleEn;
-
-    const rawContent = (isRTL ? article.contentAr : article.contentEn || article.contentAr) ?? '';
-    const contentSections = rawContent
+    const localizedTitle = isRTL ? entry.titleAr ?? entry.title : entry.titleEn ?? entry.title;
+    const localizedContent = (isRTL ? entry.contentAr ?? entry.content : entry.contentEn ?? entry.content) ?? '';
+    const contentSections = localizedContent
         .split(/\r?\n\s*\r?\n/)
         .map(section => section.trim())
         .filter(Boolean);
-    const sectionsToRender = contentSections.length > 0 ? contentSections : [rawContent];
+    const sectionsToRender = contentSections.length > 0 ? contentSections : [localizedContent];
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <Link
-                to={listPath}
+                to="/creativity"
                 className="inline-flex items-center gap-2 text-secondary-500 hover:text-secondary-400 transition-colors"
             >
                 <ArrowLeft size={20} className={isRTL ? 'rotate-180' : ''}/>
@@ -95,7 +80,7 @@ export const ArticleDetailPage = ({
                             <Card className="border border-secondary-300 h-full">
                                 <div className="space-y-2">
                                     <p className="text-xs uppercase tracking-wide text-secondary-500">
-                                        {t(`${translationNamespace}.relatedShow`)}
+                                        {t('creativity.relatedShow')}
                                     </p>
                                     <Link to={`/festival/${relatedShow.editionYear}/shows/${relatedShow.slug}`}>
                                         <h3 className="text-lg font-semibold text-primary-900 dark:text-primary-50 hover:underline">
@@ -110,7 +95,7 @@ export const ArticleDetailPage = ({
                             <Card className="border border-primary-300 h-full">
                                 <div className="space-y-2">
                                     <p className="text-xs uppercase tracking-wide text-secondary-500">
-                                        {t(`${translationNamespace}.relatedFestival`)}
+                                        {t('creativity.relatedFestival')}
                                     </p>
                                     <Link to={`/festival/${relatedFestival.year}`}>
                                         <h3 className="text-lg font-semibold text-primary-900 dark:text-primary-50 hover:underline">
@@ -118,36 +103,33 @@ export const ArticleDetailPage = ({
                                         </h3>
                                     </Link>
                                     <p className="text-sm text-primary-700 dark:text-primary-200">
-                                        {new Date(relatedFestival.startDate).toLocaleDateString(
-                                            isRTL ? 'ar-EG' : 'en-US',
-                                            {
-                                                month: 'long',
-                                                day: 'numeric',
-                                            },
-                                        )}{' '}
+                                        {new Date(relatedFestival.startDate).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                            month: 'long',
+                                            day: 'numeric',
+                                        })}{' '}
                                         -{' '}
-                                        {new Date(relatedFestival.endDate).toLocaleDateString(
-                                            isRTL ? 'ar-EG' : 'en-US',
-                                            {
-                                                month: 'long',
-                                                day: 'numeric',
-                                                year: 'numeric',
-                                            },
-                                        )}
+                                        {new Date(relatedFestival.endDate).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                            month: 'long',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                        })}
                                     </p>
                                 </div>
                             </Card>
                         )}
                     </div>
                 )}
+
                 <div className="space-y-4">
                     <div className="flex flex-wrap items-center gap-3">
                         <Badge variant="gold">
-                            {t(`${translationNamespace}.types.${article.type}`)}
+                            {t(`creativity.types.${entry.type}`)}
                         </Badge>
-                        <Badge variant="default">
-                            {article.editionYear}
-                        </Badge>
+                        {entry.editionYear && (
+                            <Badge variant="default">
+                                {entry.editionYear}
+                            </Badge>
+                        )}
                     </div>
 
                     <h1 className="text-3xl md:text-5xl font-bold text-accent-600 dark:text-secondary-500 leading-tight">
@@ -157,13 +139,13 @@ export const ArticleDetailPage = ({
                     <div className="flex flex-wrap items-center gap-4 text-primary-600 dark:text-primary-400">
                         <div className="flex items-center gap-2">
                             <User size={18}/>
-                            <span className="font-medium">{article.author}</span>
+                            <span className="font-medium">{entry.author}</span>
                         </div>
                         <span>•</span>
                         <div className="flex items-center gap-2">
                             <Calendar size={18}/>
                             <span>
-                                {new Date(article.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                {new Date(entry.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric',
@@ -218,34 +200,35 @@ export const ArticleDetailPage = ({
                 )}
             </article>
 
-            {relatedArticles.length > 0 && (
+            {relatedEntries.length > 0 && (
                 <div className="border-t border-primary-300 dark:border-primary-700 pt-8">
                     <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-6">
-                        {t(`${translationNamespace}.relatedArticles`)}
+                        {t('creativity.relatedArticles')}
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {relatedArticles.map(relatedArticle => (
-                            <Link key={relatedArticle.id} to={`/${detailPath}/${relatedArticle.slug}`}>
-                                <Card>
-                                    <div className="space-y-3">
-                                        <Badge variant="gold">
-                                            {t(`${translationNamespace}.types.${relatedArticle.type}`)}
-                                        </Badge>
-                                        <h3 className="text-lg font-bold text-primary-900 dark:text-primary-50 line-clamp-2">
-                                            {isRTL ? relatedArticle.titleAr : relatedArticle.titleEn}
-                                        </h3>
-                                        <p className="text-sm text-primary-600 dark:text-primary-400">
-                                            {relatedArticle.author}
-                                        </p>
-                                    </div>
-                                </Card>
-                            </Link>
-                        ))}
+                        {relatedEntries.map(item => {
+                            const relatedTitle = isRTL ? item.titleAr ?? item.title : item.titleEn ?? item.title;
+                            return (
+                                <Link key={item.id} to={`/creativity/${item.slug}`}>
+                                    <Card>
+                                        <div className="space-y-3">
+                                            <Badge variant="gold">
+                                                {t(`creativity.types.${item.type}`)}
+                                            </Badge>
+                                            <h3 className="text-lg font-bold text-primary-900 dark:text-primary-50 line-clamp-2">
+                                                {relatedTitle}
+                                            </h3>
+                                            <p className="text-sm text-primary-600 dark:text-primary-400">
+                                                {item.author}
+                                            </p>
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             )}
         </div>
     );
 };
-
-export const ArticleDetail = () => <ArticleDetailPage/>;

@@ -67,12 +67,20 @@ export type Article = {
 
 export type CreativitySubmission = {
   id: string;
+  slug: string;
   title: string;
+  titleAr?: string;
+  titleEn?: string;
   author: string;
   type: "story" | "essay" | "poem" | "other";
   editionYear?: number;
+  showId?: string;
+  festivalId?: string;
   createdAt: string;
   content: string;
+  contentAr?: string;
+  contentEn?: string;
+  attachments?: string[];
 };
 
 export type Language = 'ar' | 'en';

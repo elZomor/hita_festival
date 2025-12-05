@@ -12,6 +12,7 @@ import {
     useSymposia,
 } from '../api/hooks';
 import {formatLocalizedNumber, localizeDigitsInString} from '../utils/numberUtils';
+import {buildMediaUrl} from '../utils/mediaUtils';
 
 type Tab = 'shows' | 'articles' | 'symposia' | 'creativity';
 
@@ -47,6 +48,8 @@ export const FestivalEdition = () => {
     const articles = (articlesQuery.data ?? []).filter(a => a.editionYear === editionYear);
     const symposia = (symposiaQuery.data ?? []).filter(s => s.editionYear === editionYear);
     const creativity = (creativityQuery.data ?? []).filter(c => c.editionYear === editionYear);
+    const getAttachmentUrl = (attachments?: string[]) =>
+        attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
 
     if (isLoading) {
         return <LoadingState/>;
@@ -171,23 +174,37 @@ export const FestivalEdition = () => {
             {activeTab === 'articles' && (
                 <div className="space-y-6 w-full md:w-[85%] mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {articles.map(article => (
-                            <Link key={article.id} to={`/articles/${article.slug}`}>
-                                <Card>
-                                    <div className="space-y-3">
-                                        <Badge variant="gold">
-                                            {t(`articles.types.${article.type}`)}
-                                        </Badge>
-                                        <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
-                                            {isRTL ? article.titleAr : article.titleEn}
-                                        </h3>
-                                        <p className="text-sm text-primary-600 dark:text-primary-400">
-                                            {t('articles.author')}: {article.author}
-                                        </p>
-                                    </div>
-                                </Card>
-                            </Link>
-                        ))}
+                        {articles.map(article => {
+                            const attachmentUrl = getAttachmentUrl(article.attachments);
+                            return (
+                                <Link key={article.id} to={`/articles/${article.slug}`}>
+                                    <Card>
+                                        <div className="flex flex-col md:flex-row gap-4">
+                                            {attachmentUrl && (
+                                                <div className="w-full md:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                    <img
+                                                        src={attachmentUrl}
+                                                        alt={isRTL ? article.titleAr : article.titleEn}
+                                                        className="w-full h-40 object-contain"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex-1 space-y-3">
+                                                <Badge variant="gold">
+                                                    {t(`articles.types.${article.type}`)}
+                                                </Badge>
+                                                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
+                                                    {isRTL ? article.titleAr : article.titleEn}
+                                                </h3>
+                                                <p className="text-sm text-primary-600 dark:text-primary-400">
+                                                    {t('articles.author')}: {article.author}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             )}
@@ -195,23 +212,37 @@ export const FestivalEdition = () => {
             {activeTab === 'symposia' && (
                 <div className="space-y-6 w-full md:w-[85%] mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {symposia.map(symposium => (
-                            <Link key={symposium.id} to={`/symposia/${symposium.slug}`}>
-                                <Card>
-                                    <div className="space-y-3">
-                                        <Badge variant="gold">
-                                            {t(`symposia.types.${symposium.type}`)}
-                                        </Badge>
-                                        <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
-                                            {isRTL ? symposium.titleAr : symposium.titleEn}
-                                        </h3>
-                                        <p className="text-sm text-primary-600 dark:text-primary-400">
-                                            {t('symposia.author')}: {symposium.author}
-                                        </p>
-                                    </div>
-                                </Card>
-                            </Link>
-                        ))}
+                        {symposia.map(symposium => {
+                            const attachmentUrl = getAttachmentUrl(symposium.attachments);
+                            return (
+                                <Link key={symposium.id} to={`/symposia/${symposium.slug}`}>
+                                    <Card>
+                                        <div className="flex flex-col md:flex-row gap-4">
+                                            {attachmentUrl && (
+                                                <div className="w-full md:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                    <img
+                                                        src={attachmentUrl}
+                                                        alt={isRTL ? symposium.titleAr : symposium.titleEn}
+                                                        className="w-full h-40 object-contain"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex-1 space-y-3">
+                                                <Badge variant="gold">
+                                                    {t(`symposia.types.${symposium.type}`)}
+                                                </Badge>
+                                                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
+                                                    {isRTL ? symposium.titleAr : symposium.titleEn}
+                                                </h3>
+                                                <p className="text-sm text-primary-600 dark:text-primary-400">
+                                                    {t('symposia.author')}: {symposium.author}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {symposia.length === 0 && (
@@ -223,25 +254,47 @@ export const FestivalEdition = () => {
             )}
 
             {activeTab === 'creativity' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {creativity.map(item => (
-                        <Card key={item.id}>
-                            <div className="space-y-3">
-                                <Badge variant="gold">
-                                    {t(`creativity.submitForm.types.${item.type}`)}
-                                </Badge>
-                                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
-                                    {item.title}
-                                </h3>
-                                <p className="text-sm text-primary-600 dark:text-primary-400">
-                                    {t('creativity.by')} {item.author}
-                                </p>
-                                <p className="text-primary-700 dark:text-primary-300 line-clamp-3">
-                                    {item.content}
-                                </p>
-                            </div>
-                        </Card>
-                    ))}
+                <div className="space-y-6 w-full md:w-[85%] mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {creativity.map(item => {
+                            const localizedTitle = isRTL ? item.titleAr ?? item.title : item.titleEn ?? item.title;
+                            const preview = isRTL ? item.contentAr ?? item.content : item.contentEn ?? item.content;
+
+                            return (
+                                <Link key={item.id} to={`/creativity/${item.slug}`}>
+                                    <Card>
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <Badge variant="gold">
+                                                    {t(`creativity.types.${item.type}`)}
+                                                </Badge>
+                                                {item.editionYear && (
+                                                    <Badge variant="default">
+                                                        {item.editionYear}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50 line-clamp-2">
+                                                {localizedTitle}
+                                            </h3>
+                                            <p className="text-sm text-primary-600 dark:text-primary-400">
+                                                {t('creativity.by')} {item.author}
+                                            </p>
+                                            <p className="text-primary-700 dark:text-primary-300 line-clamp-3">
+                                                {preview.substring(0, 200)}...
+                                            </p>
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })}
+                    </div>
+
+                    {creativity.length === 0 && (
+                        <div className="text-center py-16">
+                            <p className="text-primary-600 dark:text-primary-400">{t('common.noResults')}</p>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

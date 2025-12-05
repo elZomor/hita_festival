@@ -60,6 +60,7 @@ src/
 - `/symposia` - Symposia listing
 - `/symposia/:slug` - Symposium detail
 - `/creativity` - Student creativity hub
+- `/creativity/:slug` - Creativity detail
 - `/about` - About page
 
 ## Mock API

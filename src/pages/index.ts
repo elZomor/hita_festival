@@ -7,5 +7,6 @@ export { ArticleDetail } from './ArticleDetail';
 export { Symposia } from './Symposia';
 export { SymposiumDetail } from './SymposiumDetail';
 export { Creativity } from './Creativity';
+export { CreativityDetail } from './CreativityDetail';
 export { About } from './About';
 export { ComingSoon } from './ComingSoon';

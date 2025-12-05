@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, Plus } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
@@ -199,42 +200,49 @@ export const Creativity = () => {
 
       {!isLoading && !isError && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {creativityEntries.map((item) => (
-            <Card key={item.id}>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                <Badge variant="gold">
-                  {t(`creativity.submitForm.types.${item.type}`)}
-                </Badge>
-                {item.editionYear && (
-                  <Badge variant="default">
-                    {item.editionYear}
-                  </Badge>
-                )}
-              </div>
+          {creativityEntries.map(item => {
+            const localizedTitle = isRTL ? item.titleAr ?? item.title : item.titleEn ?? item.title;
+            const preview = isRTL ? item.contentAr ?? item.content : item.contentEn ?? item.content;
 
-              <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
-                {item.title}
-              </h3>
+            return (
+              <Link key={item.id} to={`/creativity/${item.slug}`}>
+                <Card>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="gold">
+                        {t(`creativity.types.${item.type}`)}
+                      </Badge>
+                      {item.editionYear && (
+                        <Badge variant="default">
+                          {item.editionYear}
+                        </Badge>
+                      )}
+                    </div>
 
-              <p className="text-sm text-primary-600 dark:text-primary-400">
-                {t('creativity.by')} {item.author}
-              </p>
+                    <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
+                      {localizedTitle}
+                    </h3>
 
-              <p className="text-sm text-primary-500 dark:text-primary-500">
-                {new Date(item.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
+                    <p className="text-sm text-primary-600 dark:text-primary-400">
+                      {t('creativity.by')} {item.author}
+                    </p>
 
-              <p className="text-primary-700 dark:text-primary-300 line-clamp-4 leading-relaxed">
-                {item.content}
-              </p>
-              </div>
-            </Card>
-          ))}
+                    <p className="text-sm text-primary-500 dark:text-primary-500">
+                      {new Date(item.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </p>
+
+                    <p className="text-primary-700 dark:text-primary-300 line-clamp-4 leading-relaxed">
+                      {preview.substring(0, 240)}...
+                    </p>
+                  </div>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>
