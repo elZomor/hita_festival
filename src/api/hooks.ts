@@ -10,9 +10,13 @@ type FestivalApiResult = {
     description?: string | null;
     startDate?: string | null;
     endDate?: string | null;
-    extraDetails?: string | null;
+    extraDetails?: (string | ShowDetailFieldApi)[] | string | null;
     logo?: string | null;
-    totalShows: number
+    totalShows: number;
+    organizer?: string | null;
+    organizingTeam?: ShowDetailFieldApi[] | null;
+    juryList?: string[] | null;
+    awards?: ShowDetailFieldApi[] | null;
 };
 
 type FestivalApiResponse = {
@@ -87,6 +91,46 @@ type ArticleApiResult = {
     articleAttachmentsList?: string[] | null;
 };
 
+const mapExtraDetails = (
+    extraDetails?: (string | ShowDetailFieldApi)[] | string | null
+): (string | ShowDetailEntry)[] | undefined => {
+    if (!extraDetails) {
+        return undefined;
+    }
+
+    if (typeof extraDetails === 'string') {
+        try {
+            const parsed = JSON.parse(extraDetails);
+            if (Array.isArray(parsed)) {
+                return parsed
+                    .map(item => {
+                        if (typeof item === 'string') {
+                            return item;
+                        }
+                        return mapStructuredItem(item);
+                    })
+                    .filter((item): item is string | ShowDetailEntry => Boolean(item));
+            }
+        } catch {
+            return [extraDetails];
+        }
+        return [extraDetails];
+    }
+
+    if (Array.isArray(extraDetails)) {
+        return extraDetails
+            .map(item => {
+                if (typeof item === 'string') {
+                    return item;
+                }
+                return mapStructuredItem(item);
+            })
+            .filter((item): item is string | ShowDetailEntry => Boolean(item));
+    }
+
+    return undefined;
+};
+
 const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdition => {
     const startDate = festival.startDate ?? festival.endDate ?? '';
     const endDate = festival.endDate ?? festival.startDate ?? '';
@@ -103,6 +147,12 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
         endDate,
         totalShows: festival.totalShows,
         numberOfArticles: 0,
+        organizer: festival.organizer ?? undefined,
+        logo: festival.logo ?? undefined,
+        organizingTeam: mapStructuredField(festival.organizingTeam, undefined),
+        juryList: festival.juryList ?? undefined,
+        awards: mapStructuredField(festival.awards, undefined),
+        extraDetails: mapExtraDetails(festival.extraDetails),
     };
 };
 

@@ -19,6 +19,7 @@
     "exploreCreativity": "Explore Creativity"
   },
   "festival": {
+    "info": "Info",
     "shows": "Shows",
     "articles": "Critical Articles",
     "symposia": "Symposia",
@@ -31,7 +32,15 @@
     "allDates": "All Dates",
     "allVenues": "All Venues",
     "allCountries": "All Countries",
-    "todayShow": "Today's Show"
+    "todayShow": "Today's Show",
+    "basicInfo": "Basic Information",
+    "organizer": "Organizer",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "organizingTeam": "Organizing Team",
+    "juryList": "Jury List",
+    "awards": "Awards",
+    "additionalInfo": "Additional Information"
   },
   "show": {
     "reserve_waiting_list": "Reserve on Waiting List",

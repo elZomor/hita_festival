@@ -19,6 +19,7 @@
     "exploreCreativity": "استكشف الإبداعات"
   },
   "festival": {
+    "info": "معلومات",
     "shows": "العروض",
     "articles": "المقالات النقدية",
     "symposia": "الندوات",
@@ -31,7 +32,15 @@
     "allDates": "كل التواريخ",
     "allVenues": "كل الأماكن",
     "allCountries": "كل الدول",
-    "todayShow": "عرض اليوم"
+    "todayShow": "عرض اليوم",
+    "basicInfo": "المعلومات الأساسية",
+    "organizer": "الجهة المنظمة",
+    "startDate": "تاريخ البداية",
+    "endDate": "تاريخ النهاية",
+    "organizingTeam": "فريق التنظيم",
+    "juryList": "لجنة التحكيم",
+    "awards": "الجوائز",
+    "additionalInfo": "معلومات إضافية"
   },
   "show": {
     "reserve_waiting_list": "حجز في قائمة الانتظار",

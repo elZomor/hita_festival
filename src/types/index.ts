@@ -9,6 +9,12 @@ export type FestivalEdition = {
   startDate: string;
   endDate: string;
   numberOfArticles: number;
+  organizer?: string;
+  logo?: string;
+  organizingTeam?: ShowDetailEntry[];
+  juryList?: string[];
+  awards?: ShowDetailEntry[];
+  extraDetails?: (string | ShowDetailEntry)[];
 };
 
 export type ShowDetailEntry = {

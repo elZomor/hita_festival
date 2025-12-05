@@ -13,14 +13,15 @@ import {
 } from '../api/hooks';
 import {formatLocalizedNumber, localizeDigitsInString} from '../utils/numberUtils';
 import {buildMediaUrl} from '../utils/mediaUtils';
+import {FestivalInfoTab} from './festival-detail';
 
-type Tab = 'shows' | 'articles' | 'symposia' | 'creativity';
+type Tab = 'info' | 'shows' | 'articles' | 'symposia' | 'creativity';
 
 export const FestivalEdition = () => {
     const {year} = useParams<{ year: string }>();
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
-    const [activeTab, setActiveTab] = useState<Tab>('shows');
+    const [activeTab, setActiveTab] = useState<Tab>('info');
 
     const editionYear = Number(year);
     const editionsQuery = useFestivalEditions();
@@ -74,6 +75,7 @@ export const FestivalEdition = () => {
     }
 
     const tabs: { key: Tab; label: string }[] = [
+        {key: 'info', label: t('festival.info')},
         {key: 'shows', label: t('festival.shows')},
         {key: 'articles', label: t('festival.articles')},
         {key: 'symposia', label: t('festival.symposia')},
@@ -152,6 +154,10 @@ export const FestivalEdition = () => {
                     ))}
                 </div>
             </div>
+
+            {activeTab === 'info' && (
+                <FestivalInfoTab edition={edition}/>
+            )}
 
             {activeTab === 'shows' && (
                 <div className="space-y-6">
