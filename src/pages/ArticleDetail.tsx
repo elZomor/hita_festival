@@ -223,24 +223,63 @@ export const ArticleDetailPage = ({
                     <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-6">
                         {t(`${translationNamespace}.relatedArticles`)}
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {relatedArticles.map(relatedArticle => (
-                            <Link key={relatedArticle.id} to={`/${detailPath}/${relatedArticle.slug}`}>
-                                <Card>
-                                    <div className="space-y-3">
-                                        <Badge variant="gold">
-                                            {t(`${translationNamespace}.types.${relatedArticle.type}`)}
-                                        </Badge>
-                                        <h3 className="text-lg font-bold text-primary-900 dark:text-primary-50 line-clamp-2">
-                                            {isRTL ? relatedArticle.titleAr : relatedArticle.titleEn}
-                                        </h3>
-                                        <p className="text-sm text-primary-600 dark:text-primary-400">
-                                            {relatedArticle.author}
-                                        </p>
-                                    </div>
-                                </Card>
-                            </Link>
-                        ))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {relatedArticles.map(relatedArticle => {
+                            const attachmentUrl = relatedArticle.attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
+                            return (
+                                <Link key={relatedArticle.id} to={`/${detailPath}/${relatedArticle.slug}`} className="block h-full">
+                                    <Card className="transition-all hover:shadow-2xl h-full">
+                                        <div className="flex flex-col md:flex-row gap-4 h-full">
+                                            {attachmentUrl && (
+                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                    <img
+                                                        src={attachmentUrl}
+                                                        alt={isRTL ? relatedArticle.titleAr : relatedArticle.titleEn}
+                                                        className="w-full h-48 object-contain"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex-1 space-y-4">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <Badge variant="gold">
+                                                        {t(`${translationNamespace}.types.${relatedArticle.type}`)}
+                                                    </Badge>
+                                                    <Badge variant="default">
+                                                        {relatedArticle.editionYear}
+                                                    </Badge>
+                                                </div>
+
+                                                <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
+                                                    {isRTL ? relatedArticle.titleAr : relatedArticle.titleEn}
+                                                </h2>
+
+                                                <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
+                                                    <span>
+                                                        {t(`${translationNamespace}.author`)}: <span className="font-medium">{relatedArticle.author}</span>
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>
+                                                        {new Date(relatedArticle.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </span>
+                                                </p>
+
+                                                <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
+                                                    {isRTL ? relatedArticle.contentAr.substring(0, 250) : relatedArticle.contentEn?.substring(0, 250)}...
+                                                </p>
+
+                                                <p className="text-secondary-500 hover:text-secondary-400 font-medium">
+                                                    {t(`${translationNamespace}.readMore`)} →
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             )}

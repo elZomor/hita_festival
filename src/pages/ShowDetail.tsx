@@ -224,6 +224,7 @@ export const ShowDetail = () => {
                         title={t('show.criticalArticles')}
                         emptyLabel={t('show.noArticles')}
                         authorLabel={t('articles.author')}
+                        readMoreLabel={t('articles.readMore')}
                         isRTL={isRTL}
                         articles={relatedArticles}
                         getTypeLabel={type => t(`articles.types.${type}`)}
@@ -236,6 +237,7 @@ export const ShowDetail = () => {
                         title={t('show.symposium')}
                         emptyLabel={t('show.noSymposia')}
                         authorLabel={t('symposia.author')}
+                        readMoreLabel={t('symposia.readMore')}
                         isRTL={isRTL}
                         articles={relatedSymposia}
                         getTypeLabel={type => t(`symposia.types.${type}`)}

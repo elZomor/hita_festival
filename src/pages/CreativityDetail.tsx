@@ -205,22 +205,62 @@ export const CreativityDetail = () => {
                     <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-6">
                         {t('creativity.relatedArticles')}
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {relatedEntries.map(item => {
                             const relatedTitle = isRTL ? item.titleAr ?? item.title : item.titleEn ?? item.title;
+                            const preview = isRTL ? item.contentAr ?? item.content : item.contentEn ?? item.content;
+                            const attachmentUrl = item.attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
                             return (
-                                <Link key={item.id} to={`/creativity/${item.slug}`}>
-                                    <Card>
-                                        <div className="space-y-3">
-                                            <Badge variant="gold">
-                                                {t(`creativity.types.${item.type}`)}
-                                            </Badge>
-                                            <h3 className="text-lg font-bold text-primary-900 dark:text-primary-50 line-clamp-2">
-                                                {relatedTitle}
-                                            </h3>
-                                            <p className="text-sm text-primary-600 dark:text-primary-400">
-                                                {item.author}
-                                            </p>
+                                <Link key={item.id} to={`/creativity/${item.slug}`} className="block h-full">
+                                    <Card className="transition-all hover:shadow-2xl h-full">
+                                        <div className="flex flex-col md:flex-row gap-4 h-full">
+                                            {attachmentUrl && (
+                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                    <img
+                                                        src={attachmentUrl}
+                                                        alt={relatedTitle}
+                                                        className="w-full h-48 object-contain"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex-1 space-y-4">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <Badge variant="gold">
+                                                        {t(`creativity.types.${item.type}`)}
+                                                    </Badge>
+                                                    {item.editionYear && (
+                                                        <Badge variant="default">
+                                                            {item.editionYear}
+                                                        </Badge>
+                                                    )}
+                                                </div>
+
+                                                <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
+                                                    {relatedTitle}
+                                                </h2>
+
+                                                <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
+                                                    <span>
+                                                        {t('creativity.by')} <span className="font-medium">{item.author}</span>
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>
+                                                        {new Date(item.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                        })}
+                                                    </span>
+                                                </p>
+
+                                                <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
+                                                    {preview.substring(0, 250)}...
+                                                </p>
+
+                                                <p className="text-secondary-500 hover:text-secondary-400 font-medium">
+                                                    {t('creativity.readMore')} →
+                                                </p>
+                                            </div>
                                         </div>
                                     </Card>
                                 </Link>

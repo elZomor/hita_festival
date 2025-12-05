@@ -177,27 +177,52 @@ export const FestivalEdition = () => {
                         {articles.map(article => {
                             const attachmentUrl = getAttachmentUrl(article.attachments);
                             return (
-                                <Link key={article.id} to={`/articles/${article.slug}`}>
-                                    <Card>
-                                        <div className="flex flex-col md:flex-row gap-4">
+                                <Link key={article.id} to={`/articles/${article.slug}`} className="block h-full">
+                                    <Card className="transition-all hover:shadow-2xl h-full">
+                                        <div className="flex flex-col md:flex-row gap-4 h-full">
                                             {attachmentUrl && (
-                                                <div className="w-full md:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
                                                     <img
                                                         src={attachmentUrl}
                                                         alt={isRTL ? article.titleAr : article.titleEn}
-                                                        className="w-full h-40 object-contain"
+                                                        className="w-full h-48 object-contain"
                                                     />
                                                 </div>
                                             )}
-                                            <div className="flex-1 space-y-3">
-                                                <Badge variant="gold">
-                                                    {t(`articles.types.${article.type}`)}
-                                                </Badge>
-                                                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
+                                            <div className="flex-1 space-y-4">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <Badge variant="gold">
+                                                        {t(`articles.types.${article.type}`)}
+                                                    </Badge>
+                                                    <Badge variant="default">
+                                                        {article.editionYear}
+                                                    </Badge>
+                                                </div>
+
+                                                <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
                                                     {isRTL ? article.titleAr : article.titleEn}
-                                                </h3>
-                                                <p className="text-sm text-primary-600 dark:text-primary-400">
-                                                    {t('articles.author')}: {article.author}
+                                                </h2>
+
+                                                <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
+                                                    <span>
+                                                        {t('articles.author')}: <span className="font-medium">{article.author}</span>
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>
+                                                        {new Date(article.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </span>
+                                                </p>
+
+                                                <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
+                                                    {isRTL ? article.contentAr.substring(0, 250) : article.contentEn?.substring(0, 250)}...
+                                                </p>
+
+                                                <p className="text-secondary-500 hover:text-secondary-400 font-medium">
+                                                    {t('articles.readMore')} →
                                                 </p>
                                             </div>
                                         </div>
@@ -215,27 +240,52 @@ export const FestivalEdition = () => {
                         {symposia.map(symposium => {
                             const attachmentUrl = getAttachmentUrl(symposium.attachments);
                             return (
-                                <Link key={symposium.id} to={`/symposia/${symposium.slug}`}>
-                                    <Card>
-                                        <div className="flex flex-col md:flex-row gap-4">
+                                <Link key={symposium.id} to={`/symposia/${symposium.slug}`} className="block h-full">
+                                    <Card className="transition-all hover:shadow-2xl h-full">
+                                        <div className="flex flex-col md:flex-row gap-4 h-full">
                                             {attachmentUrl && (
-                                                <div className="w-full md:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
                                                     <img
                                                         src={attachmentUrl}
                                                         alt={isRTL ? symposium.titleAr : symposium.titleEn}
-                                                        className="w-full h-40 object-contain"
+                                                        className="w-full h-48 object-contain"
                                                     />
                                                 </div>
                                             )}
-                                            <div className="flex-1 space-y-3">
-                                                <Badge variant="gold">
-                                                    {t(`symposia.types.${symposium.type}`)}
-                                                </Badge>
-                                                <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
+                                            <div className="flex-1 space-y-4">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <Badge variant="gold">
+                                                        {t(`symposia.types.${symposium.type}`)}
+                                                    </Badge>
+                                                    <Badge variant="default">
+                                                        {symposium.editionYear}
+                                                    </Badge>
+                                                </div>
+
+                                                <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
                                                     {isRTL ? symposium.titleAr : symposium.titleEn}
-                                                </h3>
-                                                <p className="text-sm text-primary-600 dark:text-primary-400">
-                                                    {t('symposia.author')}: {symposium.author}
+                                                </h2>
+
+                                                <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
+                                                    <span>
+                                                        {t('symposia.author')}: <span className="font-medium">{symposium.author}</span>
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>
+                                                        {new Date(symposium.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </span>
+                                                </p>
+
+                                                <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
+                                                    {isRTL ? symposium.contentAr.substring(0, 250) : symposium.contentEn?.substring(0, 250)}...
+                                                </p>
+
+                                                <p className="text-secondary-500 hover:text-secondary-400 font-medium">
+                                                    {t('symposia.readMore')} →
                                                 </p>
                                             </div>
                                         </div>
@@ -255,34 +305,63 @@ export const FestivalEdition = () => {
 
             {activeTab === 'creativity' && (
                 <div className="space-y-6 w-full md:w-[85%] mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {creativity.map(item => {
                             const localizedTitle = isRTL ? item.titleAr ?? item.title : item.titleEn ?? item.title;
                             const preview = isRTL ? item.contentAr ?? item.content : item.contentEn ?? item.content;
+                            const attachmentUrl = item.attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
 
                             return (
-                                <Link key={item.id} to={`/creativity/${item.slug}`}>
-                                    <Card>
-                                        <div className="space-y-3">
-                                            <div className="flex items-center justify-between">
-                                                <Badge variant="gold">
-                                                    {t(`creativity.types.${item.type}`)}
-                                                </Badge>
-                                                {item.editionYear && (
-                                                    <Badge variant="default">
-                                                        {item.editionYear}
+                                <Link key={item.id} to={`/creativity/${item.slug}`} className="block h-full">
+                                    <Card className="transition-all hover:shadow-2xl h-full">
+                                        <div className="flex flex-col md:flex-row gap-4 h-full">
+                                            {attachmentUrl && (
+                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                    <img
+                                                        src={attachmentUrl}
+                                                        alt={localizedTitle}
+                                                        className="w-full h-48 object-contain"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex-1 space-y-4">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <Badge variant="gold">
+                                                        {t(`creativity.types.${item.type}`)}
                                                     </Badge>
-                                                )}
+                                                    {item.editionYear && (
+                                                        <Badge variant="default">
+                                                            {item.editionYear}
+                                                        </Badge>
+                                                    )}
+                                                </div>
+
+                                                <h2 className="text-2xl md:text-3xl font-bold text-accent-600 dark:text-secondary-500">
+                                                    {localizedTitle}
+                                                </h2>
+
+                                                <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
+                                                    <span>
+                                                        {t('creativity.by')} <span className="font-medium">{item.author}</span>
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>
+                                                        {new Date(item.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                        })}
+                                                    </span>
+                                                </p>
+
+                                                <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
+                                                    {preview.substring(0, 250)}...
+                                                </p>
+
+                                                <p className="text-secondary-500 hover:text-secondary-400 font-medium">
+                                                    {t('creativity.readMore')} →
+                                                </p>
                                             </div>
-                                            <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50 line-clamp-2">
-                                                {localizedTitle}
-                                            </h3>
-                                            <p className="text-sm text-primary-600 dark:text-primary-400">
-                                                {t('creativity.by')} {item.author}
-                                            </p>
-                                            <p className="text-primary-700 dark:text-primary-300 line-clamp-3">
-                                                {preview.substring(0, 200)}...
-                                            </p>
                                         </div>
                                     </Card>
                                 </Link>
