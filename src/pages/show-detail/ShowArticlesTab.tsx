@@ -9,6 +9,7 @@ type ShowArticlesTabProps = {
     isRTL: boolean;
     articles: Article[];
     getTypeLabel: (type: Article['type']) => string;
+    detailPath?: string;
 };
 
 export const ShowArticlesTab = ({
@@ -18,13 +19,14 @@ export const ShowArticlesTab = ({
     isRTL,
     articles,
     getTypeLabel,
+    detailPath = 'articles',
 }: ShowArticlesTabProps) => (
     <div className="space-y-6 w-full md:w-[85%] mx-auto">
         <SectionHeader>{title}</SectionHeader>
         {articles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {articles.map(article => (
-                    <Link key={article.id} to={`/articles/${article.slug}`}>
+                    <Link key={article.id} to={`/${detailPath}/${article.slug}`}>
                         <Card>
                             <div className="space-y-3">
                                 <Badge variant="gold">

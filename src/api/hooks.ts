@@ -1,14 +1,6 @@
 import {useMemo} from 'react';
 import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
-import type {
-    Article,
-    ArticleType,
-    CreativitySubmission,
-    FestivalEdition,
-    Show,
-    ShowDetailEntry,
-    Symposium,
-} from '../types';
+import type {Article, ArticleType, CreativitySubmission, FestivalEdition, Show, ShowDetailEntry} from '../types';
 
 const emptyArray: never[] = [];
 
@@ -367,10 +359,15 @@ export const useShow = (showId?: string | number, options?: UseSingleEntityOptio
         enabled: Boolean(showId) && (options?.enabled ?? true),
     });
 
-export const useArticles = () =>
+type ArticleQueryType = 'ARTICLE' | 'SYMPOSIA';
+
+const buildArticlesPath = (contentType: ArticleQueryType) =>
+    withQueryParams('/hita_arab_festival/articles', {type: contentType});
+
+export const useArticles = (contentType: ArticleQueryType = 'ARTICLE') =>
     useApiQuery<PaginatedResponse<ArticleApiResult>, Article[]>({
-        queryKey: buildQueryKey('articles'),
-        path: '/hita_arab_festival/articles',
+        queryKey: buildQueryKey('articles', contentType.toLowerCase()),
+        path: () => buildArticlesPath(contentType),
         select: data => (data.results ?? []).map(mapArticleApiResultToArticle),
         placeholderData: emptyArticleResponse,
     });
@@ -383,13 +380,7 @@ export const useArticle = (articleId?: string | number, options?: UseSingleEntit
         enabled: Boolean(articleId) && (options?.enabled ?? true),
     });
 
-export const useSymposia = () =>
-    useApiQuery<Symposium[]>({
-        queryKey: buildQueryKey('symposia'),
-        path: '/api/symposia.json',
-        useBaseUrl: false,
-        placeholderData: emptyArray,
-    });
+export const useSymposia = () => useArticles('SYMPOSIA');
 
 export const useCreativityEntries = () =>
     useApiQuery<CreativitySubmission[]>({

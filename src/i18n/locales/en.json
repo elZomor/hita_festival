@@ -104,12 +104,25 @@
   },
   "symposia": {
     "title": "Critical Symposia",
+    "allYears": "All Years",
+    "allTypes": "All Types",
+    "types": {
+      "review": "Show Review",
+      "symposium_coverage": "Symposium Coverage",
+      "analysis": "Analytical Article",
+      "general": "General Festival Article"
+    },
+    "author": "Author",
     "moderator": "Moderator",
     "panelists": "Panelists",
     "dateTime": "Date & Time",
     "hall": "Hall",
     "summary": "Discussion Summary",
-    "relatedShows": "Related Shows"
+    "relatedShows": "Related Shows",
+    "relatedShow": "Related Show",
+    "relatedFestival": "Related Festival",
+    "relatedArticles": "Related Symposia",
+    "readMore": "Read More"
   },
   "creativity": {
     "title": "Student Creativity",

@@ -6,7 +6,17 @@ import { Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useArticles, useShows } from '../api/hooks';
 import { ArticleType } from '../types';
 
-export const Articles = () => {
+type ArticleListingPageProps = {
+  contentType?: 'ARTICLE' | 'SYMPOSIA';
+  translationNamespace?: 'articles' | 'symposia';
+  detailPath?: 'articles' | 'symposia';
+};
+
+export const ArticleListingPage = ({
+  contentType = 'ARTICLE',
+  translationNamespace = 'articles',
+  detailPath = 'articles',
+}: ArticleListingPageProps) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
   const [yearFilter, setYearFilter] = useState<string>('all');
@@ -16,7 +26,7 @@ export const Articles = () => {
     data: articles = [],
     isLoading,
     isError,
-  } = useArticles();
+  } = useArticles(contentType);
   const {
     data: shows = [],
     isLoading: isLoadingShows,
@@ -51,46 +61,48 @@ export const Articles = () => {
   }
 
   return (
-    <div className="space-y-8 w-full md:w-[70%] mx-auto">
-      <div className="flex items-center gap-3">
-        <FileText size={40} className="text-accent-600 dark:text-secondary-500" />
-        <SectionHeader className="mb-0">{t('articles.title')}</SectionHeader>
+    <div className="space-y-6 w-full md:w-[85%] mx-auto">
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <FileText size={40} className="text-accent-600 dark:text-secondary-500" />
+          <SectionHeader className="mb-0">{t(`${translationNamespace}.title`)}</SectionHeader>
+        </div>
+
+        <div className="flex flex-wrap gap-4 bg-primary-50 dark:bg-primary-900 p-4 rounded-lg shadow border border-primary-100 dark:border-primary-700">
+          <select
+            value={yearFilter}
+            onChange={(e) => setYearFilter(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50"
+          >
+            <option value="all">{t(`${translationNamespace}.allYears`)}</option>
+            {uniqueYears.slice(1).map(year => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </select>
+
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as ArticleType | 'all')}
+            className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50"
+          >
+            <option value="all">{t(`${translationNamespace}.allTypes`)}</option>
+            {articleTypes.slice(1).map(type => (
+              <option key={type} value={type}>
+                {t(`${translationNamespace}.types.${type}`)}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 bg-primary-50 dark:bg-primary-900 p-4 rounded-lg shadow-lg border border-primary-100 dark:border-primary-700">
-        <select
-          value={yearFilter}
-          onChange={(e) => setYearFilter(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50"
-        >
-          <option value="all">{t('articles.allYears')}</option>
-          {uniqueYears.slice(1).map(year => (
-            <option key={year} value={year}>{year}</option>
-          ))}
-        </select>
-
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value as ArticleType | 'all')}
-          className="px-4 py-2 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50"
-        >
-          <option value="all">{t('articles.allTypes')}</option>
-          {articleTypes.slice(1).map(type => (
-            <option key={type} value={type}>
-              {t(`articles.types.${type}`)}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredArticles.map(article => (
-          <Link key={article.id} to={`/articles/${article.slug}`} className="block h-full">
+          <Link key={article.id} to={`/${detailPath}/${article.slug}`} className="block h-full">
             <Card className="transition-all hover:shadow-2xl h-full">
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge variant="gold">
-                    {t(`articles.types.${article.type}`)}
+                    {t(`${translationNamespace}.types.${article.type}`)}
                   </Badge>
                   <Badge variant="default">
                     {article.editionYear}
@@ -107,7 +119,7 @@ export const Articles = () => {
                 </h2>
 
                 <p className="text-primary-600 dark:text-primary-400">
-                  {t('articles.author')}: <span className="font-medium">{article.author}</span>
+                  {t(`${translationNamespace}.author`)}: <span className="font-medium">{article.author}</span>
                   <span className="mx-2">•</span>
                   {new Date(article.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
                     year: 'numeric',
@@ -121,7 +133,7 @@ export const Articles = () => {
                 </p>
 
                 <p className="text-secondary-500 hover:text-secondary-400 font-medium">
-                  {t('articles.readMore')} →
+                  {t(`${translationNamespace}.readMore`)} →
                 </p>
               </div>
             </Card>
@@ -139,3 +151,5 @@ export const Articles = () => {
     </div>
   );
 };
+
+export const Articles = () => <ArticleListingPage />;

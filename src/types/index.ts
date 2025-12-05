@@ -65,19 +65,6 @@ export type Article = {
   attachments?: string[];
 };
 
-export type Symposium = {
-  id: string;
-  editionYear: number;
-  titleAr: string;
-  titleEn: string;
-  dateTime: string;
-  hall: string;
-  panelists: string[];
-  moderator?: string;
-  summaryAr: string;
-  relatedShowIds?: string[];
-};
-
 export type CreativitySubmission = {
   id: string;
   title: string;

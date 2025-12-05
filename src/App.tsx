@@ -8,7 +8,11 @@ import {
   FestivalEdition,
   ShowDetail,
   About,
-  ComingSoon, Articles, ArticleDetail,
+  ComingSoon,
+  Articles,
+  ArticleDetail,
+  Symposia,
+  SymposiumDetail,
 } from './pages';
 import './i18n';
 
@@ -27,8 +31,8 @@ function App() {
               <Route path="/festival/:year/shows/:slug" element={<ShowDetail />} />
               <Route path="/articles" element={<Articles />} />
               <Route path="/articles/:slug" element={<ArticleDetail />} />
-              <Route path="/symposia" element={<ComingSoon />} />
-              <Route path="/symposia/:id" element={<ComingSoon />} />
+              <Route path="/symposia" element={<Symposia />} />
+              <Route path="/symposia/:slug" element={<SymposiumDetail />} />
               <Route path="/creativity" element={<ComingSoon />} />
               <Route path="/about" element={<About />} />
               <Route path="/coming-soon" element={<ComingSoon />} />

@@ -58,7 +58,7 @@ src/
 - `/articles` - Articles listing
 - `/articles/:slug` - Article detail
 - `/symposia` - Symposia listing
-- `/symposia/:id` - Symposium detail
+- `/symposia/:slug` - Symposium detail
 - `/creativity` - Student creativity hub
 - `/about` - About page
 

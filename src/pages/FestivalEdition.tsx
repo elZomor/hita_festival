@@ -169,48 +169,56 @@ export const FestivalEdition = () => {
             )}
 
             {activeTab === 'articles' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {articles.map(article => (
-                        <Link key={article.id} to={`/articles/${article.slug}`}>
-                            <Card>
-                                <div className="space-y-3">
-                                    <Badge variant="gold">
-                                        {t(`articles.types.${article.type}`)}
-                                    </Badge>
-                                    <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
-                                        {isRTL ? article.titleAr : article.titleEn}
-                                    </h3>
-                                    <p className="text-sm text-primary-600 dark:text-primary-400">
-                                        {t('articles.author')}: {article.author}
-                                    </p>
-                                </div>
-                            </Card>
-                        </Link>
-                    ))}
+                <div className="space-y-6 w-full md:w-[85%] mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {articles.map(article => (
+                            <Link key={article.id} to={`/articles/${article.slug}`}>
+                                <Card>
+                                    <div className="space-y-3">
+                                        <Badge variant="gold">
+                                            {t(`articles.types.${article.type}`)}
+                                        </Badge>
+                                        <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
+                                            {isRTL ? article.titleAr : article.titleEn}
+                                        </h3>
+                                        <p className="text-sm text-primary-600 dark:text-primary-400">
+                                            {t('articles.author')}: {article.author}
+                                        </p>
+                                    </div>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
             )}
 
             {activeTab === 'symposia' && (
-                <div className="space-y-6">
-                    {symposia.map(symposium => (
-                        <Link key={symposium.id} to={`/symposia/${symposium.id}`}>
-                            <Card>
-                                <div className="space-y-3">
-                                    <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
-                                        {isRTL ? symposium.titleAr : symposium.titleEn}
-                                    </h3>
-                                    <div className="flex flex-wrap gap-2 text-sm text-primary-600 dark:text-primary-400">
-                                        <span>{new Date(symposium.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US')}</span>
-                                        <span>•</span>
-                                        <span>{symposium.hall}</span>
+                <div className="space-y-6 w-full md:w-[85%] mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {symposia.map(symposium => (
+                            <Link key={symposium.id} to={`/symposia/${symposium.slug}`}>
+                                <Card>
+                                    <div className="space-y-3">
+                                        <Badge variant="gold">
+                                            {t(`symposia.types.${symposium.type}`)}
+                                        </Badge>
+                                        <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
+                                            {isRTL ? symposium.titleAr : symposium.titleEn}
+                                        </h3>
+                                        <p className="text-sm text-primary-600 dark:text-primary-400">
+                                            {t('symposia.author')}: {symposium.author}
+                                        </p>
                                     </div>
-                                    <p className="text-primary-700 dark:text-primary-300 line-clamp-2">
-                                        {symposium.summaryAr}
-                                    </p>
-                                </div>
-                            </Card>
-                        </Link>
-                    ))}
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {symposia.length === 0 && (
+                        <div className="text-center py-16">
+                            <p className="text-primary-600 dark:text-primary-400">{t('common.noResults')}</p>
+                        </div>
+                    )}
                 </div>
             )}
 

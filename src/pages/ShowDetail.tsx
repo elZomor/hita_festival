@@ -13,7 +13,6 @@ import {
     ShowTabsNavigation,
     ShowInfoTab,
     ShowArticlesTab,
-    ShowSymposiaTab,
     ShowCommentsTab,
     type ShowTab,
     type ShowTabKey,
@@ -40,9 +39,7 @@ export const ShowDetail = () => {
     const symposiaQuery = useSymposia();
 
     const relatedArticles = (articlesQuery.data ?? []).filter(a => a.showId === show?.id);
-    const relatedSymposia = (symposiaQuery.data ?? []).filter(s =>
-        show?.id ? s.relatedShowIds?.includes(show.id) : false,
-    );
+    const relatedSymposia = (symposiaQuery.data ?? []).filter(symposium => symposium.showId === show?.id);
     const isLoading = isShowLoading || articlesQuery.isLoading || symposiaQuery.isLoading;
     const hasError = isShowError || articlesQuery.isError || symposiaQuery.isError;
 
@@ -230,15 +227,19 @@ export const ShowDetail = () => {
                         isRTL={isRTL}
                         articles={relatedArticles}
                         getTypeLabel={type => t(`articles.types.${type}`)}
+                        detailPath="articles"
                     />
                 );
             case 'symposia':
                 return (
-                    <ShowSymposiaTab
+                    <ShowArticlesTab
                         title={t('show.symposium')}
                         emptyLabel={t('show.noSymposia')}
-                        symposia={relatedSymposia}
+                        authorLabel={t('symposia.author')}
                         isRTL={isRTL}
+                        articles={relatedSymposia}
+                        getTypeLabel={type => t(`symposia.types.${type}`)}
+                        detailPath="symposia"
                     />
                 );
             case 'comments':

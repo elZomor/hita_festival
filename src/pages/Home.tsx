@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
 import { useFestivalEditions, useLatestArticles } from '../api/hooks';
+import { formatLocalizedNumber } from '../utils/numberUtils';
 
 export const Home = () => {
   const { t, i18n } = useTranslation();
@@ -121,7 +122,7 @@ export const Home = () => {
                       })}
                     </span>
                     <span>•</span>
-                    <span>{edition.numberOfShows} {t('festival.numberOfShows')}</span>
+                    <span>{formatLocalizedNumber(edition.totalShows, i18n.language)} {t('festival.numberOfShows')}</span>
                     <span>•</span>
                     <span>{edition.numberOfArticles} {t('festival.numberOfArticles')}</span>
                   </div>

@@ -105,12 +105,25 @@
   },
   "symposia": {
     "title": "الندوات النقدية",
+    "allYears": "كل السنوات",
+    "allTypes": "كل الأنواع",
+    "types": {
+      "review": "مراجعة عرض",
+      "symposium_coverage": "تغطية ندوة",
+      "analysis": "مقال تحليلي",
+      "general": "مقال عام عن المهرجان"
+    },
+    "author": "الكاتب",
     "moderator": "المدير",
     "panelists": "المشاركون",
     "dateTime": "التاريخ والوقت",
     "hall": "القاعة",
     "summary": "ملخص النقاش",
-    "relatedShows": "عروض مرتبطة"
+    "relatedShows": "عروض مرتبطة",
+    "relatedShow": "العرض المرتبط",
+    "relatedFestival": "المهرجان المرتبط",
+    "relatedArticles": "ندوات مرتبطة",
+    "readMore": "اقرأ المزيد"
   },
   "creativity": {
     "title": "إبداع الطلاب",
