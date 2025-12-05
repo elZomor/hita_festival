@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useQueryClient} from '@tanstack/react-query';
-import {MessageCircle, Send} from 'lucide-react';
+import {MessageCircle} from 'lucide-react';
 import {Card, Button, LoadingState} from '../../components/common';
 import {useComments, useSubmitComment} from '../../api/hooks';
 
@@ -67,14 +67,13 @@ export const ShowCommentsTab = ({showId}: ShowCommentsTabProps) => {
                                 className="w-full px-4 py-3 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400 resize-none"
                             />
                         </div>
-                        <div className="flex items-start">
+                        <div className="flex items-start w-full md:w-auto">
                             <Button
                                 type="submit"
                                 variant="secondary"
                                 disabled={!comment.trim() || submitCommentMutation.isPending}
-                                className="group hover:cursor-pointer"
+                                className="group hover:cursor-pointer w-full md:w-auto justify-center"
                             >
-                                <Send className={`${isRTL ? 'ml-2' : 'mr-2'}`} size={20}/>
                                 {submitCommentMutation.isPending ? t('show.comments.submitting') : t('show.comments.submit')}
                             </Button>
                         </div>
