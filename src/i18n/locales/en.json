@@ -40,7 +40,10 @@
     "organizingTeam": "Organizing Team",
     "juryList": "Jury List",
     "awards": "Awards",
-    "additionalInfo": "Additional Information"
+    "additionalInfo": "Additional Information",
+    "poster": "Festival Poster",
+    "additionalSections": "Additional Information Sections",
+    "noAdditionalInfo": "No additional information available for this festival edition."
   },
   "show": {
     "reserve_waiting_list": "Reserve on Waiting List",

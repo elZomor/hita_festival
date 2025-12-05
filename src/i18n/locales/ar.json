@@ -40,7 +40,10 @@
     "organizingTeam": "فريق التنظيم",
     "juryList": "لجنة التحكيم",
     "awards": "الجوائز",
-    "additionalInfo": "معلومات إضافية"
+    "additionalInfo": "معلومات إضافية",
+    "poster": "ملصق المهرجان",
+    "additionalSections": "أقسام المعلومات الإضافية",
+    "noAdditionalInfo": "لا توجد معلومات إضافية متاحة لهذه الدورة من المهرجان."
   },
   "show": {
     "reserve_waiting_list": "حجز في قائمة الانتظار",

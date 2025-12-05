@@ -1,9 +1,9 @@
-import {Card} from '../../components/common';
-import type {ShowDetailEntry} from '../../types';
+import type {DetailEntry} from '../../types';
+import {DetailSection, type DetailVariant} from '../../components/detail-display';
 
 export type ShowDetailSection = {
     title: string;
-    items: ShowDetailEntry[];
+    items: DetailEntry[];
 };
 
 type ShowInfoTabProps = {
@@ -13,8 +13,38 @@ type ShowInfoTabProps = {
     additionalSection?: ShowDetailSection;
 };
 
-type DetailVariant = 'text' | 'default' | 'role';
-
+/**
+ * ShowInfoTab - Displays show information in organized sections
+ *
+ * Presents show details in a responsive 2-column grid layout with
+ * sections for cast, crew, synopsis, and additional information.
+ *
+ * Features:
+ * - Responsive grid layout (1 column mobile, 2 columns desktop)
+ * - Conditional rendering (only shows sections with data)
+ * - Variant-based styling for different section types
+ * - Dark mode support
+ * - Null-safe (returns null if no sections have data)
+ *
+ * Section variants:
+ * - actors/crew: 'role' variant (gold highlighting)
+ * - description/additional: 'text' variant (plain text)
+ *
+ * @param props - Component props
+ * @param props.descriptionSection - Show synopsis/description
+ * @param props.actorsSection - Cast members and roles
+ * @param props.crewSection - Production crew and roles
+ * @param props.additionalSection - Additional notes and information
+ *
+ * @example
+ * ```tsx
+ * <ShowInfoTab
+ *   descriptionSection={{title: "Synopsis", items: [...]}}
+ *   actorsSection={{title: "Cast", items: [...]}}
+ *   crewSection={{title: "Crew", items: [...]}}
+ * />
+ * ```
+ */
 export const ShowInfoTab = ({descriptionSection, actorsSection, crewSection, additionalSection}: ShowInfoTabProps) => {
     const sections = [
         {key: 'actors', section: actorsSection, variant: 'role' as DetailVariant},
@@ -40,172 +70,4 @@ export const ShowInfoTab = ({descriptionSection, actorsSection, crewSection, add
             ))}
         </div>
     );
-};
-
-const DetailSection = ({section, variant}: {section?: ShowDetailSection; variant: DetailVariant}) => {
-    if (!section || !section.items.length) {
-        return null;
-    }
-
-    return (
-        <Card hover={false} className="h-full">
-            <h3 className="text-xl font-semibold text-accent-600 dark:text-secondary-500 mb-4">
-                {section.title}
-            </h3>
-            <DetailList items={section.items} variant={variant}/>
-        </Card>
-    );
-};
-
-const DetailList = ({
-    items,
-    variant,
-    depth = 0,
-}: {
-    items: ShowDetailEntry[];
-    variant: DetailVariant;
-    depth?: number;
-}) => {
-    const hasSingleUnlabeledItem = items.length === 1 && !items[0].value && !items[0].children;
-    const listStyle = depth === 0 ? 'list-disc' : 'list-[circle]';
-    const margin = depth === 0 ? 'ms-5' : 'ms-6';
-    const isRoleRoot = variant === 'role' && depth === 0;
-
-    if (hasSingleUnlabeledItem && variant !== 'role') {
-        return (
-            <div>
-                {renderLinkedText(items[0], 'text-primary-800 dark:text-primary-100')}
-            </div>
-        );
-    }
-
-    return (
-        <ul
-            className={`${listStyle} ${margin} space-y-3 ${
-                isRoleRoot ? 'text-theatre-gold-500' : 'text-primary-800 dark:text-primary-100'
-            }`}
-        >
-            {items.map((item, index) => (
-                <DetailListItem
-                    key={buildItemKey(item, index)}
-                    item={item}
-                    variant={variant}
-                    depth={depth}
-                />
-            ))}
-        </ul>
-    );
-};
-
-const DetailListItem = ({
-    item,
-    variant,
-    depth,
-}: {
-    item: ShowDetailEntry;
-    variant: DetailVariant;
-    depth: number;
-}) => {
-    if (variant === 'role' && depth === 0) {
-        const roleValue = getRoleValue(item);
-        return (
-            <li>
-                <div className="flex gap-2 text-sm md:text-base">
-                    {renderLinkedText(item, 'text-theatre-gold-500 font-semibold')}
-                    {roleValue && <span className="text-primary-700 dark:text-primary-200">{roleValue}</span>}
-                </div>
-                {item.children && item.children.length > 0 && (
-                    <div className="mt-2 ms-4">
-                        <DetailList items={item.children} variant="default" depth={depth + 1}/>
-                    </div>
-                )}
-            </li>
-        );
-    }
-
-    const isTextVariant = variant === 'text';
-    const hasValue = item.value && (
-        (typeof item.value === 'string' && item.value.trim()) ||
-        (Array.isArray(item.value) && item.value.length > 0)
-    );
-
-    return (
-        <li>
-            <div className="flex flex-wrap items-baseline gap-2">
-                {renderLinkedText(
-                    item,
-                    isTextVariant ? 'text-primary-800 dark:text-primary-100' : 'text-primary-500 dark:text-primary-200'
-                )}
-                {hasValue && renderValue(item.value, {inline: true})}
-            </div>
-
-            {item.children && item.children.length > 0 && (
-                <div className="mt-2">
-                    <DetailList items={item.children} variant="default" depth={depth + 1}/>
-                </div>
-            )}
-        </li>
-    );
-};
-
-const renderValue = (value?: string | string[], options: {inline?: boolean} = {}) => {
-    if (!value) {
-        return null;
-    }
-
-    if (Array.isArray(value)) {
-        return (
-            <ul className="list-disc ms-5 space-y-1 mt-2">
-                {value.map((item, index) => (
-                    <li key={`${item}-${index}`}>{item}</li>
-                ))}
-            </ul>
-        );
-    }
-
-    if (options.inline) {
-        return <span className="text-primary-800 dark:text-primary-100">{value}</span>;
-    }
-
-    return <p className="mt-1">{value}</p>;
-};
-
-const renderLinkedText = (item: ShowDetailEntry, className?: string) => {
-    const link = item.link?.trim();
-    const linkClasses =
-        'text-secondary-600 dark:text-secondary-400 underline hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors';
-
-    if (link) {
-        const combinedClasses = `${className ? `${className} ` : ''}${linkClasses}`;
-        return (
-            <a
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={combinedClasses}
-            >
-                {item.text}
-            </a>
-        );
-    }
-
-    return <span className={className}>{item.text}</span>;
-};
-
-const buildItemKey = (item: ShowDetailEntry, index: number) =>
-    `${item.text}-${Array.isArray(item.value) ? item.value.join('-') : item.value ?? 'value'}-${item.link ?? 'nolink'}-${index}`;
-
-const getRoleValue = (item: ShowDetailEntry): string | undefined => {
-    if (Array.isArray(item.value)) {
-        const values = item.value.filter(Boolean);
-        if (values.length > 0) {
-            return values.join(', ');
-        }
-    }
-
-    if (typeof item.value === 'string' && item.value.trim()) {
-        return item.value;
-    }
-
-    return undefined;
 };

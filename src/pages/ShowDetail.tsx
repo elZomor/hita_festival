@@ -18,6 +18,7 @@ import {
     type ShowTabKey,
     type ShowDetailSection,
 } from './show-detail';
+import {isDetailEntry} from '../components/detail-display/utils';
 
 export const ShowDetail = () => {
     const {year, slug} = useParams<{ year: string; slug: string }>();
@@ -171,7 +172,7 @@ export const ShowDetail = () => {
                 return undefined;
             }
 
-            if (isShowDetailEntryArray(source)) {
+            if (isDetailEntryArray(source)) {
                 return {title, items: source};
             }
 
@@ -207,8 +208,8 @@ export const ShowDetail = () => {
         };
     };
 
-    const isShowDetailEntryArray = (items: unknown[]): items is ShowDetailSection['items'] =>
-        items.every(item => typeof item === 'object' && item !== null && 'text' in item);
+    const isDetailEntryArray = (items: unknown[]): items is ShowDetailSection['items'] =>
+        items.every(item => isDetailEntry(item));
 
     const descriptionSection = buildDetailSection(t('show.sections.synopsis'), show.showDescription);
     const actorsSection = buildDetailSection(t('show.sections.actors'), show.cast);

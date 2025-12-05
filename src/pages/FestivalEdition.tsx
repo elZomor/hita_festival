@@ -129,7 +129,7 @@ export const FestivalEdition = () => {
                         {formatLocalizedNumber(edition.totalShows, i18n.language)} {t('festival.numberOfShows')}
                     </Badge>
                     <Badge variant="default">
-                        {edition.numberOfArticles} {t('festival.numberOfArticles')}
+                        {formatLocalizedNumber(edition.totalArticles, i18n.language)} {t('festival.numberOfArticles')}
                     </Badge>
                 </div>
             </div>

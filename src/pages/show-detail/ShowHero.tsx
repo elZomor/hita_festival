@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 import {ExternalLink} from 'lucide-react';
-import {Button} from '../../components/common';
+import {Button, PosterImage} from '../../components/common';
 import type {Show} from '../../types';
 
 type InfoItem = {
@@ -44,9 +44,9 @@ export const ShowHero = ({
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
             {show.poster && (
-                <img
+                <PosterImage
                     src={show.poster}
-                    alt={show.name}
+                    alt={`${show.name} - مسرحية`}
                     className="w-full h-auto max-h-[500px] object-contain"
                 />
             )}

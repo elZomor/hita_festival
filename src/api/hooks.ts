@@ -1,9 +1,20 @@
 import {useMemo} from 'react';
 import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
-import type {Article, ArticleType, Comment, CreativitySubmission, FestivalEdition, Show, ShowDetailEntry} from '../types';
+import type {Article, ArticleType, Comment, CreativitySubmission, DetailEntry, FestivalEdition, Show} from '../types';
 
 const emptyArray: never[] = [];
 
+/**
+ * API response type for Festival data from backend
+ *
+ * API Field Mappings (snake_case → camelCase):
+ * - start_date → startDate
+ * - end_date → endDate
+ * - extra_details → extraDetails
+ * - total_shows → totalShows
+ * - organizing_team → organizingTeam
+ * - jury_list → juryList
+ */
 type FestivalApiResult = {
     id: number;
     name: string;
@@ -13,6 +24,7 @@ type FestivalApiResult = {
     extraDetails?: (string | ShowDetailFieldApi)[] | string | null;
     logo?: string | null;
     totalShows: number;
+    totalArticles: number;
     organizer?: string | null;
     organizingTeam?: ShowDetailFieldApi[] | null;
     juryList?: string[] | null;
@@ -28,6 +40,19 @@ type FestivalApiResponse = {
     results: FestivalApiResult[];
 };
 
+/**
+ * Structured field from API representing a detail entry
+ *
+ * Used for complex fields like cast, crew, organizing team, awards, etc.
+ * Can contain nested structures through the children property.
+ *
+ * @example
+ * {
+ *   text: "المخرج",
+ *   value: "أحمد السيد",
+ *   link: "https://example.com"
+ * }
+ */
 type ShowDetailFieldApi = {
     text: string;
     value?: string | null;
@@ -35,6 +60,23 @@ type ShowDetailFieldApi = {
     link?: string | null;
 };
 
+/**
+ * API response type for Show data from backend
+ *
+ * API Field Mappings (snake_case → camelCase):
+ * - created_at → createdAt
+ * - updated_at → updatedAt
+ * - cast_word → castWord
+ * - show_description → showDescription
+ * - festival_slug → festivalSlug
+ * - festival_name → festivalName
+ * - venue_name → venueName
+ * - venue_location → venueLocation
+ * - is_open_for_reservation → isOpenForReservation
+ * - reserved_seats → reservedSeats
+ * - allowed_seats → allowedSeats
+ * - allowed_waiting → allowedWaiting
+ */
 type ShowApiResult = {
     id: number;
     name?: string | null;
@@ -73,6 +115,19 @@ type PaginatedResponse<T> = {
     results: T[];
 };
 
+/**
+ * API response type for Article/Symposium/Creativity data from backend
+ *
+ * API Field Mappings (snake_case → camelCase):
+ * - title_ar → titleAr
+ * - title_en → titleEn
+ * - content_ar → contentAr
+ * - content_en → contentEn
+ * - created_at → createdAt
+ * - updated_at → updatedAt
+ * - festival_year → festivalYear
+ * - article_attachments_list → articleAttachmentsList
+ */
 type ArticleApiResult = {
     id: number;
     slug?: string | null;
@@ -92,13 +147,35 @@ type ArticleApiResult = {
     articleAttachmentsList?: string[] | null;
 };
 
+/**
+ * Maps extra details from API format to frontend format
+ *
+ * Handles three possible input formats from the API:
+ * 1. JSON string containing an array: "[...]" → parsed array
+ * 2. Array of mixed strings and objects → mapped array
+ * 3. Plain string → single-item array
+ *
+ * @param extraDetails - Extra details from API (string, array, or null)
+ * @returns Array of strings or DetailEntry objects, or undefined if no data
+ *
+ * @example
+ * // JSON string input
+ * mapExtraDetails('[{"text": "Note 1"}, "Note 2"]')
+ * // Returns: [{text: "Note 1"}, "Note 2"]
+ *
+ * @example
+ * // Array input
+ * mapExtraDetails([{text: "Award", value: "Best Director"}, "Special mention"])
+ * // Returns: [{text: "Award", value: "Best Director"}, "Special mention"]
+ */
 const mapExtraDetails = (
     extraDetails?: (string | ShowDetailFieldApi)[] | string | null
-): (string | ShowDetailEntry)[] | undefined => {
+): (string | DetailEntry)[] | undefined => {
     if (!extraDetails) {
         return undefined;
     }
 
+    // Handle JSON string input
     if (typeof extraDetails === 'string') {
         try {
             const parsed = JSON.parse(extraDetails);
@@ -110,14 +187,16 @@ const mapExtraDetails = (
                         }
                         return mapStructuredItem(item);
                     })
-                    .filter((item): item is string | ShowDetailEntry => Boolean(item));
+                    .filter((item): item is string | DetailEntry => Boolean(item));
             }
         } catch {
+            // If parsing fails, treat as plain string
             return [extraDetails];
         }
         return [extraDetails];
     }
 
+    // Handle array input
     if (Array.isArray(extraDetails)) {
         return extraDetails
             .map(item => {
@@ -126,12 +205,27 @@ const mapExtraDetails = (
                 }
                 return mapStructuredItem(item);
             })
-            .filter((item): item is string | ShowDetailEntry => Boolean(item));
+            .filter((item): item is string | DetailEntry => Boolean(item));
     }
 
     return undefined;
 };
 
+/**
+ * Maps Festival API result to FestivalEdition frontend type
+ *
+ * Transforms the API response format to the frontend FestivalEdition type,
+ * handling field name conversions, nested structures, and data normalization.
+ *
+ * Key transformations:
+ * - Uses festival ID as slug (converted to string)
+ * - Falls back to alternative date if one is missing
+ * - Extracts year from startDate or current date
+ * - Maps complex fields (organizingTeam, awards, extraDetails) using helper functions
+ *
+ * @param festival - Festival data from API
+ * @returns Formatted FestivalEdition object
+ */
 const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdition => {
     const startDate = festival.startDate ?? festival.endDate ?? '';
     const endDate = festival.endDate ?? festival.startDate ?? '';
@@ -147,6 +241,7 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
         startDate,
         endDate,
         totalShows: festival.totalShows,
+        totalArticles: festival.totalArticles,
         numberOfArticles: 0,
         organizer: festival.organizer ?? undefined,
         logo: festival.logo ?? undefined,
@@ -157,6 +252,16 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
     };
 };
 
+/**
+ * Parses a structured field from API, handling both JSON strings and arrays
+ *
+ * @param field - Structured field data (array, JSON string, or null)
+ * @returns Parsed array of ShowDetailFieldApi objects, or undefined
+ *
+ * @example
+ * parseStructuredField('[{"text": "Director", "value": "John"}]')
+ * // Returns: [{text: "Director", value: "John"}]
+ */
 const parseStructuredField = (field?: ShowDetailFieldApi[] | string | null): ShowDetailFieldApi[] | undefined => {
     if (!field) {
         return undefined;
@@ -174,14 +279,27 @@ const parseStructuredField = (field?: ShowDetailFieldApi[] | string | null): Sho
     return Array.isArray(field) ? field : undefined;
 };
 
-const mapStructuredItem = (item?: ShowDetailFieldApi | null): ShowDetailEntry | null => {
+/**
+ * Maps a single structured item from API format to DetailEntry
+ *
+ * Validates and transforms a ShowDetailFieldApi object into a DetailEntry,
+ * including all nested children and optional fields.
+ *
+ * @param item - Structured item from API
+ * @returns DetailEntry object or null if invalid
+ *
+ * @example
+ * mapStructuredItem({text: "Director", value: "John Doe", link: "https://..."})
+ * // Returns: {text: "Director", value: "John Doe", link: "https://..."}
+ */
+const mapStructuredItem = (item?: ShowDetailFieldApi | null): DetailEntry | null => {
     if (!item || typeof item.text !== 'string' || item.text.trim() === '') {
         return null;
     }
 
     const children = mapChildren(item.children);
 
-    const baseEntry: ShowDetailEntry = {
+    const baseEntry: DetailEntry = {
         text: item.text,
         ...(item.value ? {value: mapItemValue(item.value)} : {}),
         ...(children && children.length > 0 ? {children} : {}),
@@ -191,6 +309,23 @@ const mapStructuredItem = (item?: ShowDetailFieldApi | null): ShowDetailEntry | 
     return baseEntry;
 };
 
+/**
+ * Maps an item value from API format, handling JSON strings and arrays
+ *
+ * Attempts to parse JSON strings. If successful, returns the parsed value.
+ * If parsing fails, returns the raw string.
+ *
+ * @param value - Value from API (string or null)
+ * @returns Parsed value (string or string array) or undefined
+ *
+ * @example
+ * mapItemValue('["Role 1", "Role 2"]')
+ * // Returns: ["Role 1", "Role 2"]
+ *
+ * @example
+ * mapItemValue('"Simple string"')
+ * // Returns: "Simple string"
+ */
 const mapItemValue = (value?: string | null): string | string[] | undefined => {
     if (!value) {
         return undefined;
@@ -206,13 +341,26 @@ const mapItemValue = (value?: string | null): string | string[] | undefined => {
             return strings.length > 0 ? strings : undefined;
         }
     } catch {
-        // fallback to raw string
+        // If parsing fails, fallback to raw string
     }
 
     return value;
 };
 
-const mapChildren = (children?: Array<ShowDetailFieldApi | string> | null): ShowDetailEntry[] | undefined => {
+/**
+ * Maps children array from API format to DetailEntry array
+ *
+ * Handles both string children and structured object children,
+ * converting them to DetailEntry format.
+ *
+ * @param children - Array of children (strings or objects)
+ * @returns Array of DetailEntry objects, or undefined if no valid children
+ *
+ * @example
+ * mapChildren(["Child 1", {text: "Child 2", value: "Value"}])
+ * // Returns: [{text: "Child 1"}, {text: "Child 2", value: "Value"}]
+ */
+const mapChildren = (children?: Array<ShowDetailFieldApi | string> | null): DetailEntry[] | undefined => {
     if (!children) {
         return undefined;
     }
@@ -224,15 +372,37 @@ const mapChildren = (children?: Array<ShowDetailFieldApi | string> | null): Show
             }
             return mapStructuredItem(child);
         })
-        .filter((child): child is ShowDetailEntry => Boolean(child));
+        .filter((child): child is DetailEntry => Boolean(child));
 
     return mapped.length > 0 ? mapped : undefined;
 };
 
+/**
+ * Maps a structured field from API to DetailEntry array
+ *
+ * Handles multiple input formats:
+ * - JSON string → parses and maps to DetailEntry array
+ * - Array of objects → maps each to DetailEntry
+ * - Plain string with fallbackLabel → creates single-item array
+ *
+ * @param field - Structured field data (array, string, or null)
+ * @param fallbackLabel - Optional label to use when field is a plain string
+ * @returns Array of DetailEntry objects, or undefined
+ *
+ * @example
+ * // With structured objects
+ * mapStructuredField([{text: "Actor", value: "John Doe"}])
+ * // Returns: [{text: "Actor", value: "John Doe"}]
+ *
+ * @example
+ * // With plain string and fallbackLabel
+ * mapStructuredField("John Doe, Jane Smith", "Cast")
+ * // Returns: [{text: "Cast", value: "John Doe, Jane Smith"}]
+ */
 const mapStructuredField = (
     field?: ShowDetailFieldApi[] | string | null,
     fallbackLabel?: string,
-): ShowDetailEntry[] | undefined => {
+): DetailEntry[] | undefined => {
     if (typeof field === 'string') {
         const mappedValue = mapItemValue(field);
         if (mappedValue) {
@@ -252,11 +422,25 @@ const mapStructuredField = (
 
     const mapped = rawItems
         .map(mapStructuredItem)
-        .filter((item): item is ShowDetailEntry => Boolean(item));
+        .filter((item): item is DetailEntry => Boolean(item));
 
     return mapped.length > 0 ? mapped : undefined;
 };
 
+/**
+ * Parses description field from API, handling JSON strings and arrays
+ *
+ * @param description - Description from API (string, array, or null)
+ * @returns Parsed description as string or string array, empty string if null
+ *
+ * @example
+ * parseDescriptionField('["Paragraph 1", "Paragraph 2"]')
+ * // Returns: ["Paragraph 1", "Paragraph 2"]
+ *
+ * @example
+ * parseDescriptionField("Simple description")
+ * // Returns: "Simple description"
+ */
 const parseDescriptionField = (description?: string | string[] | null): string | string[] => {
     if (!description) {
         return '';
@@ -272,12 +456,28 @@ const parseDescriptionField = (description?: string | string[] | null): string |
             return parsed;
         }
     } catch {
-        // ignore, fallback to raw string
+        // If parsing fails, fallback to raw string
     }
 
     return description;
 };
 
+/**
+ * Maps Show API result to Show frontend type
+ *
+ * Transforms the API response format to the frontend Show type,
+ * handling field conversions, fallbacks, and data normalization.
+ *
+ * Key transformations:
+ * - Generates slug from ID if missing
+ * - Extracts edition year from createdAt or date field
+ * - Provides default values for required fields (name, director, venueName)
+ * - Maps complex fields (cast, crew, notes) with optional castWord label
+ * - Parses showDescription which can be string or array
+ *
+ * @param show - Show data from API
+ * @returns Formatted Show object
+ */
 const mapShowApiResultToShow = (show: ShowApiResult): Show => {
     const datePart = show.date ?? '';
     const timePart = show.time ?? '';
@@ -318,6 +518,14 @@ const mapShowApiResultToShow = (show: ShowApiResult): Show => {
     };
 };
 
+/**
+ * Maps article tag from API to ArticleType
+ *
+ * Converts string tags to typed article categories.
+ *
+ * @param tag - Tag string from API
+ * @returns ArticleType enum value
+ */
 const mapArticleTagToType = (tag?: string | null): ArticleType => {
     if (!tag) {
         return 'general';
@@ -335,6 +543,22 @@ const mapArticleTagToType = (tag?: string | null): ArticleType => {
     }
 };
 
+/**
+ * Maps Article API result to Article frontend type
+ *
+ * Transforms the API response to frontend Article format,
+ * handling bilingual content and metadata.
+ *
+ * Key transformations:
+ * - Generates slug from ID if missing
+ * - Extracts edition year from festivalYear or createdAt
+ * - Maps tag to ArticleType using mapArticleTagToType
+ * - Handles bilingual titles and content with fallbacks
+ * - Filters and validates attachments list
+ *
+ * @param article - Article data from API
+ * @returns Formatted Article object
+ */
 const mapArticleApiResultToArticle = (article: ArticleApiResult): Article => {
     const createdAt = article.createdAt ?? new Date().toISOString();
     const editionYear =
@@ -362,6 +586,14 @@ const mapArticleApiResultToArticle = (article: ArticleApiResult): Article => {
     };
 };
 
+/**
+ * Maps creativity tag from API to CreativitySubmission type
+ *
+ * Converts string tags to typed creativity categories.
+ *
+ * @param tag - Tag string from API
+ * @returns CreativitySubmission type value
+ */
 const mapCreativityTagToType = (tag?: string | null): CreativitySubmission['type'] => {
     if (!tag) {
         return 'other';
@@ -379,6 +611,21 @@ const mapCreativityTagToType = (tag?: string | null): CreativitySubmission['type
     }
 };
 
+/**
+ * Maps Article API result to CreativitySubmission frontend type
+ *
+ * Reuses ArticleApiResult to create CreativitySubmission objects,
+ * as they share the same API structure but different semantic meaning.
+ *
+ * Key transformations:
+ * - Generates slug with 'creativity-' prefix
+ * - Maps tag to creativity type using mapCreativityTagToType
+ * - Handles bilingual titles and content
+ * - Filters and validates attachments
+ *
+ * @param article - Article data from API (used for creativity submissions)
+ * @returns Formatted CreativitySubmission object
+ */
 const mapArticleApiResultToCreativity = (article: ArticleApiResult): CreativitySubmission => {
     const baseTitleAr = article.titleAr ?? article.title ?? 'عمل إبداعي';
     const baseTitleEn = article.titleEn ?? article.title ?? 'Creative Work';
@@ -532,6 +779,13 @@ export const useReserveShow = () =>
             }),
     });
 
+/**
+ * API response type for Comment data from backend
+ *
+ * API Field Mappings (snake_case → camelCase):
+ * - created_at → createdAt
+ * - is_approved → isApproved
+ */
 type CommentApiResult = {
     id: number;
     content?: string | null;
@@ -541,6 +795,20 @@ type CommentApiResult = {
     isApproved?: boolean | null;
 };
 
+/**
+ * Maps Comment API result to Comment frontend type
+ *
+ * Transforms the API response to frontend Comment format,
+ * handling default values and type conversions.
+ *
+ * Key transformations:
+ * - Converts IDs to strings
+ * - Provides default values (empty content, current date, approval status)
+ * - Converts show ID to string for frontend use
+ *
+ * @param comment - Comment data from API
+ * @returns Formatted Comment object
+ */
 const mapCommentApiResultToComment = (comment: CommentApiResult): Comment => ({
     id: String(comment.id),
     content: comment.content ?? '',

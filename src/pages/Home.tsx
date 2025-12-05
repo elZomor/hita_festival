@@ -124,7 +124,7 @@ export const Home = () => {
                     <span>•</span>
                     <span>{formatLocalizedNumber(edition.totalShows, i18n.language)} {t('festival.numberOfShows')}</span>
                     <span>•</span>
-                    <span>{edition.numberOfArticles} {t('festival.numberOfArticles')}</span>
+                    <span>{formatLocalizedNumber(edition.totalArticles, i18n.language)} {t('festival.numberOfArticles')}</span>
                   </div>
                 </div>
               </Card>

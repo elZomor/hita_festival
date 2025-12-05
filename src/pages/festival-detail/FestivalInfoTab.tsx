@@ -1,14 +1,36 @@
 import {useTranslation} from 'react-i18next';
-import {Card} from '../../components/common';
-import type {FestivalEdition, ShowDetailEntry} from '../../types';
+import {Card, PosterImage} from '../../components/common';
+import type {DetailEntry, FestivalEdition} from '../../types';
 import {buildMediaUrl} from '../../utils/mediaUtils';
-
-type DetailVariant = 'text' | 'default' | 'role';
+import {DetailSection, type DetailVariant} from '../../components/detail-display';
 
 type FestivalInfoTabProps = {
     edition: FestivalEdition;
 };
 
+/**
+ * FestivalInfoTab - Displays comprehensive festival edition information
+ *
+ * Presents festival details in two main sections:
+ * 1. Basic Information Card: Organizer, dates, and festival poster
+ * 2. Additional Sections Grid: Organizing team, jury, awards, and extra details
+ *
+ * Features:
+ * - Bilingual date formatting (Arabic/English)
+ * - Responsive layout (mobile-first)
+ * - Error-resilient image loading
+ * - ARIA-compliant for screen readers
+ * - Empty state handling when no additional info exists
+ * - Dark mode support
+ *
+ * @param props - Component props
+ * @param props.edition - Festival edition data to display
+ *
+ * @example
+ * ```tsx
+ * <FestivalInfoTab edition={festivalEdition} />
+ * ```
+ */
 export const FestivalInfoTab = ({edition}: FestivalInfoTabProps) => {
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
@@ -50,56 +72,77 @@ export const FestivalInfoTab = ({edition}: FestivalInfoTabProps) => {
         : undefined;
 
     const sections = [
-        {key: 'organizingTeam', section: organizingTeamSection, variant: 'role' as const},
-        {key: 'jury', section: jurySection, variant: 'default' as const},
-        {key: 'awards', section: awardsSection, variant: 'default' as const},
-        {key: 'extraDetails', section: extraDetailsSection, variant: 'text' as const},
+        {key: 'organizingTeam', section: organizingTeamSection, variant: 'role' as DetailVariant},
+        {key: 'jury', section: jurySection, variant: 'default' as DetailVariant},
+        {key: 'awards', section: awardsSection, variant: 'default' as DetailVariant},
+        {key: 'extraDetails', section: extraDetailsSection, variant: 'text' as DetailVariant},
     ].filter(({section}) => section && section.items.length > 0) as {
         key: string;
-        section: {title: string; items: ShowDetailEntry[]};
+        section: {title: string; items: DetailEntry[]};
         variant: DetailVariant;
     }[];
 
     return (
         <div className="space-y-6">
             <Card hover={false}>
-                <h3 className="text-2xl font-semibold text-accent-600 dark:text-secondary-500 mb-6">
+                <h3
+                    className="text-2xl font-semibold text-accent-600 dark:text-secondary-500 mb-6"
+                    id="festival-basic-info"
+                >
                     {t('festival.basicInfo')}
                 </h3>
                 <div className="flex flex-col md:flex-row gap-6">
-                    <div className="flex-1 space-y-4">
+                    <div className="flex-1 space-y-4" role="list" aria-labelledby="festival-basic-info">
                         {edition.organizer && (
-                            <div className="flex flex-col gap-1">
-                                <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                            <div className="flex flex-col gap-1" role="listitem">
+                                <span
+                                    className="text-sm font-medium text-primary-600 dark:text-primary-400"
+                                    id="festival-organizer-label"
+                                >
                                     {t('festival.organizer')}
                                 </span>
-                                <span className="text-lg text-primary-900 dark:text-primary-50">
+                                <span
+                                    className="text-lg text-primary-900 dark:text-primary-50"
+                                    aria-labelledby="festival-organizer-label"
+                                >
                                     {edition.organizer}
                                 </span>
                             </div>
                         )}
-                        <div className="flex flex-col gap-1">
-                            <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                        <div className="flex flex-col gap-1" role="listitem">
+                            <span
+                                className="text-sm font-medium text-primary-600 dark:text-primary-400"
+                                id="festival-start-date-label"
+                            >
                                 {t('festival.startDate')}
                             </span>
-                            <span className="text-lg text-primary-900 dark:text-primary-50">
+                            <span
+                                className="text-lg text-primary-900 dark:text-primary-50"
+                                aria-labelledby="festival-start-date-label"
+                            >
                                 {formattedStartDate}
                             </span>
                         </div>
-                        <div className="flex flex-col gap-1">
-                            <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                        <div className="flex flex-col gap-1" role="listitem">
+                            <span
+                                className="text-sm font-medium text-primary-600 dark:text-primary-400"
+                                id="festival-end-date-label"
+                            >
                                 {t('festival.endDate')}
                             </span>
-                            <span className="text-lg text-primary-900 dark:text-primary-50">
+                            <span
+                                className="text-lg text-primary-900 dark:text-primary-50"
+                                aria-labelledby="festival-end-date-label"
+                            >
                                 {formattedEndDate}
                             </span>
                         </div>
                     </div>
                     {posterUrl && (
                         <div className="w-full md:w-64 lg:w-80">
-                            <img
+                            <PosterImage
                                 src={posterUrl}
-                                alt={isRTL ? edition.titleAr : edition.titleEn}
+                                alt={`${t('festival.poster')}: ${isRTL ? edition.titleAr : edition.titleEn}`}
                                 className="w-full h-auto rounded-lg object-contain"
                             />
                         </div>
@@ -107,192 +150,25 @@ export const FestivalInfoTab = ({edition}: FestivalInfoTabProps) => {
                 </div>
             </Card>
 
-            {sections.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {sections.length > 0 ? (
+                <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                    role="region"
+                    aria-label={t('festival.additionalSections')}
+                >
                     {sections.map(({key, section, variant}) => (
                         <div key={key} className="h-full">
                             <DetailSection section={section} variant={variant}/>
                         </div>
                     ))}
                 </div>
+            ) : (
+                <Card hover={false}>
+                    <p className="text-center text-primary-600 dark:text-primary-400 py-8">
+                        {t('festival.noAdditionalInfo')}
+                    </p>
+                </Card>
             )}
         </div>
     );
 };
-
-type DetailSectionProps = {
-    section: {
-        title: string;
-        items: ShowDetailEntry[];
-    };
-    variant: DetailVariant;
-};
-
-const DetailSection = ({section, variant}: DetailSectionProps) => {
-    return (
-        <Card hover={false} className="h-full">
-            <h3 className="text-xl font-semibold text-accent-600 dark:text-secondary-500 mb-4">
-                {section.title}
-            </h3>
-            <DetailList items={section.items} variant={variant}/>
-        </Card>
-    );
-};
-
-type DetailListProps = {
-    items: ShowDetailEntry[];
-    variant: DetailVariant;
-    depth?: number;
-};
-
-const DetailList = ({items, variant, depth = 0}: DetailListProps) => {
-    const hasSingleUnlabeledItem = items.length === 1 && !items[0].value && !items[0].children;
-    const listStyle = depth === 0 ? 'list-disc' : 'list-[circle]';
-    const margin = depth === 0 ? 'ms-5' : 'ms-6';
-    const isRoleRoot = variant === 'role' && depth === 0;
-
-    if (hasSingleUnlabeledItem && variant !== 'role') {
-        return (
-            <div>
-                {renderLinkedText(items[0], 'text-primary-800 dark:text-primary-100')}
-            </div>
-        );
-    }
-
-    return (
-        <ul
-            className={`${listStyle} ${margin} space-y-3 ${
-                isRoleRoot ? 'text-theatre-gold-500' : 'text-primary-800 dark:text-primary-100'
-            }`}
-        >
-            {items.map((item, index) => (
-                <DetailListItem
-                    key={buildItemKey(item, index)}
-                    item={item}
-                    variant={variant}
-                    depth={depth}
-                />
-            ))}
-        </ul>
-    );
-};
-
-type DetailListItemProps = {
-    item: ShowDetailEntry;
-    variant: DetailVariant;
-    depth: number;
-};
-
-const DetailListItem = ({item, variant, depth}: DetailListItemProps) => {
-    if (variant === 'role' && depth === 0) {
-        const roleValue = getRoleValue(item);
-        return (
-            <li>
-                <div className="flex gap-2 text-sm md:text-base">
-                    {renderLinkedText(item, 'text-theatre-gold-500 font-semibold')}
-                    {roleValue && <span className="text-primary-700 dark:text-primary-200">{roleValue}</span>}
-                </div>
-                {item.children && item.children.length > 0 && (
-                    <div className="mt-2 ms-4">
-                        <DetailList items={item.children} variant="default" depth={depth + 1}/>
-                    </div>
-                )}
-            </li>
-        );
-    }
-
-    const isTextVariant = variant === 'text';
-    const hasValue = item.value && (
-        (typeof item.value === 'string' && item.value.trim()) ||
-        (Array.isArray(item.value) && item.value.length > 0)
-    );
-
-    return (
-        <li>
-            <div className="flex flex-wrap items-baseline gap-2">
-                {renderLinkedText(
-                    item,
-                    isTextVariant ? 'text-primary-800 dark:text-primary-100' : 'text-primary-500 dark:text-primary-200'
-                )}
-                {hasValue && renderValue(item.value, {inline: true})}
-            </div>
-
-            {item.children && item.children.length > 0 && (
-                <div className="mt-2">
-                    <DetailList items={item.children} variant="default" depth={depth + 1}/>
-                </div>
-            )}
-        </li>
-    );
-};
-
-const renderValue = (value?: string | string[], options: {inline?: boolean} = {}) => {
-    if (!value) {
-        return null;
-    }
-
-    if (Array.isArray(value)) {
-        const filtered = value.filter(Boolean);
-        if (filtered.length === 0) {
-            return null;
-        }
-
-        if (!options.inline) {
-            return (
-                <ul className="list-disc ms-5 space-y-1 mt-2">
-                    {filtered.map((item, index) => (
-                        <li key={`${item}-${index}`}>{item}</li>
-                    ))}
-                </ul>
-            );
-        }
-
-        return <span className="text-primary-800 dark:text-primary-100">{filtered.join(', ')}</span>;
-    }
-
-    if (options.inline) {
-        return <span className="text-primary-800 dark:text-primary-100">{value}</span>;
-    }
-
-    return <p className="mt-1 text-primary-800 dark:text-primary-100">{value}</p>;
-};
-
-const renderLinkedText = (item: ShowDetailEntry, className?: string) => {
-    const link = item.link?.trim();
-    const linkClasses =
-        'text-secondary-600 dark:text-secondary-400 underline hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors';
-
-    if (link) {
-        const combinedClasses = `${className ? `${className} ` : ''}${linkClasses}`;
-        return (
-            <a
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={combinedClasses}
-            >
-                {item.text}
-            </a>
-        );
-    }
-
-    return <span className={className}>{item.text}</span>;
-};
-
-const getRoleValue = (item: ShowDetailEntry): string | undefined => {
-    if (Array.isArray(item.value)) {
-        const values = item.value.filter(Boolean);
-        if (values.length > 0) {
-            return values.join(', ');
-        }
-    }
-
-    if (typeof item.value === 'string' && item.value.trim()) {
-        return item.value;
-    }
-
-    return undefined;
-};
-
-const buildItemKey = (item: ShowDetailEntry, index: number) =>
-    `${item.text}-${Array.isArray(item.value) ? item.value.join('-') : item.value ?? 'value'}-${item.link ?? 'nolink'}-${index}`;

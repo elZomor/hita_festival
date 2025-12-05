@@ -1,5 +1,6 @@
 export type FestivalEdition = {
   totalShows: number;
+  totalArticles: number;
   year: number;
   slug: string;
   titleAr: string;
@@ -11,18 +12,32 @@ export type FestivalEdition = {
   numberOfArticles: number;
   organizer?: string;
   logo?: string;
-  organizingTeam?: ShowDetailEntry[];
+  organizingTeam?: DetailEntry[];
   juryList?: string[];
-  awards?: ShowDetailEntry[];
-  extraDetails?: (string | ShowDetailEntry)[];
+  awards?: DetailEntry[];
+  extraDetails?: (string | DetailEntry)[];
 };
 
-export type ShowDetailEntry = {
+/**
+ * Generic detail entry type used for displaying structured information
+ * in shows, festivals, and other detail views.
+ *
+ * @property text - The label or main text content
+ * @property value - Optional value(s) associated with the text
+ * @property children - Nested detail entries for hierarchical data
+ * @property link - Optional URL to make the text a clickable link
+ */
+export type DetailEntry = {
   text: string;
   value?: string | string[];
-  children?: ShowDetailEntry[];
+  children?: DetailEntry[];
   link?: string;
 };
+
+/**
+ * @deprecated Use DetailEntry instead. Kept for backward compatibility.
+ */
+export type ShowDetailEntry = DetailEntry;
 
 export type Show = {
   id: string;
@@ -37,9 +52,9 @@ export type Show = {
   status?: string;
   createdAt?: string;
   updatedAt?: string;
-  cast?: ShowDetailEntry[];
-  crew?: ShowDetailEntry[];
-  notes?: ShowDetailEntry[];
+  cast?: DetailEntry[];
+  crew?: DetailEntry[];
+  notes?: DetailEntry[];
   castWord?: string | null;
   showDescription: string | string[];
   date: string;
