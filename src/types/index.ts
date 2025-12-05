@@ -83,5 +83,14 @@ export type CreativitySubmission = {
   attachments?: string[];
 };
 
+export type Comment = {
+  id: string;
+  content: string;
+  author?: string;
+  createdAt: string;
+  showId: string;
+  isApproved?: boolean;
+};
+
 export type Language = 'ar' | 'en';
 export type Theme = 'light' | 'dark';

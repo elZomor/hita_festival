@@ -245,7 +245,7 @@ export const ShowDetail = () => {
                     />
                 );
             case 'comments':
-                return <ShowCommentsTab message={t('show.commentsComingSoon')}/>;
+                return <ShowCommentsTab showId={show.id}/>;
             case 'info':
             default:
                 return (

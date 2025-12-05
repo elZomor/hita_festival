@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
-import type {Article, ArticleType, CreativitySubmission, FestivalEdition, Show, ShowDetailEntry} from '../types';
+import type {Article, ArticleType, Comment, CreativitySubmission, FestivalEdition, Show, ShowDetailEntry} from '../types';
 
 const emptyArray: never[] = [];
 
@@ -477,5 +477,57 @@ export const useReserveShow = () =>
             JSON.stringify({
                 name: name,
                 email,
+            }),
+    });
+
+type CommentApiResult = {
+    id: number;
+    content?: string | null;
+    author?: string | null;
+    createdAt?: string | null;
+    show?: number | null;
+    isApproved?: boolean | null;
+};
+
+const mapCommentApiResultToComment = (comment: CommentApiResult): Comment => ({
+    id: String(comment.id),
+    content: comment.content ?? '',
+    author: comment.author ?? undefined,
+    createdAt: comment.createdAt ?? new Date().toISOString(),
+    showId: comment.show ? String(comment.show) : '',
+    isApproved: comment.isApproved ?? false,
+});
+
+export const useComments = (showId?: string | number) =>
+    useApiQuery<PaginatedResponse<CommentApiResult>, Comment[]>({
+        queryKey: buildQueryKey('comments', showId ?? 'all'),
+        path: showId
+            ? withQueryParams('/hita_arab_festival/comments', {show: showId})
+            : '/hita_arab_festival/comments',
+        select: data => (data.results ?? []).map(mapCommentApiResultToComment),
+        enabled: Boolean(showId),
+    });
+
+type SubmitCommentVariables = {
+    content: string;
+    show: string;
+};
+
+export type SubmitCommentResponse = {
+    id: number;
+    content: string;
+    show: number;
+    createdAt: string;
+};
+
+export const useSubmitComment = () =>
+    useApiMutation<SubmitCommentResponse, SubmitCommentVariables>({
+        path: '/hita_arab_festival/comments',
+        method: 'POST',
+        expectedStatus: 201,
+        bodySerializer: ({content, show}) =>
+            JSON.stringify({
+                content,
+                show,
             }),
     });

@@ -80,6 +80,16 @@
       "crew": "Crew",
       "additional": "Additional Info",
       "synopsis": "Synopsis"
+    },
+    "comments": {
+      "title": "Comments",
+      "placeholder": "Write your comment here...",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "success": "Your comment has been submitted for approval",
+      "errorSubmitting": "Failed to submit your comment. Please try again.",
+      "errorLoading": "Failed to load comments. Please try again later.",
+      "noComments": "No comments yet. Be the first to comment!"
     }
   },
   "articles": {
