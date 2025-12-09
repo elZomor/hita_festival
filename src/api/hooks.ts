@@ -89,9 +89,9 @@ type ShowApiResult = {
     status?: string | null;
     createdAt?: string | null;
     updatedAt?: string | null;
-    notes?: ShowDetailFieldApi[] | string | null;
-    cast?: ShowDetailFieldApi[] | string | null;
-    crew?: ShowDetailFieldApi[] | string | null;
+    notes?: ShowDetailFieldApi[] | string | string[] | Record<string, string> | null;
+    cast?: ShowDetailFieldApi[] | string | string[] | Record<string, string> | null;
+    crew?: ShowDetailFieldApi[] | string | Record<string, string> | null;
     castWord?: string | null;
     showDescription?: string | string[] | null;
     date?: string | null;
@@ -253,16 +253,22 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
 };
 
 /**
- * Parses a structured field from API, handling both JSON strings and arrays
+ * Parses a structured field from API, handling multiple formats
  *
- * @param field - Structured field data (array, JSON string, or null)
+ * @param field - Structured field data (array, object, JSON string, or null)
  * @returns Parsed array of ShowDetailFieldApi objects, or undefined
  *
  * @example
  * parseStructuredField('[{"text": "Director", "value": "John"}]')
  * // Returns: [{text: "Director", value: "John"}]
+ *
+ * parseStructuredField({"Director": "John Doe", "Producer": "Jane Smith"})
+ * // Returns: [{text: "Director", value: "John Doe"}, {text: "Producer", value: "Jane Smith"}]
+ *
+ * parseStructuredField(["Note 1", "Note 2"])
+ * // Returns: [{text: "Note 1"}, {text: "Note 2"}]
  */
-const parseStructuredField = (field?: ShowDetailFieldApi[] | string | null): ShowDetailFieldApi[] | undefined => {
+const parseStructuredField = (field?: ShowDetailFieldApi[] | string | string[] | Record<string, string> | null): ShowDetailFieldApi[] | undefined => {
     if (!field) {
         return undefined;
     }
@@ -276,7 +282,27 @@ const parseStructuredField = (field?: ShowDetailFieldApi[] | string | null): Sho
         }
     }
 
-    return Array.isArray(field) ? field : undefined;
+    if (Array.isArray(field)) {
+        // Check if it's already in the correct format (array of ShowDetailFieldApi)
+        if (field.length > 0 && typeof field[0] === 'object' && field[0] !== null && 'text' in field[0]) {
+            return field as ShowDetailFieldApi[];
+        }
+        // Convert simple string array to ShowDetailFieldApi format
+        if (field.length > 0 && typeof field[0] === 'string') {
+            return (field as string[]).map(text => ({text}));
+        }
+        return undefined;
+    }
+
+    // Handle object/record format (e.g., {"Director": "John", "Producer": "Jane"})
+    if (typeof field === 'object' && field !== null) {
+        return Object.entries(field).map(([text, value]) => ({
+            text,
+            value: value || undefined,
+        }));
+    }
+
+    return undefined;
 };
 
 /**
@@ -400,7 +426,7 @@ const mapChildren = (children?: Array<ShowDetailFieldApi | string> | null): Deta
  * // Returns: [{text: "Cast", value: "John Doe, Jane Smith"}]
  */
 const mapStructuredField = (
-    field?: ShowDetailFieldApi[] | string | null,
+    field?: ShowDetailFieldApi[] | string | null | string[] | Record<string, string>,
     fallbackLabel?: string,
 ): DetailEntry[] | undefined => {
     if (typeof field === 'string') {
@@ -764,7 +790,6 @@ export type ReserveShowResponse = {
 export type ReserveShowResponseData = {
     data: ReserveShowResponse;
 };
-
 
 
 export const useReserveShow = () =>

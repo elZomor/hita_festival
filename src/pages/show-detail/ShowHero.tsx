@@ -1,5 +1,4 @@
 import {ReactNode} from 'react';
-import {ExternalLink} from 'lucide-react';
 import {Button, PosterImage} from '../../components/common';
 import type {Show} from '../../types';
 
@@ -31,12 +30,10 @@ export const ShowHero = ({
     infoItems,
     showStatusLabel,
     showStatusClassName = 'text-accent-500',
-    isRTL,
     isReservationStatus,
     isReservationComplete,
     reservationButtonVariant,
     reserveLabel,
-    bookTicketLabel,
     waitingListLabel,
     completeLabel,
     onReservationClick,
@@ -80,23 +77,6 @@ export const ShowHero = ({
             </div>
 
             <div className="space-y-3 flex flex-col items-center">
-                {show.bookingUrl && (
-                    <a
-                        href={show.bookingUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="block"
-                    >
-                        <Button variant="primary" className="w-full group">
-                            {bookTicketLabel}
-                            <ExternalLink
-                                className={`${isRTL ? 'mr-2' : 'ml-2'} group-hover:translate-x-1 transition-transform`}
-                                size={20}
-                            />
-                        </Button>
-                    </a>
-                )}
-
                 {isReservationStatus && (
                     <Button
                         type="button"
