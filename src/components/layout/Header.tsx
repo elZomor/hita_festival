@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, Sun, Moon, Languages } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -8,6 +8,7 @@ export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation();
+  const location = useLocation();
 
   const isRTL = i18n.language === 'ar';
 
@@ -26,6 +27,13 @@ export const Header = () => {
     { to: '/creativity', label: t('nav.creativity') },
     { to: '/about', label: t('nav.about') },
   ];
+
+  const isActiveLink = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-primary-50 text-primary-900 dark:bg-primary-950 dark:text-primary-50 border-b border-primary-100 dark:border-primary-800 shadow-xl transition-all duration-300">
@@ -46,16 +54,23 @@ export const Header = () => {
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="text-primary-900 dark:text-primary-100 hover:text-secondary-500 dark:hover:text-secondary-400 transition-colors duration-300 font-medium relative group"
-              >
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-500 dark:bg-secondary-400 group-hover:w-full transition-all duration-300"></span>
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = isActiveLink(link.to);
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`${
+                    isActive
+                      ? 'text-secondary-500 dark:text-secondary-400'
+                      : 'text-primary-900 dark:text-primary-100 hover:text-secondary-500 dark:hover:text-secondary-400'
+                  } transition-colors duration-300 font-medium relative group`}
+                >
+                  {link.label}
+                  <span className={`absolute bottom-0 left-0 ${isActive ? 'w-full' : 'w-0'} h-0.5 bg-secondary-500 dark:bg-secondary-400 group-hover:w-full transition-all duration-300`}></span>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-3">
@@ -87,16 +102,23 @@ export const Header = () => {
 
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-2 animate-fadeIn">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 px-4 text-primary-900 dark:text-primary-100 hover:bg-accent-600 hover:text-primary-50 rounded-lg transition-colors duration-300"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = isActiveLink(link.to);
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block py-3 px-4 rounded-lg transition-colors duration-300 ${
+                    isActive
+                      ? 'bg-secondary-500 dark:bg-secondary-600 text-primary-50'
+                      : 'text-primary-900 dark:text-primary-100 hover:bg-accent-600 hover:text-primary-50'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
         )}
       </nav>
