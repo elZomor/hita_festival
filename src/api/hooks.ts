@@ -725,7 +725,7 @@ export const useShows = (festivalId?: string | number, options?: UseShowsOptions
     useApiQuery<PaginatedResponse<ShowApiResult>, Show[]>({
         queryKey: buildQueryKey('shows', festivalId ?? 'all'),
         path: festivalId
-            ? withQueryParams('/hita_arab_festival/shows', {festival: festivalId})
+            ? withQueryParams('/hita_arab_festival/shows', {festival: festivalId, page_size: 50})
             : '/hita_arab_festival/shows',
         select: data => (data.results ?? []).map(mapShowApiResultToShow),
         enabled: options?.enabled,
@@ -742,7 +742,7 @@ export const useShow = (showId?: string | number, options?: UseSingleEntityOptio
 type ArticleQueryType = 'ARTICLE' | 'SYMPOSIA' | 'CREATIVITY';
 
 const buildArticlesPath = (contentType: ArticleQueryType) =>
-    withQueryParams('/hita_arab_festival/articles', {type: contentType});
+    withQueryParams('/hita_arab_festival/articles', {type: contentType, page_size: 50});
 
 export const useArticles = (contentType: ArticleQueryType = 'ARTICLE') =>
     useApiQuery<PaginatedResponse<ArticleApiResult>, Article[]>({
@@ -857,7 +857,7 @@ export const useComments = (showId?: string | number) =>
     useApiQuery<PaginatedResponse<CommentApiResult>, Comment[]>({
         queryKey: buildQueryKey('comments', showId ?? 'all'),
         path: showId
-            ? withQueryParams('/hita_arab_festival/comments', {show: showId})
+            ? withQueryParams('/hita_arab_festival/comments', {show: showId, page_size: 1000})
             : '/hita_arab_festival/comments',
         select: data => (data.results ?? []).map(mapCommentApiResultToComment),
         enabled: Boolean(showId),
