@@ -82,7 +82,7 @@ export const CreativityDetail = () => {
                                     <p className="text-xs uppercase tracking-wide text-secondary-500">
                                         {t('creativity.relatedShow')}
                                     </p>
-                                    <Link to={`/festival/${relatedShow.editionYear}/shows/${relatedShow.slug}`}>
+                                    <Link to={`/shows/${relatedShow.id}`}>
                                         <h3 className="text-lg font-semibold text-primary-900 dark:text-primary-50 hover:underline">
                                             {relatedShow.name}
                                         </h3>

@@ -137,7 +137,7 @@ export const ShowCard = ({show}: ShowCardProps) => {
                             : 'flex-1 justify-center'  // single button, center in remaining space
                     }`}
                 >
-                    <Link to={`/festival/${show.festivalSlug ?? show.festivalId}/shows/${show.slug}`}>
+                    <Link to={`/shows/${show.id}`}>
                         <Button variant="secondary" className="w-full">
                             {t('show.viewDetails')}
                         </Button>

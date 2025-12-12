@@ -1,4 +1,4 @@
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams, useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useState, type ReactNode} from 'react';
 import {useQueryClient} from '@tanstack/react-query';
@@ -21,7 +21,8 @@ import {
 import {isDetailEntry} from '../components/detail-display/utils';
 
 export const ShowDetail = () => {
-    const {festivalSlug, slug} = useParams<{ festivalSlug: string; slug: string }>();
+    const {pk} = useParams<{ pk: string }>();
+    const navigate = useNavigate();
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
     const [isReservationOpen, setReservationOpen] = useState(false);
@@ -29,13 +30,12 @@ export const ShowDetail = () => {
     const [activeTab, setActiveTab] = useState<ShowTabKey>('info');
     const queryClient = useQueryClient();
 
-    const rawSlug = slug ?? '';
-    const showIdParam = rawSlug.startsWith('show-') ? rawSlug.slice(5) : rawSlug;
+    const showId = pk ?? '';
     const {
         data: show,
         isLoading: isShowLoading,
         isError: isShowError,
-    } = useShow(showIdParam, {enabled: Boolean(showIdParam)});
+    } = useShow(showId, {enabled: Boolean(showId)});
     const articlesQuery = useArticles();
     const symposiaQuery = useSymposia();
 
@@ -114,7 +114,7 @@ export const ShowDetail = () => {
         }
     })();
     const festivalDisplayName = show.festivalName ?? (show.editionYear ? t('show.festivalFallback', {year: show.editionYear}) : undefined);
-    const festivalRouteParam = show.festivalSlug ?? show.festivalId ?? festivalSlug;
+    const festivalRouteParam = show.festivalSlug ?? show.festivalId;
     const festivalLinkValue = festivalDisplayName && festivalRouteParam ? (
         <Link
             to={`/festival/${festivalRouteParam}`}
@@ -268,13 +268,13 @@ export const ShowDetail = () => {
 
     return (
         <div className="space-y-8">
-            <Link
-                to={`/festival/${festivalSlug}`}
+            <button
+                onClick={() => navigate(-1)}
                 className="inline-flex items-center gap-2 text-secondary-500 hover:text-secondary-400 transition-colors"
             >
                 <ArrowLeft size={20} className={isRTL ? 'rotate-180' : ''}/>
-                {t('common.backToList')}
-            </Link>
+                {t('common.back')}
+            </button>
 
             <ShowHero
                 show={show}
