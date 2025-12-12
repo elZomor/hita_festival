@@ -4,6 +4,7 @@ import {ArrowLeft, Calendar, User} from 'lucide-react';
 import {Badge, Card, LoadingState} from '../components/common';
 import {useArticles, useFestivalEditions, useShows} from '../api/hooks';
 import {buildMediaUrl} from '../utils/mediaUtils';
+import {getArticlePreviewText, getLocalizedArticleContent} from '../utils/articleContent';
 
 type ArticleDetailPageProps = {
     contentType?: 'ARTICLE' | 'SYMPOSIA';
@@ -68,15 +69,36 @@ export const ArticleDetailPage = ({
     }
 
     const attachmentUrls = (article.attachments ?? []).map(buildMediaUrl).filter(Boolean);
-    const [primaryAttachment, ...extraAttachments] = attachmentUrls;
     const localizedTitle = isRTL ? article.titleAr : article.titleEn;
-
-    const rawContent = (isRTL ? article.contentAr : article.contentEn || article.contentAr) ?? '';
-    const contentSections = rawContent
+    const structuredSections = (article.sections ?? []).map(section => section.trim()).filter(Boolean);
+    const hasStructuredSections = structuredSections.length > 0;
+    const localizedContent = getLocalizedArticleContent(article, isRTL);
+    const contentSections = localizedContent
         .split(/\r?\n\s*\r?\n/)
         .map(section => section.trim())
         .filter(Boolean);
-    const sectionsToRender = contentSections.length > 0 ? contentSections : [rawContent];
+    const fallbackContent = localizedContent ? [localizedContent] : [];
+    const sectionsToRender = hasStructuredSections
+        ? structuredSections
+        : contentSections.length > 0
+            ? contentSections
+            : fallbackContent;
+
+    const attachmentsBetweenSections: Record<number, string> = {};
+    let attachmentsAfterText: string[] = [];
+    let primaryAttachment: string | undefined;
+
+    if (hasStructuredSections) {
+        const queue = [...attachmentUrls];
+        structuredSections.forEach((_, index) => {
+            if (index < structuredSections.length - 1 && queue.length > 0) {
+                attachmentsBetweenSections[index] = queue.shift() as string;
+            }
+        });
+        attachmentsAfterText = queue;
+    } else {
+        [primaryAttachment, ...attachmentsAfterText] = attachmentUrls;
+    }
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
@@ -173,7 +195,7 @@ export const ArticleDetailPage = ({
                     </div>
                 </div>
 
-                {primaryAttachment && (
+                {!hasStructuredSections && primaryAttachment && (
                     <div className="w-full flex justify-center">
                         <img
                             src={primaryAttachment}
@@ -192,28 +214,42 @@ export const ArticleDetailPage = ({
                         }}
                     >
                         {sectionsToRender.map((paragraph, index) => (
-                            <p key={index} className="mb-6 whitespace-pre-line">
-                                {paragraph}
-                            </p>
+                            <div key={index} className="space-y-6">
+                                <p className="whitespace-pre-line">
+                                    {paragraph}
+                                </p>
+                                {hasStructuredSections && attachmentsBetweenSections[index] && (
+                                    <div className="w-full flex justify-center">
+                                        <img
+                                            src={attachmentsBetweenSections[index]}
+                                            alt={`${localizedTitle} section attachment ${index + 1}`}
+                                            className="max-h-[360px] w-full max-w-3xl object-contain rounded-2xl bg-primary-50 dark:bg-primary-900"
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         ))}
                     </div>
                 </div>
 
-                {extraAttachments.length > 0 && (
+                {attachmentsAfterText.length > 0 && (
                     <div
                         className={`grid gap-6 ${
-                            extraAttachments.length === 1 ? 'grid-cols-1 justify-items-center' : 'grid-cols-1 md:grid-cols-2'
+                            attachmentsAfterText.length === 1 ? 'grid-cols-1 justify-items-center' : 'grid-cols-1 md:grid-cols-2'
                         }`}
                     >
-                        {extraAttachments.map((attachment, idx) => (
-                            <div key={attachment + idx} className="w-full flex justify-center">
-                                <img
-                                    src={attachment}
-                                    alt={`${localizedTitle} attachment ${idx + 2}`}
-                                    className="max-h-[360px] w-full max-w-xl object-contain rounded-2xl bg-primary-50 dark:bg-primary-900"
-                                />
-                            </div>
-                        ))}
+                        {attachmentsAfterText.map((attachment, idx) => {
+                            const attachmentIndex = hasStructuredSections ? idx + 1 : idx + 2;
+                            return (
+                                <div key={attachment + idx} className="w-full flex justify-center">
+                                    <img
+                                        src={attachment}
+                                        alt={`${localizedTitle} attachment ${attachmentIndex}`}
+                                        className="max-h-[360px] w-full max-w-xl object-contain rounded-2xl bg-primary-50 dark:bg-primary-900"
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </article>
@@ -226,6 +262,7 @@ export const ArticleDetailPage = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {relatedArticles.map(relatedArticle => {
                             const attachmentUrl = relatedArticle.attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
+                            const previewText = getArticlePreviewText(relatedArticle, isRTL);
                             return (
                                 <Link key={relatedArticle.id} to={`/${detailPath}/${relatedArticle.slug}`} className="block h-full">
                                     <Card className="transition-all hover:shadow-2xl h-full">
@@ -268,7 +305,7 @@ export const ArticleDetailPage = ({
                                                 </p>
 
                                                 <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
-                                                    {isRTL ? relatedArticle.contentAr.substring(0, 250) : relatedArticle.contentEn?.substring(0, 250)}...
+                                                    {previewText ? `${previewText}...` : ''}
                                                 </p>
 
                                                 <p className="text-secondary-500 hover:text-secondary-400 font-medium">

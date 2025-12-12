@@ -26,7 +26,7 @@ export const LoadingState = ({ message, fullscreen = true }: LoadingStateProps) 
         <div className={containerClasses} aria-live="polite" aria-busy={true}>
             {/* Loader */}
             <div className="relative">
-                <div className="w-24 h-24 rounded-full border border-secondary-500/20 bg-primary-950/60 shadow-[0_0_40px_rgba(0,0,0,0.6)] flex items-center justify-center">
+                <div className="w-24 h-24 rounded-full border border-secondary-500/20 bg-primary-950/60 shadow-glow-dark flex items-center justify-center">
                     <div className="relative w-16 h-16">
                         <div className="absolute inset-0 rounded-full border-2 border-secondary-500/30 border-t-secondary-500 animate-spin" />
                         <div className="absolute inset-3 rounded-full border border-accent-600/40" />

@@ -2,6 +2,7 @@ import {Link} from 'react-router-dom';
 import {Badge, Card, SectionHeader} from '../../components/common';
 import type {Article} from '../../types';
 import {buildMediaUrl} from '../../utils/mediaUtils';
+import {getArticlePreviewText} from '../../utils/articleContent';
 
 type ShowArticlesTabProps = {
     title: string;
@@ -31,7 +32,7 @@ export const ShowArticlesTab = ({
                 {articles.map(article => {
                     const attachmentUrl =
                         article.attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
-                    const preview = isRTL ? article.contentAr : article.contentEn ?? article.contentAr;
+                    const preview = getArticlePreviewText(article, isRTL);
 
                     return (
                         <Link key={article.id} to={`/${detailPath}/${article.slug}`} className="block h-full">
@@ -75,7 +76,7 @@ export const ShowArticlesTab = ({
                                         </p>
 
                                         <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
-                                            {preview?.substring(0, 250)}...
+                                            {preview ? `${preview}...` : ''}
                                         </p>
 
                                         <p className="text-secondary-500 hover:text-secondary-400 font-medium">

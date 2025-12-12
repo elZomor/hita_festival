@@ -84,6 +84,7 @@ export type Article = {
   createdAt: string;
   contentAr: string;
   contentEn?: string;
+  sections?: string[];
   attachments?: string[];
 };
 

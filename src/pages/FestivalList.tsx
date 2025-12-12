@@ -54,7 +54,7 @@ export const FestivalList = () => {
           );
 
           return (
-            <Link key={edition.year} to={`/festival/${edition.year}`}>
+            <Link key={edition.slug} to={`/festival/${edition.slug}`}>
               <Card className="h-full">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">

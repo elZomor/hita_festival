@@ -71,7 +71,7 @@ export const Home = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-              <Link to={`/festival/${currentEdition.year}`}>
+              <Link to={`/festival/${currentEdition.slug}`}>
                 <Button variant="primary" className="group">
                   {t('home.currentEdition')}
                   <ArrowRight className={`inline ${isRTL ? 'mr-2 rotate-180' : 'ml-2'} group-hover:translate-x-1 transition-transform`} size={20} />
@@ -97,14 +97,14 @@ export const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedEditions.map((edition) => (
-            <Link key={edition.year} to={`/festival/${edition.year}`}>
+            <Link key={edition.slug} to={`/festival/${edition.slug}`}>
               <Card className="h-full">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
                     <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
                       {isRTL ? edition.titleAr : edition.titleEn}
                     </h3>
-                    {edition.year === currentEdition.year && (
+                    {edition.slug === currentEdition.slug && (
                       <Badge variant="red">{t('festival.todayShow')}</Badge>
                     )}
                   </div>

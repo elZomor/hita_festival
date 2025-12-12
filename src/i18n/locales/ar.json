@@ -2,7 +2,7 @@
   "nav": {
     "home": "الرئيسية",
     "editions": "دورات المهرجان",
-    "articles": "المقالات النقدية",
+    "articles": "المقالات",
     "creativity": "إبداع الطلاب",
     "about": "عن المهرجان"
   },
@@ -11,9 +11,9 @@
     "subtitle": "المعهد العالي للفنون المسرحية - القاهرة",
     "tagline": "أرشيف نقدي وتوثيقي شامل للمهرجان العربي عبر السنوات",
     "currentEdition": "اذهب إلى دورة هذا العام",
-    "browseArticles": "تصفح المقالات النقدية",
+    "browseArticles": "تصفح المقالات",
     "editionsTitle": "دورات المهرجان",
-    "latestArticles": "آخر المقالات النقدية",
+    "latestArticles": "آخر المقالات",
     "creativityTitle": "إبداع الطلاب",
     "creativityText": "مساحة مفتوحة لإبداعات الطلاب خلال المهرجان من قصص ومقالات نقدية وقصائد",
     "exploreCreativity": "استكشف الإبداعات"
@@ -21,7 +21,7 @@
   "festival": {
     "info": "معلومات",
     "shows": "العروض",
-    "articles": "المقالات النقدية",
+    "articles": "المقالات",
     "symposia": "الندوات",
     "creativity": "إبداع الطلاب",
     "numberOfShows": "عرض",
@@ -37,7 +37,7 @@
     "organizer": "الجهة المنظمة",
     "startDate": "تاريخ البداية",
     "endDate": "تاريخ النهاية",
-    "organizingTeam": "فريق التنظيم",
+    "organizingTeam": "هيكل المهرجان",
     "juryList": "لجنة التحكيم",
     "awards": "الجوائز",
     "additionalInfo": "معلومات إضافية",
@@ -106,7 +106,7 @@
     }
   },
   "articles": {
-    "title": "المقالات النقدية",
+    "title": "المقالات",
     "filterByYear": "تصفية حسب السنة",
     "filterByShow": "تصفية حسب العرض",
     "filterByType": "تصفية حسب النوع",

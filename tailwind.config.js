@@ -5,73 +5,84 @@ export default {
   theme: {
     extend: {
       colors: {
+        /* ================= BASE / BACKGROUND ================= */
         primary: {
-          50: '#f9fafb',
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#4b5563',
-          700: '#374151',
-          800: '#1f2937',
-          900: '#111827',
-          950: '#0b0f19',
+          50: '#f6f3ef',
+          100: '#e8e1d9',
+          200: '#cfc4b7',
+          300: '#b19d86',
+          400: '#856f67',
+          500: '#584136',
+          600: '#473d37',
+          700: '#312924',
+          800: '#211814',
+          900: '#0b0807',
+          950: '#050403',
         },
 
+        /* ================= GOLD / TITLES ================= */
         secondary: {
-          50: '#fefce8',
-          100: '#fef9c3',
-          200: '#fef08a',
-          300: '#fde047',
-          400: '#facc15',
-          500: '#eab308',
-          600: '#ca8a04',
-          700: '#a16207',
-          800: '#854d0e',
-          900: '#713f12',
-          950: '#422006',
+          50: '#fbf6ee',
+          100: '#f3e7d3',
+          200: '#e2cfa8',
+          300: '#c9b07b',
+          400: '#a47139',
+          500: '#8f5f2e',
+          600: '#734b24',
+          700: '#58391c',
+          800: '#3f2a15',
+          900: '#2a1c0e',
+          950: '#160f07',
         },
 
+        /* ================= DRAMATIC RED ================= */
         accent: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d',
-          950: '#450a0a',
+          50: '#f6eef1',
+          100: '#e6cfd7',
+          200: '#cfa0af',
+          300: '#b16d85',
+          400: '#8f3f5f',
+          500: '#682745',
+          600: '#58203a',
+          700: '#44182d',
+          800: '#311120',
+          900: '#1f0a14',
+          950: '#11050b',
         },
 
+        /* ================= THEATRE SYSTEM ================= */
         theatre: {
-          // Black scale
           black: {
-            900: '#0a0a0a',
-            950: '#050505',
+            900: '#0b0807',
+            950: '#050403',
           },
 
-          // Your red converted to a proper scale
-          red: {
-            400: '#A91D42', // light
-            500: '#8B1538', // DEFAULT
-            600: '#6B0F2A', // dark
+          curtain: {
+            500: '#682745',
           },
 
-          // Gold converted to scale
           gold: {
-            400: '#D4B876', // light
-            500: '#C9A962', // DEFAULT
-            600: '#B8994E', // dark
+            500: '#a47139',
           },
 
-          // Cream as 50
-          cream: {
-            50: '#F5F1E8',
+          wood: {
+            500: '#584136',
           },
+
+          parchment: {
+            50: '#f6f3ef',
+          },
+        },
+
+        /* ================= STATUS ================= */
+        reservation: {
+          500: '#a47139',
+          600: '#8f5f2e',
+        },
+
+        waiting: {
+          500: '#682745',
+          600: '#58203a',
         },
       },
 
@@ -80,31 +91,8 @@ export default {
         sans: ['Roboto', 'sans-serif'],
       },
 
-      animation: {
-        'spin-slow': 'spin 2s linear infinite',
-        'light-left': 'light-left 1.8s ease-in-out infinite',
-        'light-right': 'light-right 1.8s ease-in-out infinite',
-        'light-down': 'light-down 2s ease-in-out infinite',
-        'fade-in-out': 'fade-in-out 2s ease-in-out infinite',
-      },
-
-      keyframes: {
-        'light-left': {
-          '0%, 100%': { transform: 'rotate(40deg)' },
-          '50%': { transform: 'rotate(50deg)' },
-        },
-        'light-right': {
-          '0%, 100%': { transform: 'rotate(-40deg)' },
-          '50%': { transform: 'rotate(-50deg)' },
-        },
-        'light-down': {
-          '0%, 100%': { height: '4rem' },
-          '50%': { height: '6rem' },
-        },
-        'fade-in-out': {
-          '0%, 100%': { opacity: 0.3 },
-          '50%': { opacity: 1 },
-        },
+      boxShadow: {
+        'glow-dark': '0 0 40px rgba(0,0,0,0.65)',
       },
     },
   },

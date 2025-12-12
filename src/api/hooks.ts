@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
-import type {Article, ArticleType, Comment, CreativitySubmission, DetailEntry, FestivalEdition, Show} from '../types';
+import type {Article, Comment, CreativitySubmission, DetailEntry, FestivalEdition, Show} from '../types';
 
 const emptyArray: never[] = [];
 
@@ -137,10 +137,13 @@ type ArticleApiResult = {
     content?: string | null;
     contentAr?: string | null;
     contentEn?: string | null;
+    sectionOne?: string | null;
+    sectionTwo?: string | null;
+    sectionThree?: string | null;
     author?: string | null;
     createdAt?: string | null;
     updatedAt?: string | null;
-    tag?: string | null;
+    tag?: string | null | string[];
     show?: number | null;
     festival?: number | null;
     festivalYear?: number | null;
@@ -552,22 +555,22 @@ const mapShowApiResultToShow = (show: ShowApiResult): Show => {
  * @param tag - Tag string from API
  * @returns ArticleType enum value
  */
-const mapArticleTagToType = (tag?: string | null): ArticleType => {
-    if (!tag) {
-        return 'general';
-    }
-
-    switch (tag.toUpperCase()) {
-        case 'SHOW':
-            return 'review';
-        case 'SYMPOSIUM':
-            return 'symposium_coverage';
-        case 'ANALYSIS':
-            return 'analysis';
-        default:
-            return 'general';
-    }
-};
+// const mapArticleTagToType = (tag?: string | null): ArticleType => {
+//     if (!tag) {
+//         return 'general';
+//     }
+//
+//     switch (tag.toUpperCase()) {
+//         case 'SHOW':
+//             return 'review';
+//         case 'SYMPOSIUM':
+//             return 'symposium_coverage';
+//         case 'ANALYSIS':
+//             return 'analysis';
+//         default:
+//             return 'general';
+//     }
+// };
 
 /**
  * Maps Article API result to Article frontend type
@@ -593,6 +596,10 @@ const mapArticleApiResultToArticle = (article: ArticleApiResult): Article => {
 
     const baseTitle = article.title ?? 'مقال نقدي';
 
+    const sections = [article.sectionOne, article.sectionTwo, article.sectionThree]
+        .map(section => (typeof section === 'string' ? section.trim() : ''))
+        .filter((section): section is string => section.length > 0);
+
     return {
         id: String(article.id),
         slug: article.slug ?? `article-${article.id}`,
@@ -600,12 +607,14 @@ const mapArticleApiResultToArticle = (article: ArticleApiResult): Article => {
         titleEn: article.titleEn ?? baseTitle,
         author: article.author ?? 'غير معروف',
         editionYear,
-        type: mapArticleTagToType(article.tag),
+        // type: mapArticleTagToType(article.tag),
+        type: 'general',
         ...(article.show ? {showId: String(article.show)} : {}),
         ...(article.festival ? {festivalId: String(article.festival)} : {}),
         createdAt,
         contentAr: article.contentAr ?? article.content ?? '',
         contentEn: article.contentEn ?? article.content ?? article.contentAr ?? undefined,
+        ...(sections.length > 0 ? {sections} : {}),
         attachments: Array.isArray(article.articleAttachmentsList)
             ? article.articleAttachmentsList.filter((path): path is string => typeof path === 'string' && path.trim() !== '')
             : undefined,
@@ -620,22 +629,22 @@ const mapArticleApiResultToArticle = (article: ArticleApiResult): Article => {
  * @param tag - Tag string from API
  * @returns CreativitySubmission type value
  */
-const mapCreativityTagToType = (tag?: string | null): CreativitySubmission['type'] => {
-    if (!tag) {
-        return 'other';
-    }
-
-    switch (tag.toUpperCase()) {
-        case 'STORY':
-            return 'story';
-        case 'ESSAY':
-            return 'essay';
-        case 'POEM':
-            return 'poem';
-        default:
-            return 'other';
-    }
-};
+// const mapCreativityTagToType = (tag?: string | null): CreativitySubmission['type'] => {
+//     if (!tag) {
+//         return 'other';
+//     }
+//
+//     switch (tag.toUpperCase()) {
+//         case 'STORY':
+//             return 'story';
+//         case 'ESSAY':
+//             return 'essay';
+//         case 'POEM':
+//             return 'poem';
+//         default:
+//             return 'other';
+//     }
+// };
 
 /**
  * Maps Article API result to CreativitySubmission frontend type
@@ -666,7 +675,8 @@ const mapArticleApiResultToCreativity = (article: ArticleApiResult): CreativityS
         titleAr: baseTitleAr,
         titleEn: baseTitleEn,
         author: article.author ?? 'غير معروف',
-        type: mapCreativityTagToType(article.tag),
+        // type: mapCreativityTagToType(article.tag),
+        type: 'other',
         editionYear:
             article.festivalYear ??
             (article.createdAt ? new Date(article.createdAt).getFullYear() : undefined),

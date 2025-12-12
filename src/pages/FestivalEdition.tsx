@@ -13,19 +13,20 @@ import {
 } from '../api/hooks';
 import {formatLocalizedNumber, localizeDigitsInString} from '../utils/numberUtils';
 import {buildMediaUrl} from '../utils/mediaUtils';
+import {getArticlePreviewText} from '../utils/articleContent';
 import {FestivalInfoTab} from './festival-detail';
 
 type Tab = 'info' | 'shows' | 'articles' | 'symposia' | 'creativity';
 
 export const FestivalEdition = () => {
-    const {year} = useParams<{ year: string }>();
+    const {festivalSlug} = useParams<{ festivalSlug: string }>();
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
     const [activeTab, setActiveTab] = useState<Tab>('info');
 
-    const editionYear = Number(year);
     const editionsQuery = useFestivalEditions();
-    const edition = editionsQuery.data?.find(e => e.year === editionYear);
+    const edition = editionsQuery.data?.find(e => e.slug === festivalSlug);
+    const editionYear = edition?.year;
     const showsQuery = useShows(edition?.slug, {enabled: Boolean(edition?.slug)});
     const articlesQuery = useArticles();
     const symposiaQuery = useSymposia();
@@ -182,6 +183,7 @@ export const FestivalEdition = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {articles.map(article => {
                             const attachmentUrl = getAttachmentUrl(article.attachments);
+                            const previewText = getArticlePreviewText(article, isRTL);
                             return (
                                 <Link key={article.id} to={`/articles/${article.slug}`} className="block h-full">
                                     <Card className="transition-all hover:shadow-2xl h-full">
@@ -224,7 +226,7 @@ export const FestivalEdition = () => {
                                                 </p>
 
                                                 <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
-                                                    {isRTL ? article.contentAr.substring(0, 250) : article.contentEn?.substring(0, 250)}...
+                                                    {previewText ? `${previewText}...` : ''}
                                                 </p>
 
                                                 <p className="text-secondary-500 hover:text-secondary-400 font-medium">
@@ -245,6 +247,7 @@ export const FestivalEdition = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {symposia.map(symposium => {
                             const attachmentUrl = getAttachmentUrl(symposium.attachments);
+                            const previewText = getArticlePreviewText(symposium, isRTL);
                             return (
                                 <Link key={symposium.id} to={`/symposia/${symposium.slug}`} className="block h-full">
                                     <Card className="transition-all hover:shadow-2xl h-full">
@@ -287,7 +290,7 @@ export const FestivalEdition = () => {
                                                 </p>
 
                                                 <p className="text-primary-700 dark:text-primary-300 leading-relaxed line-clamp-3">
-                                                    {isRTL ? symposium.contentAr.substring(0, 250) : symposium.contentEn?.substring(0, 250)}...
+                                                    {previewText ? `${previewText}...` : ''}
                                                 </p>
 
                                                 <p className="text-secondary-500 hover:text-secondary-400 font-medium">

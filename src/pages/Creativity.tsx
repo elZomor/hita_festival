@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {  Card, Badge, LoadingState } from '../components/common';
+import {Card, Badge, LoadingState, SectionHeader} from '../components/common';
 import { useCreativityEntries } from '../api/hooks';
 import { buildMediaUrl } from '../utils/mediaUtils';
+import {FileText} from "lucide-react";
 
 export const Creativity = () => {
   const { t, i18n } = useTranslation();
@@ -15,6 +16,12 @@ export const Creativity = () => {
 
   return (
     <div className="space-y-8">
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <FileText size={40} className="text-accent-600 dark:text-secondary-500"/>
+          <SectionHeader className="mb-0">{t(`creativity.title`)}</SectionHeader>
+        </div>
+      </div>
 
       {isLoading && <LoadingState fullscreen={false} />}
 

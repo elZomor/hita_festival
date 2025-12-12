@@ -29,8 +29,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/festival" element={<FestivalList />} />
-              <Route path="/festival/:year" element={<FestivalEdition />} />
-              <Route path="/festival/:year/shows/:slug" element={<ShowDetail />} />
+              <Route path="/festival/:festivalSlug" element={<FestivalEdition />} />
+              <Route path="/festival/:festivalSlug/shows/:slug" element={<ShowDetail />} />
               <Route path="/articles" element={<Articles />} />
               <Route path="/articles/:slug" element={<ArticleDetail />} />
               <Route path="/symposia" element={<Symposia />} />

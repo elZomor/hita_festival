@@ -21,7 +21,7 @@ import {
 import {isDetailEntry} from '../components/detail-display/utils';
 
 export const ShowDetail = () => {
-    const {year, slug} = useParams<{ year: string; slug: string }>();
+    const {festivalSlug, slug} = useParams<{ festivalSlug: string; slug: string }>();
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
     const [isReservationOpen, setReservationOpen] = useState(false);
@@ -114,7 +114,7 @@ export const ShowDetail = () => {
         }
     })();
     const festivalDisplayName = show.festivalName ?? (show.editionYear ? t('show.festivalFallback', {year: show.editionYear}) : undefined);
-    const festivalRouteParam = show.festivalSlug ?? show.editionYear ?? (year ? Number(year) : undefined);
+    const festivalRouteParam = show.festivalSlug ?? show.festivalId ?? festivalSlug;
     const festivalLinkValue = festivalDisplayName && festivalRouteParam ? (
         <Link
             to={`/festival/${festivalRouteParam}`}
@@ -269,7 +269,7 @@ export const ShowDetail = () => {
     return (
         <div className="space-y-8">
             <Link
-                to={`/festival/${year}`}
+                to={`/festival/${festivalSlug}`}
                 className="inline-flex items-center gap-2 text-secondary-500 hover:text-secondary-400 transition-colors"
             >
                 <ArrowLeft size={20} className={isRTL ? 'rotate-180' : ''}/>
