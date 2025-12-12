@@ -45,7 +45,7 @@ export const Footer = () => {
               {t('about.contactTitle')}
             </h4>
             <p className="text-primary-400 text-sm">
-              info@arabfestival.edu.eg
+              info@play-cast.com
             </p>
           </div>
         </div>

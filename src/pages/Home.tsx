@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar, ArrowRight } from 'lucide-react';
-import { Button, Card, Badge, SectionHeader, LoadingState } from '../components/common';
+import { Button, Card, SectionHeader, LoadingState } from '../components/common';
 import { useFestivalEditions, useLatestArticles } from '../api/hooks';
 import { formatLocalizedNumber } from '../utils/numberUtils';
 
@@ -104,9 +104,6 @@ export const Home = () => {
                     <h3 className="text-2xl font-bold text-accent-600 dark:text-secondary-500">
                       {isRTL ? edition.titleAr : edition.titleEn}
                     </h3>
-                    {edition.slug === currentEdition.slug && (
-                      <Badge variant="red">{t('festival.todayShow')}</Badge>
-                    )}
                   </div>
 
                   <p className="text-primary-700 dark:text-primary-300 leading-relaxed">
