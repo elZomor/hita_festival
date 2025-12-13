@@ -1,6 +1,6 @@
 # Arab Festival Archive
 
-A comprehensive, bilingual (Arabic/English) web application dedicated to the Arab Festival at the Higher Institute of Theatrical Arts in Cairo.
+A comprehensive, bilingual (Arabic/English) web application dedicated to the Arab Festival at the Higher Institute of Theatrical Arts.
 
 ## Features
 

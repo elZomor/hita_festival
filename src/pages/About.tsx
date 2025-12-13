@@ -63,8 +63,8 @@ export const About = () => {
                             </p>
                             <p className="text-primary-800 dark:text-primary-200 font-medium leading-relaxed">
                                 المعهد العالي للفنون المسرحية<br/>
-                                أكاديمية الفنون - الهرم<br/>
-                                القاهرة، مصر
+                                أكاديمية الفنون<br/>
+                                مصر
                             </p>
                         </div>
                     </div>

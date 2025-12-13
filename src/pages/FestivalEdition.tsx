@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {useParams, Link} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
-import {Calendar, ArrowLeft} from 'lucide-react';
+import {Calendar, ArrowLeft, Share2} from 'lucide-react';
 import {Badge, Card, LoadingState} from '../components/common';
 import {ShowCard} from '../features/festival/ShowCard';
 import {
@@ -15,6 +15,8 @@ import {formatLocalizedNumber, localizeDigitsInString} from '../utils/numberUtil
 import {buildMediaUrl} from '../utils/mediaUtils';
 import {getArticlePreviewText} from '../utils/articleContent';
 import {FestivalInfoTab} from './festival-detail';
+import {baseUrl} from "../constants.ts";
+import {motion} from "framer-motion";
 
 type Tab = 'info' | 'shows' | 'articles' | 'symposia' | 'creativity';
 
@@ -104,11 +106,31 @@ export const FestivalEdition = () => {
 
             <div
                 className="bg-gradient-to-r from-accent-600 to-accent-700 dark:from-accent-700 dark:to-accent-800 rounded-2xl p-8 text-primary-50 shadow-2xl">
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-2 justify-center md:justify-start">
+
                     <Calendar size={32} className="text-secondary-500"/>
                     <h1 className="text-3xl md:text-4xl font-bold">
                         {localizedTitle}
                     </h1>
+                    <motion.button
+                        onClick={() => {
+                            const url = `${baseUrl}/hita_arab_festival/festivals/${edition.slug}/share`;
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: edition.titleAr,
+                                    url,
+                                });
+                            } else {
+                                navigator.clipboard.writeText(url);
+                                alert(t('link_copied'));
+                            }
+                        }}
+                        className="text-sm mx-2 hover:text-accent-500 text-secondary-500 font-medium underline text-center md:text-left"
+                        whileHover={{scale: 1.05}}
+                        whileTap={{scale: 0.95}}
+                    >
+                        <Share2 size={30}/>
+                    </motion.button>
                 </div>
 
                 <p className="text-lg text-primary-100 dark:text-primary-200 mb-4">
@@ -189,7 +211,8 @@ export const FestivalEdition = () => {
                                     <Card className="transition-all hover:shadow-2xl h-full">
                                         <div className="flex flex-col md:flex-row gap-4 h-full">
                                             {attachmentUrl && (
-                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                <div
+                                                    className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
                                                     <img
                                                         src={attachmentUrl}
                                                         alt={isRTL ? article.titleAr : article.titleEn}
@@ -213,7 +236,8 @@ export const FestivalEdition = () => {
 
                                                 <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
                                                     <span>
-                                                        {t('articles.author')}: <span className="font-medium">{article.author}</span>
+                                                        {t('articles.author')}: <span
+                                                        className="font-medium">{article.author}</span>
                                                     </span>
                                                     <span>•</span>
                                                     <span>
@@ -253,7 +277,8 @@ export const FestivalEdition = () => {
                                     <Card className="transition-all hover:shadow-2xl h-full">
                                         <div className="flex flex-col md:flex-row gap-4 h-full">
                                             {attachmentUrl && (
-                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                <div
+                                                    className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
                                                     <img
                                                         src={attachmentUrl}
                                                         alt={isRTL ? symposium.titleAr : symposium.titleEn}
@@ -277,7 +302,8 @@ export const FestivalEdition = () => {
 
                                                 <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
                                                     <span>
-                                                        {t('symposia.author')}: <span className="font-medium">{symposium.author}</span>
+                                                        {t('symposia.author')}: <span
+                                                        className="font-medium">{symposium.author}</span>
                                                     </span>
                                                     <span>•</span>
                                                     <span>
@@ -325,7 +351,8 @@ export const FestivalEdition = () => {
                                     <Card className="transition-all hover:shadow-2xl h-full">
                                         <div className="flex flex-col md:flex-row gap-4 h-full">
                                             {attachmentUrl && (
-                                                <div className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
+                                                <div
+                                                    className="w-full md:w-1/3 lg:w-2/5 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center overflow-hidden">
                                                     <img
                                                         src={attachmentUrl}
                                                         alt={localizedTitle}
@@ -351,7 +378,8 @@ export const FestivalEdition = () => {
 
                                                 <p className="text-primary-600 dark:text-primary-400 flex flex-wrap items-center gap-2">
                                                     <span>
-                                                        {t('creativity.by')} <span className="font-medium">{item.author}</span>
+                                                        {t('creativity.by')} <span
+                                                        className="font-medium">{item.author}</span>
                                                     </span>
                                                     <span>•</span>
                                                     <span>
