@@ -114,7 +114,7 @@ export const ShowDetail = () => {
         }
     })();
     const festivalDisplayName = show.festivalName ?? (show.editionYear ? t('show.festivalFallback', {year: show.editionYear}) : undefined);
-    const festivalRouteParam = show.festivalSlug ?? show.festivalId;
+    const festivalRouteParam = show.festivalId;
     const festivalLinkValue = festivalDisplayName && festivalRouteParam ? (
         <Link
             to={`/festival/${festivalRouteParam}`}
