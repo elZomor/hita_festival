@@ -104,6 +104,7 @@ type ShowApiResult = {
     isOpenForReservation: string;
     allowedSeats?: number | null;
     allowedWaiting?: number | null;
+    openForComments?: boolean | null;
 };
 
 type PaginatedResponse<T> = {
@@ -544,6 +545,7 @@ const mapShowApiResultToShow = (show: ShowApiResult): Show => {
         allowedWaiting: show.allowedWaiting ?? undefined,
         isOpenForReservation: show.isOpenForReservation ?? 'CLOSED',
         castWord: show.castWord && show.castWord.trim() !== '' ? show.castWord : undefined,
+        openForComments: show.openForComments ?? undefined,
     };
 };
 

@@ -246,7 +246,7 @@ export const ShowDetail = () => {
                     />
                 );
             case 'comments':
-                return <ShowCommentsTab showId={show.id}/>;
+                return <ShowCommentsTab showId={show.id} openForComments={show.openForComments}/>;
             case 'info':
             default:
                 return (

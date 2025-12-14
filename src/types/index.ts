@@ -67,6 +67,7 @@ export type Show = {
   allowedSeats?: number;
   allowedWaiting?: number;
   isOpenForReservation: string;
+  openForComments: boolean | undefined;
 };
 
 export type ArticleType = "review" | "symposium_coverage" | "analysis" | "general";

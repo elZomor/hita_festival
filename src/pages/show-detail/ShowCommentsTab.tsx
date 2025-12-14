@@ -7,6 +7,7 @@ import {useComments, useSubmitComment} from '../../api/hooks';
 
 type ShowCommentsTabProps = {
     showId: string;
+    openForComments?: boolean;
 };
 
 export const ShowCommentsTab = ({showId}: ShowCommentsTabProps) => {
@@ -55,10 +56,10 @@ export const ShowCommentsTab = ({showId}: ShowCommentsTabProps) => {
     return (
         <div className="space-y-6 w-full md:w-[85%] mx-auto">
             {/* Comment Form */}
-            <Card className="bg-primary-50 dark:bg-primary-900">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex-1">
+            (openForComments && <Card className="bg-primary-50 dark:bg-primary-900">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
                             <textarea
                                 value={comment}
                                 onChange={(e) => setComment(e.target.value)}
@@ -66,36 +67,36 @@ export const ShowCommentsTab = ({showId}: ShowCommentsTabProps) => {
                                 rows={3}
                                 className="w-full px-4 py-3 rounded-lg border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-800 text-primary-900 dark:text-primary-50 focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400 resize-none"
                             />
-                        </div>
-                        <div className="flex items-start w-full md:w-auto">
-                            <Button
-                                type="submit"
-                                variant="secondary"
-                                disabled={!comment.trim() || submitCommentMutation.isPending}
-                                className="group hover:cursor-pointer w-full md:w-auto justify-center"
-                            >
-                                {submitCommentMutation.isPending ? t('show.comments.submitting') : t('show.comments.submit')}
-                            </Button>
-                        </div>
                     </div>
+                    <div className="flex items-start w-full md:w-auto">
+                        <Button
+                            type="submit"
+                            variant="secondary"
+                            disabled={!comment.trim() || submitCommentMutation.isPending}
+                            className="group hover:cursor-pointer w-full md:w-auto justify-center"
+                        >
+                            {submitCommentMutation.isPending ? t('show.comments.submitting') : t('show.comments.submit')}
+                        </Button>
+                    </div>
+                </div>
 
-                    {showSuccess && (
-                        <div className="p-4 bg-green-100 dark:bg-green-900/30 border border-green-500 rounded-lg">
-                            <p className="text-green-800 dark:text-green-200">
-                                {t('show.comments.success')}
-                            </p>
-                        </div>
-                    )}
+                {showSuccess && (
+                    <div className="p-4 bg-green-100 dark:bg-green-900/30 border border-green-500 rounded-lg">
+                        <p className="text-green-800 dark:text-green-200">
+                            {t('show.comments.success')}
+                        </p>
+                    </div>
+                )}
 
-                    {errorMessage && (
-                        <div className="p-4 bg-red-100 dark:bg-red-900/30 border border-red-500 rounded-lg">
-                            <p className="text-red-800 dark:text-red-200">
-                                {errorMessage}
-                            </p>
-                        </div>
-                    )}
-                </form>
-            </Card>
+                {errorMessage && (
+                    <div className="p-4 bg-red-100 dark:bg-red-900/30 border border-red-500 rounded-lg">
+                        <p className="text-red-800 dark:text-red-200">
+                            {errorMessage}
+                        </p>
+                    </div>
+                )}
+            </form>
+        </Card>)
 
             {/* Comments List */}
             <div className="space-y-4">
@@ -121,21 +122,22 @@ export const ShowCommentsTab = ({showId}: ShowCommentsTabProps) => {
                 )}
 
                 {!isError && comments.length > 0 && (
-                    <div className="space-y-0 border border-primary-200 dark:border-primary-700 rounded-lg overflow-hidden">
+                    <div
+                        className="space-y-0 border border-primary-200 dark:border-primary-700 rounded-lg overflow-hidden">
                         {comments.map((commentItem, index) => {
                             const createdAt = commentItem.createdAt ? new Date(commentItem.createdAt) : null;
                             const formattedDate = createdAt
                                 ? createdAt.toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
-                                      year: 'numeric',
-                                      month: 'long',
-                                      day: 'numeric',
-                                  })
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })
                                 : '';
                             const formattedTime = createdAt
                                 ? createdAt.toLocaleTimeString(isRTL ? 'ar-EG' : 'en-US', {
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                  })
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                })
                                 : '';
 
                             return (
@@ -154,7 +156,8 @@ export const ShowCommentsTab = ({showId}: ShowCommentsTabProps) => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-primary-500 dark:text-primary-400">
+                                    <div
+                                        className="flex items-center gap-2 text-sm text-primary-500 dark:text-primary-400">
                                         {commentItem.author && (
                                             <>
                                                 <span>{commentItem.author}</span>
