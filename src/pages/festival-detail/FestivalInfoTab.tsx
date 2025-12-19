@@ -74,7 +74,7 @@ export const FestivalInfoTab = ({edition}: FestivalInfoTabProps) => {
     const sections = [
         {key: 'organizingTeam', section: organizingTeamSection, variant: 'role' as DetailVariant},
         {key: 'jury', section: jurySection, variant: 'default' as DetailVariant},
-        {key: 'awards', section: awardsSection, variant: 'default' as DetailVariant},
+        {key: 'awards', section: awardsSection, variant: 'role' as DetailVariant},
         {key: 'extraDetails', section: extraDetailsSection, variant: 'text' as DetailVariant},
     ].filter(({section}) => section && section.items.length > 0) as {
         key: string;

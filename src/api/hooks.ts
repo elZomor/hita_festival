@@ -378,10 +378,21 @@ const mapItemValue = (value?: string | null): string | string[] | undefined => {
 };
 
 /**
+ * Award child format from API (used in awards section)
+ */
+type AwardChildApi = {
+    name: string;
+    rank?: string;
+    show?: string;
+};
+
+/**
  * Maps children array from API format to DetailEntry array
  *
- * Handles both string children and structured object children,
- * converting them to DetailEntry format.
+ * Handles multiple child formats:
+ * - String children
+ * - Structured object children with {text, value, ...}
+ * - Award children with {name, rank, show}
  *
  * @param children - Array of children (strings or objects)
  * @returns Array of DetailEntry objects, or undefined if no valid children
@@ -389,8 +400,12 @@ const mapItemValue = (value?: string | null): string | string[] | undefined => {
  * @example
  * mapChildren(["Child 1", {text: "Child 2", value: "Value"}])
  * // Returns: [{text: "Child 1"}, {text: "Child 2", value: "Value"}]
+ *
+ * @example
+ * mapChildren([{name: "Winner", rank: "1st", show: "Show Name"}])
+ * // Returns: [{text: "Winner", value: "1st - Show Name"}]
  */
-const mapChildren = (children?: Array<ShowDetailFieldApi | string> | null): DetailEntry[] | undefined => {
+const mapChildren = (children?: Array<ShowDetailFieldApi | AwardChildApi | string> | null): DetailEntry[] | undefined => {
     if (!children) {
         return undefined;
     }
@@ -400,7 +415,25 @@ const mapChildren = (children?: Array<ShowDetailFieldApi | string> | null): Deta
             if (typeof child === 'string') {
                 return {text: child};
             }
-            return mapStructuredItem(child);
+            // Handle award child format: {name, rank, show}
+            // Output format: name - rank (show) where rank is gold, (show) is italic
+            // Uses array value for special rendering
+            if ('name' in child && typeof child.name === 'string') {
+                const awardChild = child as AwardChildApi;
+                let value: string | string[] | undefined;
+                if (awardChild.rank && awardChild.show) {
+                    value = [awardChild.rank, `(${awardChild.show})`];
+                } else if (awardChild.rank) {
+                    value = [awardChild.rank];
+                } else if (awardChild.show) {
+                    value = ['', `(${awardChild.show})`];
+                }
+                return {
+                    text: awardChild.name,
+                    value,
+                };
+            }
+            return mapStructuredItem(child as ShowDetailFieldApi);
         })
         .filter((child): child is DetailEntry => Boolean(child));
 

@@ -28,6 +28,36 @@ export const renderValue = (value?: string | string[], options: RenderValueOptio
             );
         }
 
+        // Award value rendering: rank in gold, show in italics
+        // Formats: [rank, (show)], [rank], ['', (show)]
+        if (filtered.length === 2) {
+            const [rank, show] = filtered;
+            return (
+                <span className="text-primary-800 dark:text-primary-100">
+                    {rank && <span className="text-secondary-500 dark:text-secondary-400">{rank}</span>}
+                    {rank && show && ' '}
+                    {show && <em>{show}</em>}
+                </span>
+            );
+        }
+
+        // Single element array: rank in gold, or show in italics
+        if (filtered.length === 1) {
+            const [value] = filtered;
+            if (value.startsWith('(')) {
+                return (
+                    <span className="text-primary-800 dark:text-primary-100">
+                        <em>{value}</em>
+                    </span>
+                );
+            }
+            return (
+                <span className="text-secondary-500 dark:text-secondary-400">
+                    {value}
+                </span>
+            );
+        }
+
         return <span className="text-primary-800 dark:text-primary-100">{filtered.join(', ')}</span>;
     }
 
