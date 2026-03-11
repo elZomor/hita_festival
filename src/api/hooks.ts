@@ -239,8 +239,9 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
     const year = startDate ? new Date(startDate).getFullYear() : new Date().getFullYear();
 
     return {
+        id: String(festival.id),
         year,
-        slug: String(festival.id),
+        slug: String(year),
         titleAr: festival.name,
         titleEn: festival.name,
         descriptionAr: festival.description ?? '',

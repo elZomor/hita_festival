@@ -30,7 +30,7 @@ export const FestivalEdition = () => {
     const editionsQuery = useFestivalEditions();
     const edition = editionsQuery.data?.find(e => e.slug === festivalSlug);
     const editionYear = edition?.year;
-    const showsQuery = useShows(edition?.slug, {enabled: Boolean(edition?.slug)});
+    const showsQuery = useShows(edition?.id, {enabled: Boolean(edition?.id)});
     const articlesQuery = useArticles();
     const symposiaQuery = useSymposia();
     const creativityQuery = useCreativityEntries();

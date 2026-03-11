@@ -1,4 +1,5 @@
 export type FestivalEdition = {
+  id: string;
   totalShows: number;
   totalArticles: number;
   year: number;
