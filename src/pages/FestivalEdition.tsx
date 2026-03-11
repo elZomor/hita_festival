@@ -3,6 +3,7 @@ import {useParams, Link} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {Calendar, ArrowLeft, Share2} from 'lucide-react';
 import {Badge, Card, LoadingState} from '../components/common';
+import {festivalConfig} from '../config/festival';
 import {ShowCard} from '../features/festival/ShowCard';
 import {
     useArticles,
@@ -114,7 +115,7 @@ export const FestivalEdition = () => {
                     </h1>
                     <motion.button
                         onClick={() => {
-                            const url = `${baseUrl}/hita_arab_festival/festivals/${edition.slug}/share`;
+                            const url = `${baseUrl}${festivalConfig.apiPrefix}/festivals/${edition.slug}/share`;
                             if (navigator.share) {
                                 navigator.share({
                                     title: edition.titleAr,

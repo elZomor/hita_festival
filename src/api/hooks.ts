@@ -1,6 +1,9 @@
 import {useMemo} from 'react';
 import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
 import type {Article, Comment, CreativitySubmission, DetailEntry, FestivalEdition, Show} from '../types';
+import {festivalConfig} from '../config/festival';
+
+const api = festivalConfig.apiPrefix;
 
 const emptyArray: never[] = [];
 
@@ -737,14 +740,14 @@ const emptyArticleResponse: PaginatedResponse<ArticleApiResult> = {
 export const useFestivalEditions = () =>
     useApiQuery<FestivalApiResponse, FestivalEdition[]>({
         queryKey: buildQueryKey('festival-editions'),
-        path: '/hita_arab_festival/festivals',
+        path: `${api}/festivals`,
         select: data => (data.results ?? []).map(mapFestivalApiResultToEdition),
     });
 
 export const useFestivalEditionById = (festivalId?: string | number, options?: UseSingleEntityOptions) =>
     useApiQuery<FestivalApiResult, FestivalEdition>({
         queryKey: buildQueryKey('festival-edition', festivalId ?? 'detail'),
-        path: () => `/hita_arab_festival/festivals/${festivalId}`,
+        path: () => `${api}/festivals/${festivalId}`,
         select: data => mapFestivalApiResultToEdition(data),
         enabled: Boolean(festivalId) && (options?.enabled ?? true),
     });
@@ -760,8 +763,8 @@ export const useShows = (festivalId?: string | number, options?: UseShowsOptions
     useApiQuery<PaginatedResponse<ShowApiResult>, Show[]>({
         queryKey: buildQueryKey('shows', festivalId ?? 'all'),
         path: festivalId
-            ? withQueryParams('/hita_arab_festival/shows', {festival: festivalId, page_size: 50})
-            : '/hita_arab_festival/shows',
+            ? withQueryParams(`${api}/shows`, {festival: festivalId, page_size: 50})
+            : `${api}/shows`,
         select: data => (data.results ?? []).map(mapShowApiResultToShow),
         enabled: options?.enabled,
     });
@@ -769,7 +772,7 @@ export const useShows = (festivalId?: string | number, options?: UseShowsOptions
 export const useShow = (showId?: string | number, options?: UseSingleEntityOptions) =>
     useApiQuery<ShowApiResult, Show>({
         queryKey: buildQueryKey('show', showId ?? 'detail'),
-        path: () => `/hita_arab_festival/shows/${showId}`,
+        path: () => `${api}/shows/${showId}`,
         select: data => mapShowApiResultToShow(data),
         enabled: Boolean(showId) && (options?.enabled ?? true),
     });
@@ -777,7 +780,7 @@ export const useShow = (showId?: string | number, options?: UseSingleEntityOptio
 type ArticleQueryType = 'ARTICLE' | 'SYMPOSIA' | 'CREATIVITY';
 
 const buildArticlesPath = (contentType: ArticleQueryType) =>
-    withQueryParams('/hita_arab_festival/articles', {type: contentType, page_size: 50});
+    withQueryParams(`${api}/articles`, {type: contentType, page_size: 50});
 
 export const useArticles = (contentType: ArticleQueryType = 'ARTICLE') =>
     useApiQuery<PaginatedResponse<ArticleApiResult>, Article[]>({
@@ -790,7 +793,7 @@ export const useArticles = (contentType: ArticleQueryType = 'ARTICLE') =>
 export const useArticle = (articleId?: string | number, options?: UseSingleEntityOptions) =>
     useApiQuery<ArticleApiResult, Article>({
         queryKey: buildQueryKey('article', articleId ?? 'detail'),
-        path: () => `/hita_arab_festival/articles/${articleId}`,
+        path: () => `${api}/articles/${articleId}`,
         select: data => mapArticleApiResultToArticle(data),
         enabled: Boolean(articleId) && (options?.enabled ?? true),
     });
@@ -839,7 +842,7 @@ export type ReserveShowResponseData = {
 
 export const useReserveShow = () =>
     useApiMutation<ReserveShowResponseData, ReserveShowVariables>({
-        path: ({showId}) => `/hita_arab_festival/shows/${showId}/reserve`,
+        path: ({showId}) => `${api}/shows/${showId}/reserve`,
         method: 'POST',
         expectedStatus: 201,
         bodySerializer: ({name, email}) =>
@@ -892,8 +895,8 @@ export const useComments = (showId?: string | number) =>
     useApiQuery<PaginatedResponse<CommentApiResult>, Comment[]>({
         queryKey: buildQueryKey('comments', showId ?? 'all'),
         path: showId
-            ? withQueryParams('/hita_arab_festival/comments', {show: showId, page_size: 1000})
-            : '/hita_arab_festival/comments',
+            ? withQueryParams(`${api}/comments`, {show: showId, page_size: 1000})
+            : `${api}/comments`,
         select: data => (data.results ?? []).map(mapCommentApiResultToComment),
         enabled: Boolean(showId),
     });
@@ -912,7 +915,7 @@ export type SubmitCommentResponse = {
 
 export const useSubmitComment = () =>
     useApiMutation<SubmitCommentResponse, SubmitCommentVariables>({
-        path: '/hita_arab_festival/comments',
+        path: `${api}/comments`,
         method: 'POST',
         expectedStatus: 201,
         bodySerializer: ({content, show}) =>

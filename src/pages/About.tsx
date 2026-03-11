@@ -1,14 +1,20 @@
 import {useTranslation} from 'react-i18next';
 import {Mail, MapPin} from 'lucide-react';
 import {Card, SectionHeader} from '../components/common';
+import {festivalConfig} from '../config/festival';
 
 export const About = () => {
-    const {t} = useTranslation();
+    const {t, i18n} = useTranslation();
+    const isAr = i18n.language === 'ar';
+    const whatIsTitle = isAr ? festivalConfig.aboutWhatIsTitleAr : festivalConfig.aboutWhatIsTitleEn;
+    const whatIsText = isAr ? festivalConfig.aboutWhatIsTextAr : festivalConfig.aboutWhatIsTextEn;
+    const whyArchiveTitle = isAr ? festivalConfig.aboutWhyArchiveTitleAr : festivalConfig.aboutWhyArchiveTitleEn;
+    const whyArchiveText = isAr ? festivalConfig.aboutWhyArchiveTextAr : festivalConfig.aboutWhyArchiveTextEn;
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <div className="text-center space-y-4">
-                <div className="text-7xl mb-4">🎭</div>
+                <div className="text-7xl mb-4">{festivalConfig.logo}</div>
                 <SectionHeader>{t('about.title')}</SectionHeader>
             </div>
 
@@ -16,19 +22,19 @@ export const About = () => {
                 <div className="space-y-6">
                     <div>
                         <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-4">
-                            {t('about.whatIsTitle')}
+                            {whatIsTitle}
                         </h2>
                         <p className="text-primary-800 dark:text-primary-200 leading-relaxed text-lg">
-                            {t('about.whatIsText')}
+                            {whatIsText}
                         </p>
                     </div>
 
                     <div className="border-t border-primary-300 dark:border-primary-700 pt-6">
                         <h2 className="text-2xl font-bold text-accent-600 dark:text-secondary-500 mb-4">
-                            {t('about.whyArchiveTitle')}
+                            {whyArchiveTitle}
                         </h2>
                         <p className="text-primary-800 dark:text-primary-200 leading-relaxed text-lg">
-                            {t('about.whyArchiveText')}
+                            {whyArchiveText}
                         </p>
                     </div>
                 </div>
@@ -47,10 +53,10 @@ export const About = () => {
                                 البريد الإلكتروني / Email
                             </p>
                             <a
-                                href="mailto:info@play-cast.com"
+                                href={`mailto:${festivalConfig.contactEmail}`}
                                 className="text-secondary-500 hover:text-secondary-400 font-medium"
                             >
-                                info@play-cast.com
+                                {festivalConfig.contactEmail}
                             </a>
                         </div>
                     </div>
@@ -61,10 +67,8 @@ export const About = () => {
                             <p className="text-sm text-primary-600 dark:text-primary-400 mb-1">
                                 العنوان / Address
                             </p>
-                            <p className="text-primary-800 dark:text-primary-200 font-medium leading-relaxed">
-                                المعهد العالي للفنون المسرحية<br/>
-                                أكاديمية الفنون<br/>
-                                مصر
+                            <p className="text-primary-800 dark:text-primary-200 font-medium leading-relaxed" style={{whiteSpace: 'pre-line'}}>
+                                {festivalConfig.addressAr}
                             </p>
                         </div>
                     </div>
@@ -73,10 +77,10 @@ export const About = () => {
 
             <div className="bg-gradient-to-r from-primary-950 to-accent-700 rounded-2xl p-8 text-center shadow-2xl">
                 <h3 className="text-2xl font-bold text-secondary-500 mb-4">
-                    انضم إلينا في الاحتفال بالمسرح العربي
+                    {festivalConfig.celebrationAr}
                 </h3>
                 <p className="text-primary-300 text-lg">
-                    Join us in celebrating Arab theatre
+                    {festivalConfig.celebrationEn}
                 </p>
             </div>
         </div>

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, Sun, Moon, Languages } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { festivalConfig } from '../../config/festival';
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,14 +42,14 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 bg-accent-600 rounded-full flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 text-primary-50">
-              <span className="text-2xl">🎭</span>
+              <span className="text-2xl">{festivalConfig.logo}</span>
             </div>
             <div className={`hidden md:block ${isRTL ? 'text-right' : 'text-left'}`}>
               <h1 className="text-xl font-bold text-secondary-600 dark:text-secondary-400">
-                {t('home.title')}
+                {isRTL ? festivalConfig.titleAr : festivalConfig.titleEn}
               </h1>
               <p className="text-xs text-primary-600 dark:text-primary-300">
-                {t('home.subtitle')}
+                {isRTL ? festivalConfig.subtitleAr : festivalConfig.subtitleEn}
               </p>
             </div>
           </Link>

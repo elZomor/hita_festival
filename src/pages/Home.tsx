@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 import { Button, LoadingState } from '../components/common';
+import { festivalConfig } from '../config/festival';
 import { useFestivalEditions, useLatestArticles } from '../api/hooks';
 
 export const Home = () => {
@@ -58,15 +59,15 @@ export const Home = () => {
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold text-primary-50 mb-4">
-              {t('home.title')}
+              {isRTL ? festivalConfig.titleAr : festivalConfig.titleEn}
             </h1>
 
-            <p className="text-xl md:text-2xl text-secondary-500 font-medium">
+            <p className="text-xl md:text-2xl text-secondary-300 font-medium">
               {t('home.subtitle')}
             </p>
 
-            <p className="text-lg text-primary-300 max-w-2xl mx-auto leading-relaxed">
-              {t('home.tagline')}
+            <p className="text-lg text-primary-100 max-w-2xl mx-auto leading-relaxed">
+              {isRTL ? festivalConfig.taglineAr : festivalConfig.taglineEn}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">

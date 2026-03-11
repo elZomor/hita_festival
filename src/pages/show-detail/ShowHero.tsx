@@ -5,6 +5,7 @@ import {motion} from 'framer-motion';
 import {Share2} from 'lucide-react';
 import {baseUrl} from '../../constants';
 import {useTranslation} from 'react-i18next';
+import {festivalConfig} from '../../config/festival';
 
 type InfoItem = {
     label: string;
@@ -64,7 +65,7 @@ export const ShowHero = ({
                         </h1>
                         <motion.button
                             onClick={() => {
-                                const url = `${baseUrl}/hita_arab_festival/shows/${show.id}/share`;
+                                const url = `${baseUrl}${festivalConfig.apiPrefix}/shows/${show.id}/share`;
                                 if (navigator.share) {
                                     navigator.share({
                                         title: show.name,

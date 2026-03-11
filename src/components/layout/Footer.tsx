@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
+import { festivalConfig } from '../../config/festival';
 
 export const Footer = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const currentYear = new Date().getFullYear();
 
   return (
@@ -10,10 +12,10 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div>
             <h3 className="text-secondary-500 font-bold text-lg mb-3">
-              {t('home.title')}
+              {isRTL ? festivalConfig.titleAr : festivalConfig.titleEn}
             </h3>
             <p className="text-primary-400 text-sm">
-              {t('home.tagline')}
+              {isRTL ? festivalConfig.taglineAr : festivalConfig.taglineEn}
             </p>
           </div>
 
@@ -45,14 +47,14 @@ export const Footer = () => {
               {t('about.contactTitle')}
             </h4>
             <p className="text-primary-400 text-sm">
-              info@play-cast.com
+              {festivalConfig.contactEmail}
             </p>
           </div>
         </div>
 
         <div className="border-t border-primary-800 mt-8 pt-6 text-center text-primary-500 text-sm">
           <p>
-            © {currentYear} {t('home.title')} - {t('home.subtitle')}
+            © {currentYear} {isRTL ? festivalConfig.titleAr : festivalConfig.titleEn} - {isRTL ? festivalConfig.subtitleAr : festivalConfig.subtitleEn}
           </p>
         </div>
       </div>
