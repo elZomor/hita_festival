@@ -548,7 +548,7 @@ const parseDescriptionField = (description?: string | string[] | null): string |
 const mapShowApiResultToShow = (show: ShowApiResult): Show => {
     const datePart = show.date ?? '';
     const timePart = show.time ?? '';
-    const fallbackYearSource = show.createdAt ?? datePart;
+    const fallbackYearSource = datePart || show.createdAt;
     const editionYear = fallbackYearSource
         ? new Date(fallbackYearSource).getFullYear()
         : new Date().getFullYear();
