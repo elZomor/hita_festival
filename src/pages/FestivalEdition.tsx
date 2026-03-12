@@ -29,7 +29,6 @@ export const FestivalEdition = () => {
 
     const editionsQuery = useFestivalEditions();
     const edition = editionsQuery.data?.find(e => e.slug === festivalSlug);
-    const editionYear = edition?.year;
     const showsQuery = useShows(edition?.id, {enabled: Boolean(edition?.id)});
     const articlesQuery = useArticles();
     const symposiaQuery = useSymposia();
@@ -49,10 +48,10 @@ export const FestivalEdition = () => {
         symposiaQuery.isError ||
         creativityQuery.isError;
 
-    const shows = (showsQuery.data ?? []).filter(s => s.editionYear === editionYear);
-    const articles = (articlesQuery.data ?? []).filter(a => a.editionYear === editionYear);
-    const symposia = (symposiaQuery.data ?? []).filter(s => s.editionYear === editionYear);
-    const creativity = (creativityQuery.data ?? []).filter(c => c.editionYear === editionYear);
+    const shows = showsQuery.data ?? [];
+    const articles = (articlesQuery.data ?? []).filter(a => a.festivalId === edition?.id);
+    const symposia = (symposiaQuery.data ?? []).filter(s => s.festivalId === edition?.id);
+    const creativity = (creativityQuery.data ?? []).filter(c => c.festivalId === edition?.id);
     const getAttachmentUrl = (attachments?: string[]) =>
         attachments?.map(path => buildMediaUrl(path)).find(url => url && url.trim() !== '') ?? '';
 

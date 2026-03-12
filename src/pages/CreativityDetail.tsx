@@ -97,7 +97,7 @@ export const CreativityDetail = () => {
                                     <p className="text-xs uppercase tracking-wide text-secondary-500">
                                         {t('creativity.relatedFestival')}
                                     </p>
-                                    <Link to={`/festival/${relatedFestival.year}`}>
+                                    <Link to={`/festival/${relatedFestival.slug}`}>
                                         <h3 className="text-lg font-semibold text-primary-900 dark:text-primary-50 hover:underline">
                                             {isRTL ? relatedFestival.titleAr : relatedFestival.titleEn}
                                         </h3>

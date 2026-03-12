@@ -241,7 +241,7 @@ const mapFestivalApiResultToEdition = (festival: FestivalApiResult): FestivalEdi
     return {
         id: String(festival.id),
         year,
-        slug: String(year),
+        slug: String(festival.id),
         titleAr: festival.name,
         titleEn: festival.name,
         descriptionAr: festival.description ?? '',
