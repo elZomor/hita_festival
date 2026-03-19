@@ -99,15 +99,20 @@ const transformKeysToSnake = (value: unknown): unknown => {
 
 /* ---------------------------------------------------- */
 
+const REFRESH_TOKEN_KEY = 'gf_refreshToken';
+const ACCESS_TOKEN_KEY = 'gf_accessToken';
+
 export class ReactQueryApiClient {
   private baseUrl: string;
   private defaultHeaders: HeadersInit;
   private queryDefaults: QueryBehaviourOptions;
+  private isRefreshing = false;
+  private refreshPromise: Promise<void> | null = null;
 
   constructor(options: ApiClientOptions = {}) {
     const rawBaseUrl = options.baseUrl ?? import.meta.env?.VITE_API_BASE_URL ?? '';
     this.baseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
-    this.defaultHeaders = options.defaultHeaders ?? { 'Content-Type': 'application/json' };
+    this.defaultHeaders = options.defaultHeaders ?? { 'Content-Type': 'application/json' } as Record<string, string>;
     this.queryDefaults = options.defaultQueryOptions ?? {
       staleTime: 0,
       gcTime: 15 * 60 * 1000,
@@ -120,6 +125,59 @@ export class ReactQueryApiClient {
 
   getQueryDefaults() {
     return this.queryDefaults;
+  }
+
+  setAuthToken(token: string | null) {
+    const headers = this.defaultHeaders as Record<string, string>;
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete headers['Authorization'];
+    }
+  }
+
+  /** Try to refresh the access token. Returns true if successful. */
+  private async tryRefreshToken(): Promise<boolean> {
+    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+    if (!refreshToken) return false;
+
+    // Deduplicate concurrent refresh attempts
+    if (this.isRefreshing) {
+      await this.refreshPromise;
+      return true;
+    }
+
+    this.isRefreshing = true;
+    this.refreshPromise = (async () => {
+      try {
+        const res = await fetch(`${this.baseUrl}/token/refresh/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh: refreshToken }),
+        });
+        if (!res.ok) throw new Error('Refresh failed');
+        const data = await res.json();
+        const newToken: string = data.access;
+        localStorage.setItem(ACCESS_TOKEN_KEY, newToken);
+        this.setAuthToken(newToken);
+      } catch {
+        // Clear tokens so user gets signed out on next render
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+        localStorage.removeItem(REFRESH_TOKEN_KEY);
+        this.setAuthToken(null);
+        throw new Error('Session expired');
+      } finally {
+        this.isRefreshing = false;
+        this.refreshPromise = null;
+      }
+    })();
+
+    try {
+      await this.refreshPromise;
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   buildBody<TVariables>(
@@ -142,7 +200,21 @@ export class ReactQueryApiClient {
       headers: this.buildHeaders(init?.headers, init?.body ?? null),
     };
 
-    const response = await fetch(this.buildUrl(path, options), finalInit);
+    const url = this.buildUrl(path, options);
+    let response = await fetch(url, finalInit);
+
+    // 401 → attempt token refresh once, then retry (mirrors HITA's Axios interceptor)
+    if (response.status === 401) {
+      const refreshed = await this.tryRefreshToken();
+      if (refreshed) {
+        const retryInit: RequestInit = {
+          ...finalInit,
+          headers: this.buildHeaders(init?.headers, init?.body ?? null),
+        };
+        response = await fetch(url, retryInit);
+      }
+    }
+
     const payload = await this.parseResponse(response);
 
     const expectedStatuses = this.normalizeExpectedStatuses(options?.expectedStatus);

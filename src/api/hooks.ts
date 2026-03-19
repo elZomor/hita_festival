@@ -825,8 +825,6 @@ export const useLatestArticles = (limit = 3) => {
 
 type ReserveShowVariables = {
     showId: string;
-    name: string;
-    email: string;
 };
 
 export type ReserveShowResponse = {
@@ -846,11 +844,7 @@ export const useReserveShow = () =>
         path: ({showId}) => `${api}/shows/${showId}/reserve`,
         method: 'POST',
         expectedStatus: 201,
-        bodySerializer: ({name, email}) =>
-            JSON.stringify({
-                name: name,
-                email,
-            }),
+        bodySerializer: () => undefined,
     });
 
 /**

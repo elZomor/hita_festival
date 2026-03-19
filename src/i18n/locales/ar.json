@@ -1,4 +1,13 @@
 {
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signInWithGoogle": "الدخول بحساب Google",
+    "signOut": "تسجيل الخروج",
+    "signInToReserve": "يرجى تسجيل الدخول بحسابك على Google لإتمام الحجز.",
+    "unsupportedBrowser": "متصفح غير مدعوم",
+    "unsupportedBrowserMsg": "تسجيل الدخول عبر Google لا يعمل داخل المتصفح المدمج. يرجى فتح الصفحة في متصفح الجهاز.",
+    "openInBrowser": "فتح في المتصفح"
+  },
   "nav": {
     "home": "الرئيسية",
     "editions": "دورات المهرجان",

@@ -1,4 +1,13 @@
 {
+  "auth": {
+    "signIn": "Sign In",
+    "signInWithGoogle": "Sign in with Google",
+    "signOut": "Sign Out",
+    "signInToReserve": "Please sign in with your Google account to complete the reservation.",
+    "unsupportedBrowser": "Unsupported Browser",
+    "unsupportedBrowserMsg": "Google sign-in doesn't work inside in-app browsers. Please open this page in your device's browser.",
+    "openInBrowser": "Open in Browser"
+  },
   "nav": {
     "home": "Home",
     "editions": "Festival Editions",

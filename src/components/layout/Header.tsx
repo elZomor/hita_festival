@@ -1,15 +1,36 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Sun, Moon, Languages } from 'lucide-react';
+import { Menu, X, Sun, Moon, Languages, LogOut, UserCircle, LogIn } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
+import { isInAppBrowser, openExternalBrowser } from '../auth/GoogleLoginButton';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { festivalConfig } from '../../config/festival';
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [loginDropdownOpen, setLoginDropdownOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const loginDropdownRef = useRef<HTMLDivElement>(null);
   const { theme, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation();
   const location = useLocation();
+  const { user, isAuthenticated, loginWithGoogleCredential, signOut } = useAuth();
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+      if (loginDropdownRef.current && !loginDropdownRef.current.contains(e.target as Node)) {
+        setLoginDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const isRTL = i18n.language === 'ar';
 
@@ -34,6 +55,14 @@ export const Header = () => {
       return location.pathname === '/';
     }
     return location.pathname.startsWith(path);
+  };
+
+  const handleLoginClick = () => {
+    if (isInAppBrowser) {
+      openExternalBrowser();
+    } else {
+      setLoginDropdownOpen(prev => !prev);
+    }
   };
 
   return (
@@ -91,6 +120,59 @@ export const Header = () => {
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
+            {isAuthenticated && user ? (
+              <div ref={userMenuRef} className="relative hidden md:block">
+                <button
+                  onClick={() => setUserMenuOpen(prev => !prev)}
+                  className="p-2 transition-colors rounded-lg"
+                  aria-label="User menu"
+                >
+                  <div className="flex items-center gap-2">
+                    <UserCircle className="w-5 h-5 text-secondary-500 dark:text-secondary-400 hover:text-secondary-400" />
+                    <span className="text-sm font-medium text-primary-900 dark:text-primary-100">{user.name}</span>
+                  </div>
+                </button>
+                {userMenuOpen && (
+                  <div className="absolute end-0 mt-2 w-52 rounded-lg bg-primary-50 dark:bg-primary-900 border border-primary-200 dark:border-primary-700 shadow-lg z-50 overflow-hidden">
+                    <div className="px-4 py-3 border-b border-primary-200 dark:border-primary-700">
+                      <p className="text-sm font-medium text-primary-900 dark:text-primary-50 truncate">{user.name}</p>
+                      <p className="text-xs text-primary-500 dark:text-primary-400 truncate">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => { signOut(); setUserMenuOpen(false); }}
+                      className="w-full flex items-center gap-2 px-4 py-3 text-sm text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      {t('auth.signOut')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div ref={loginDropdownRef} className="relative hidden md:block">
+                <button
+                  onClick={handleLoginClick}
+                  className="p-2 rounded-lg bg-primary-100 text-primary-900 hover:bg-accent-600 hover:text-primary-50 dark:bg-primary-800 dark:text-primary-100 dark:hover:bg-accent-600 transition-colors duration-300"
+                  aria-label={t('auth.signIn')}
+                >
+                  <LogIn size={20} />
+                </button>
+                {loginDropdownOpen && (
+                  <div className="absolute end-0 mt-2 p-4 rounded-lg bg-primary-50 dark:bg-primary-900 border border-primary-200 dark:border-primary-700 shadow-lg z-50">
+                    <GoogleLogin
+                      onSuccess={async ({ credential }) => {
+                        if (credential) {
+                          setLoginDropdownOpen(false);
+                          try { await loginWithGoogleCredential(credential); } catch { /* failed */ }
+                        }
+                      }}
+                      onError={() => setLoginDropdownOpen(false)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 rounded-lg bg-primary-100 text-primary-900 hover:bg-accent-600 hover:text-primary-50 dark:bg-primary-800 dark:text-primary-100 dark:hover:bg-accent-600 transition-colors duration-300"
@@ -120,6 +202,54 @@ export const Header = () => {
                 </Link>
               );
             })}
+            <div className="pt-2 border-t border-primary-200 dark:border-primary-700">
+              {isAuthenticated && user ? (
+                <>
+                  <div className="flex items-center gap-3 px-4 py-2">
+                    {user.picture ? (
+                      <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-accent-600 flex items-center justify-center text-white font-bold text-xs">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-medium text-primary-900 dark:text-primary-50">{user.name}</p>
+                      <p className="text-xs text-primary-500 dark:text-primary-400">{user.email}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { signOut(); setMobileMenuOpen(false); }}
+                    className="w-full flex items-center gap-2 py-3 px-4 rounded-lg text-primary-900 dark:text-primary-100 hover:bg-accent-600 hover:text-primary-50 transition-colors duration-300"
+                  >
+                    <LogOut size={16} />
+                    {t('auth.signOut')}
+                  </button>
+                </>
+              ) : (
+                <div className="flex justify-center py-2">
+                  {isInAppBrowser ? (
+                    <button
+                      onClick={openExternalBrowser}
+                      className="flex items-center gap-2 py-3 px-4 rounded-lg text-primary-900 dark:text-primary-100 hover:bg-accent-600 hover:text-primary-50 transition-colors duration-300"
+                    >
+                      <LogIn size={16} />
+                      {t('auth.openInBrowser')}
+                    </button>
+                  ) : (
+                    <GoogleLogin
+                      onSuccess={async ({ credential }) => {
+                        setMobileMenuOpen(false);
+                        if (credential) {
+                          try { await loginWithGoogleCredential(credential); } catch { /* failed */ }
+                        }
+                      }}
+                      onError={() => setMobileMenuOpen(false)}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </nav>
