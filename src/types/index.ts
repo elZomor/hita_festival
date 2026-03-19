@@ -117,5 +117,20 @@ export type Comment = {
   isApproved?: boolean;
 };
 
+export type MyReservation = {
+  id: number;
+  reservationNumber: number;
+  status: 'CONFIRMED' | 'WAITING_LIST' | 'CLOSED';
+  createdAt: string;
+  showId: number;
+  showName: string;
+  showPoster: string | null;
+  showDate: string;
+  showTime: string;
+  venueName: string;
+  festivalName: string;
+  festivalId: number;
+};
+
 export type Language = 'ar' | 'en';
 export type Theme = 'light' | 'dark';

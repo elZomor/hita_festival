@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import {buildQueryKey, useApiMutation, useApiQuery, withQueryParams} from './reactQueryClient';
-import type {Article, Comment, CreativitySubmission, DetailEntry, FestivalEdition, Show} from '../types';
+import type {Article, Comment, CreativitySubmission, DetailEntry, FestivalEdition, MyReservation, Show} from '../types';
 import {festivalConfig} from '../config/festival';
 
 const api = festivalConfig.apiPrefix;
@@ -918,4 +918,11 @@ export const useSubmitComment = () =>
                 content,
                 show,
             }),
+    });
+
+export const useMyReservations = () =>
+    useApiQuery<{results: MyReservation[]}, MyReservation[]>({
+        queryKey: buildQueryKey('my-reservations'),
+        path: `${api}/reservations/my`,
+        select: data => data.results ?? [],
     });

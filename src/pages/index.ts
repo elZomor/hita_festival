@@ -10,3 +10,4 @@ export { Creativity } from './Creativity';
 export { CreativityDetail } from './CreativityDetail';
 export { About } from './About';
 export { ComingSoon } from './ComingSoon';
+export { MyTickets } from './MyTickets';

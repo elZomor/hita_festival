@@ -218,6 +218,23 @@
     "backHome": "Back to Home",
     "cancel": "Cancel"
   },
+  "myTickets": {
+    "title": "My Tickets",
+    "subtitle_one": "{{count}} reservation",
+    "subtitle_other": "{{count}} reservations",
+    "subtitle": "{{count}} reservations",
+    "all": "All",
+    "confirmed": "Confirmed",
+    "waitingList": "Waiting List",
+    "reservationNumber": "Reservation #{{number}}",
+    "noTickets": "You have no reservations yet.",
+    "browseShows": "Browse Shows",
+    "status": {
+      "CONFIRMED": "Confirmed",
+      "WAITING_LIST": "Waiting List",
+      "CLOSED": "Closed"
+    }
+  },
   "reservation": {
     "label": "Reservation",
     "subtitle": "Reserve your seat by sharing your information",

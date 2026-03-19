@@ -219,6 +219,23 @@
     "backHome": "العودة إلى الرئيسية",
     "cancel": "إلغاء"
   },
+  "myTickets": {
+    "title": "تذاكري",
+    "subtitle_one": "{{count}} حجز",
+    "subtitle_other": "{{count}} حجوزات",
+    "subtitle": "{{count}} حجوزات",
+    "all": "الكل",
+    "confirmed": "مؤكد",
+    "waitingList": "قائمة الانتظار",
+    "reservationNumber": "حجز رقم #{{number}}",
+    "noTickets": "لا توجد حجوزات بعد.",
+    "browseShows": "تصفح العروض",
+    "status": {
+      "CONFIRMED": "مؤكد",
+      "WAITING_LIST": "قائمة الانتظار",
+      "CLOSED": "مغلق"
+    }
+  },
   "reservation": {
     "label": "بيانات الحجز",
     "subtitle": "أكمل البيانات التالية لتأكيد حجزك",

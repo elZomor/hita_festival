@@ -320,6 +320,14 @@ export class ReactQueryApiClient {
 
 export const apiQueryClient = new ReactQueryApiClient();
 
+// Restore auth token synchronously so queries fired on the first render
+// already have the Authorization header set (AuthContext.setAuthToken via
+// useEffect would be too late — it runs after the first render).
+const _storedToken = typeof localStorage !== 'undefined'
+    ? localStorage.getItem('gf_accessToken')
+    : null;
+if (_storedToken) apiQueryClient.setAuthToken(_storedToken);
+
 export const useApiQuery = <TQueryFnData, TData = TQueryFnData, TVariables = void>(
     config: UseApiQueryConfig<TQueryFnData, TData, TVariables>,
 ): UseQueryResult<TData, ApiError> => {

@@ -17,6 +17,7 @@ import {
   SymposiumDetail,
   Creativity,
   CreativityDetail,
+  MyTickets,
 } from './pages';
 import './i18n';
 
@@ -44,6 +45,7 @@ function App() {
                   <Route path="/creativity/:slug" element={<CreativityDetail />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/coming-soon" element={<ComingSoon />} />
+                  <Route path="/my-tickets" element={<MyTickets />} />
                 </Routes>
               </MainLayout>
             </Router>

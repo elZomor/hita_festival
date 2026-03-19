@@ -101,6 +101,19 @@ export const Header = () => {
                 </Link>
               );
             })}
+            {isAuthenticated && (
+              <Link
+                to="/my-tickets"
+                className={`${
+                  isActiveLink('/my-tickets')
+                    ? 'text-secondary-500 dark:text-secondary-400'
+                    : 'text-primary-900 dark:text-primary-100 hover:text-secondary-500 dark:hover:text-secondary-400'
+                } transition-colors duration-300 font-medium relative group`}
+              >
+                {t('myTickets.title')}
+                <span className={`absolute bottom-0 left-0 ${isActiveLink('/my-tickets') ? 'w-full' : 'w-0'} h-0.5 bg-secondary-500 dark:bg-secondary-400 group-hover:w-full transition-all duration-300`}></span>
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -205,6 +218,17 @@ export const Header = () => {
             <div className="pt-2 border-t border-primary-200 dark:border-primary-700">
               {isAuthenticated && user ? (
                 <>
+                  <Link
+                    to="/my-tickets"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`block py-3 px-4 rounded-lg transition-colors duration-300 ${
+                      isActiveLink('/my-tickets')
+                        ? 'bg-secondary-500 dark:bg-secondary-600 text-primary-50'
+                        : 'text-primary-900 dark:text-primary-100 hover:bg-accent-600 hover:text-primary-50'
+                    }`}
+                  >
+                    🎟 {t('myTickets.title')}
+                  </Link>
                   <div className="flex items-center gap-3 px-4 py-2">
                     {user.picture ? (
                       <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
