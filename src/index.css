@@ -31,6 +31,23 @@
   }
 }
 
+.seat-map-scroll::-webkit-scrollbar {
+  height: 6px;
+  display: block;
+}
+.seat-map-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+.seat-map-scroll::-webkit-scrollbar-thumb {
+  background: rgba(251, 191, 36, 0.5);
+  border-radius: 3px;
+}
+.seat-map-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(251, 191, 36, 0.5) rgba(255, 255, 255, 0.05);
+}
+
 @layer utilities {
   @keyframes fadeIn {
     from {

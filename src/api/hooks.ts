@@ -823,6 +823,19 @@ export const useLatestArticles = (limit = 3) => {
     return {...query, data};
 };
 
+type MyShowReservationApiResult = {
+    data?: { seatNumber?: string | null; reservationNumber?: number; status?: string } | null;
+    message?: string;
+};
+
+export const useMyShowReservation = (showId?: string, userId?: string, enabled = true) =>
+    useApiQuery<MyShowReservationApiResult>({
+        queryKey: buildQueryKey('my-show-reservation', showId, userId),
+        path: `${api}/shows/${showId}/my_reservation`,
+        enabled: Boolean(showId) && Boolean(userId) && enabled,
+        expectedStatus: [200, 404],
+    });
+
 type ReserveShowVariables = {
     showId: string;
     seatNumber: string;
@@ -841,10 +854,11 @@ export type ReserveShowResponseData = {
 };
 
 export const useShowSeats = (showId?: string) =>
-    useApiQuery<{ taken: string[] }>({
+    useApiQuery<{ data: { taken: string[] } }, { taken: string[] }>({
         queryKey: buildQueryKey('show-seats', showId),
         path: `${api}/shows/${showId}/seats`,
         enabled: Boolean(showId),
+        select: (data) => data.data,
     });
 
 export const useReserveShow = () =>

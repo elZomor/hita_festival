@@ -252,13 +252,16 @@
       "title": "Your reservation is done successfully!",
       "nameLabel": "Name",
       "reservationNumberLabel": "Reservation Number",
+      "seatNumberLabel": "Seat",
       "instruction": "Please keep this as this is your ticket, take a screenshot.",
       "close": "Close"
     },
+    "seatMap": {
+      "leftBlock": "Left Block",
+      "rightBlock": "Right Block"
+    },
     "selectSeat": "Select Your Seat",
     "selectedSeat": "Seat {{seat}}",
-    "next": "Next",
-    "back": "Back",
     "errors": {
       "fullNameRequired": "Please enter your full name.",
       "fullNameArabic": "Name must be written using Arabic characters only.",
@@ -269,7 +272,7 @@
       "codes": {
         "NO_SHOW": "Unable to find this show. Please refresh and try again.",
         "NO_SEATS": "All seats for this show are taken.",
-        "DUPLICATE_MAIL": "This email already has a reservation for this show.",
+        "DUPLICATE_MAIL": "You have already reserved this show. Your seat is {{seat}}.",
         "UNKNOWN_ERROR": "Internet Connection Error",
         "INVALID_SEAT": "Invalid seat selection. Please choose a seat from rows G–L.",
         "SEAT_TAKEN": "This seat was just taken. Please choose another seat."
