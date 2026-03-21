@@ -72,6 +72,12 @@ function TicketCard({ reservation }: { reservation: MyReservation }) {
             <span className="truncate">{reservation.venueName}</span>
           </div>
         )}
+        {reservation.seatNumber && (
+          <div className="flex items-center gap-2">
+            <span>💺</span>
+            <span className="font-medium">{t('myTickets.seatNumber', { seat: reservation.seatNumber })}</span>
+          </div>
+        )}
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-2">
             <span>🎟</span>

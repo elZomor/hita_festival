@@ -825,6 +825,7 @@ export const useLatestArticles = (limit = 3) => {
 
 type ReserveShowVariables = {
     showId: string;
+    seatNumber: string;
 };
 
 export type ReserveShowResponse = {
@@ -832,19 +833,26 @@ export type ReserveShowResponse = {
     name: string;
     reservationNumber: number | string;
     reservationStatus: string;
+    seatNumber: string | null;
 };
 
 export type ReserveShowResponseData = {
     data: ReserveShowResponse;
 };
 
+export const useShowSeats = (showId?: string) =>
+    useApiQuery<{ taken: string[] }>({
+        queryKey: buildQueryKey('show-seats', showId),
+        path: `${api}/shows/${showId}/seats`,
+        enabled: Boolean(showId),
+    });
 
 export const useReserveShow = () =>
     useApiMutation<ReserveShowResponseData, ReserveShowVariables>({
         path: ({showId}) => `${api}/shows/${showId}/reserve`,
         method: 'POST',
         expectedStatus: 201,
-        bodySerializer: () => undefined,
+        bodySerializer: ({seatNumber}) => JSON.stringify({seat_number: seatNumber}),
     });
 
 /**

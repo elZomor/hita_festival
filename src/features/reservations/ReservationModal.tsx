@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GoogleLoginButton } from '../../components/auth/GoogleLoginButton';
 import { Button, Card } from '../../components/common';
-import { ReserveShowResponse, useReserveShow } from '../../api/hooks';
+import { ReserveShowResponse, useReserveShow, useShowSeats } from '../../api/hooks';
 import { useAuth } from '../../contexts/AuthContext';
+import { SeatMapPicker } from './SeatMapPicker';
 
 interface ReservationModalProps {
     showId: string;
@@ -12,26 +14,39 @@ interface ReservationModalProps {
     onSuccess?: (response: ReserveShowResponse) => void;
 }
 
-const knownReservationErrorCodes = ['NO_SHOW', 'NO_SEATS', 'DUPLICATE_MAIL', 'UNKNOWN_ERROR'] as const;
+const knownReservationErrorCodes = [
+    'NO_SHOW', 'NO_SEATS', 'DUPLICATE_MAIL', 'UNKNOWN_ERROR',
+    'INVALID_SEAT', 'SEAT_TAKEN',
+] as const;
 type ReservationErrorCode = (typeof knownReservationErrorCodes)[number];
 const isKnownReservationErrorCode = (value?: string): value is ReservationErrorCode => {
     if (!value) return false;
     return (knownReservationErrorCodes as readonly string[]).includes(value);
 };
 
+type Step = 'seat-selection' | 'confirm';
+
 export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess }: ReservationModalProps) => {
     const { t } = useTranslation();
     const { user, isAuthenticated, loginWithGoogleCredential } = useAuth();
     const reserveMutation = useReserveShow();
+    const [step, setStep] = useState<Step>('seat-selection');
+    const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
+
+    const seatsQuery = useShowSeats(isOpen ? showId : undefined);
+    const takenSeats = seatsQuery.data?.taken ?? [];
 
     const handleClose = () => {
         reserveMutation.reset();
+        setStep('seat-selection');
+        setSelectedSeat(null);
         onClose();
     };
 
     const handleReserve = async () => {
+        if (!selectedSeat) return;
         try {
-            const response = await reserveMutation.mutateAsync({ showId });
+            const response = await reserveMutation.mutateAsync({ showId, seatNumber: selectedSeat });
             handleClose();
             onSuccess?.({
                 ...response.data,
@@ -39,7 +54,13 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
                 reservationNumber: response.data.reservationNumber,
             });
         } catch {
-            // handled via mutation error state
+            // If SEAT_TAKEN, go back to seat selection and refetch
+            const rawMessage = (reserveMutation.error as Error | null)?.message?.toString().toUpperCase();
+            if (rawMessage === 'SEAT_TAKEN') {
+                setStep('seat-selection');
+                setSelectedSeat(null);
+                seatsQuery.refetch();
+            }
         }
     };
 
@@ -59,7 +80,7 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
             className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 bg-primary-950/80 backdrop-blur-sm"
             onClick={handleClose}
         >
-            <div className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
                 <Card className="space-y-6" hover={false}>
                     <div className="space-y-1 text-center">
                         <p className="text-sm uppercase tracking-[0.2em] text-secondary-500">{t('reservation.label')}</p>
@@ -84,6 +105,45 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
                                 </Button>
                             </div>
                         </div>
+                    ) : step === 'seat-selection' ? (
+                        <div className="space-y-4">
+                            <p className="text-sm font-semibold text-center text-primary-700 dark:text-primary-200">
+                                {t('reservation.selectSeat')}
+                            </p>
+
+                            {seatsQuery.isLoading ? (
+                                <div className="flex justify-center py-8 text-primary-500">
+                                    {t('common.loading')}
+                                </div>
+                            ) : (
+                                <SeatMapPicker
+                                    takenSeats={takenSeats}
+                                    selectedSeat={selectedSeat}
+                                    onSeatSelect={setSelectedSeat}
+                                />
+                            )}
+
+                            {selectedSeat && (
+                                <p className="text-sm text-center font-medium text-amber-600 dark:text-amber-400">
+                                    💺 {t('reservation.selectedSeat', { seat: selectedSeat })}
+                                </p>
+                            )}
+
+                            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                                <Button type="button" variant="primary" className="w-full sm:w-auto" onClick={handleClose}>
+                                    {t('common.cancel')}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="reservation"
+                                    className="w-full sm:w-auto"
+                                    onClick={() => setStep('confirm')}
+                                    disabled={!selectedSeat}
+                                >
+                                    {t('reservation.next')} →
+                                </Button>
+                            </div>
+                        </div>
                     ) : (
                         <div className="space-y-4">
                             <div className="flex items-center gap-3 p-3 rounded-lg bg-primary-100 dark:bg-primary-800">
@@ -100,6 +160,15 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
                                 </div>
                             </div>
 
+                            {selectedSeat && (
+                                <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
+                                    <span className="text-lg">💺</span>
+                                    <span className="font-semibold text-amber-700 dark:text-amber-400">
+                                        {t('reservation.selectedSeat', { seat: selectedSeat })}
+                                    </span>
+                                </div>
+                            )}
+
                             <p className="text-sm text-center text-primary-600 dark:text-primary-300">
                                 {t('reservation.emailNote')}
                             </p>
@@ -108,15 +177,15 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
                                 <p className="text-sm text-accent-600 text-center">{getErrorMessage()}</p>
                             )}
 
-                            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
                                 <Button
                                     type="button"
                                     variant="primary"
                                     className="w-full sm:w-auto"
-                                    onClick={handleClose}
+                                    onClick={() => { reserveMutation.reset(); setStep('seat-selection'); }}
                                     disabled={reserveMutation.isPending}
                                 >
-                                    {t('common.cancel')}
+                                    ← {t('reservation.back')}
                                 </Button>
                                 <Button
                                     type="button"

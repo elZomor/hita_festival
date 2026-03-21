@@ -130,6 +130,7 @@ export type MyReservation = {
   venueName: string;
   festivalName: string;
   festivalId: number;
+  seatNumber: string | null;
 };
 
 export type Language = 'ar' | 'en';
