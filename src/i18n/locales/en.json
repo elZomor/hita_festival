@@ -254,7 +254,10 @@
       "reservationNumberLabel": "Reservation Number",
       "seatNumberLabel": "Seat",
       "instruction": "Please keep this as this is your ticket, take a screenshot.",
-      "close": "Close"
+      "close": "Close",
+      "waitingListTitle": "You've been added to the waiting list!",
+      "waitingListPositionLabel": "Your position",
+      "waitingListInstruction": "Keep this number. Take a screenshot."
     },
     "seatMap": {
       "leftBlock": "Left Block",
@@ -262,6 +265,10 @@
     },
     "selectSeat": "Select Your Seat",
     "selectedSeat": "Seat {{seat}}",
+    "waitingList": {
+      "info": "All seats are taken. You can join the waiting list.",
+      "button": "Join Waiting List"
+    },
     "errors": {
       "fullNameRequired": "Please enter your full name.",
       "fullNameArabic": "Name must be written using Arabic characters only.",
@@ -273,6 +280,7 @@
         "NO_SHOW": "Unable to find this show. Please refresh and try again.",
         "NO_SEATS": "All seats for this show are taken.",
         "DUPLICATE_MAIL": "You have already reserved this show. Your seat is {{seat}}.",
+        "DUPLICATE_WAITING_LIST": "You are already on the waiting list. Your position is #{{seat}}.",
         "UNKNOWN_ERROR": "Internet Connection Error",
         "INVALID_SEAT": "Invalid seat selection. Please choose a seat from rows G–L.",
         "SEAT_TAKEN": "This seat was just taken. Please choose another seat."

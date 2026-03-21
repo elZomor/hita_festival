@@ -9,6 +9,8 @@ import {Link} from "react-router-dom";
 import {ReservationModal} from "../reservations/ReservationModal";
 import {ReservationSuccessModal} from "../reservations/ReservationSuccessModal";
 import type {ReserveShowResponse} from '../../api/hooks';
+import {useReserveShow} from '../../api/hooks';
+import {useAuth} from '../../contexts/AuthContext';
 
 interface ShowCardProps {
     show: Show;
@@ -16,9 +18,26 @@ interface ShowCardProps {
 
 export const ShowCard = ({show}: ShowCardProps) => {
     const {t, i18n} = useTranslation();
+    const {isAuthenticated} = useAuth();
+    const reserveMutation = useReserveShow();
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
     const queryClient = useQueryClient();
+
+    const isWaitingList = show.isOpenForReservation === 'OPEN_FOR_WAITING_LIST';
+
+    const handleReservationButtonClick = async () => {
+        if (isWaitingList && isAuthenticated) {
+            try {
+                const response = await reserveMutation.mutateAsync({ showId: show.id });
+                setReservationSuccess(response.data);
+            } catch {
+                setReservationOpen(true);
+            }
+        } else {
+            setReservationOpen(true);
+        }
+    };
 
     const handleSuccessModalClose = () => {
         setReservationSuccess(null);
@@ -147,8 +166,8 @@ export const ShowCard = ({show}: ShowCardProps) => {
                         <Button
                             variant={getReservationStatusClass(show.isOpenForReservation)}
                             className="w-full mt-5"
-                            onClick={() => setReservationOpen(true)}
-                            disabled={isReservationComplete}
+                            onClick={handleReservationButtonClick}
+                            disabled={isReservationComplete || reserveMutation.isPending}
                         >
                             {getReservationStatus(show.isOpenForReservation)}
                         </Button>

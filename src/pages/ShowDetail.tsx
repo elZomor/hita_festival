@@ -4,7 +4,8 @@ import {useState, type ReactNode} from 'react';
 import {useQueryClient} from '@tanstack/react-query';
 import {ArrowLeft} from 'lucide-react';
 import {LoadingState} from '../components/common';
-import {useArticles, useShow, useSymposia, type ReserveShowResponse} from '../api/hooks';
+import {useArticles, useReserveShow, useShow, useSymposia, type ReserveShowResponse} from '../api/hooks';
+import {useAuth} from '../contexts/AuthContext';
 import {ReservationModal} from '../features/reservations/ReservationModal';
 import {ReservationSuccessModal} from '../features/reservations/ReservationSuccessModal';
 import {compareWithToday, getLongFormattedDate, translateTime} from '../utils/dateUtils';
@@ -25,6 +26,8 @@ export const ShowDetail = () => {
     const navigate = useNavigate();
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
+    const {isAuthenticated} = useAuth();
+    const reserveMutation = useReserveShow();
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
     const [activeTab, setActiveTab] = useState<ShowTabKey>('info');
@@ -289,7 +292,18 @@ export const ShowDetail = () => {
                 waitingListLabel={t('show.reserve_waiting_list')}
                 completeLabel={t('show.complete')}
                 bookTicketLabel={t('show.bookTicket')}
-                onReservationClick={() => setReservationOpen(true)}
+                onReservationClick={async () => {
+                    if (show.isOpenForReservation === 'OPEN_FOR_WAITING_LIST' && isAuthenticated) {
+                        try {
+                            const response = await reserveMutation.mutateAsync({ showId: show.id });
+                            setReservationSuccess(response.data);
+                        } catch {
+                            setReservationOpen(true);
+                        }
+                    } else {
+                        setReservationOpen(true);
+                    }
+                }}
             />
 
             <ShowTabsNavigation tabs={tabs} activeTab={activeTab} onTabChange={tab => setActiveTab(tab)}/>

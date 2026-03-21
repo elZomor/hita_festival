@@ -38,6 +38,7 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
         myReservationQuery.data?.message !== 'NO_RESERVATION' &&
         myReservationQuery.data?.data != null;
     const existingSeatNumber = myReservationQuery.data?.data?.seatNumber ?? '';
+    const existingStatus = myReservationQuery.data?.data?.status;
 
     const handleClose = () => {
         reserveMutation.reset();
@@ -113,9 +114,11 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
                     ) : alreadyBooked ? (
                         <div className="space-y-4">
                             <div className="flex flex-col items-center gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 text-center">
-                                <span className="text-3xl">💺</span>
+                                <span className="text-3xl">{existingStatus === 'WAITING_LIST' ? '⏳' : '💺'}</span>
                                 <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-                                    {t('reservation.errors.codes.DUPLICATE_MAIL', { seat: existingSeatNumber })}
+                                    {existingStatus === 'WAITING_LIST'
+                                        ? t('reservation.errors.codes.DUPLICATE_WAITING_LIST', { seat: existingSeatNumber })
+                                        : t('reservation.errors.codes.DUPLICATE_MAIL', { seat: existingSeatNumber })}
                                 </p>
                             </div>
                             <div className="flex justify-end">
