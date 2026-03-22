@@ -9,7 +9,7 @@ import {Link} from "react-router-dom";
 import {ReservationModal} from "../reservations/ReservationModal";
 import {ReservationSuccessModal} from "../reservations/ReservationSuccessModal";
 import type {ReserveShowResponse} from '../../api/hooks';
-import {useReserveShow} from '../../api/hooks';
+import {useIsHitaMember, useReserveShow} from '../../api/hooks';
 import {useAuth} from '../../contexts/AuthContext';
 
 interface ShowCardProps {
@@ -19,6 +19,7 @@ interface ShowCardProps {
 export const ShowCard = ({show}: ShowCardProps) => {
     const {t, i18n} = useTranslation();
     const {isAuthenticated} = useAuth();
+    const {data: isHitaMember} = useIsHitaMember(isAuthenticated);
     const reserveMutation = useReserveShow();
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
@@ -45,7 +46,8 @@ export const ShowCard = ({show}: ShowCardProps) => {
         queryClient.invalidateQueries({queryKey: ['shows']});
     };
 
-    const isOpenForReservation =    ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(show.isOpenForReservation)
+    const isOpenForReservation = ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(show.isOpenForReservation)
+        && (!isAuthenticated || isHitaMember === true)
     const isReservationComplete = show.isOpenForReservation === 'COMPLETE'
     const getShowStatusName = (showDate: string) => {
         const comparisonResult = compareWithToday(new Date(showDate))

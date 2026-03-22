@@ -16,7 +16,7 @@ interface ReservationModalProps {
 
 const knownReservationErrorCodes = [
     'NO_SHOW', 'NO_SEATS', 'DUPLICATE_MAIL', 'UNKNOWN_ERROR',
-    'INVALID_SEAT', 'SEAT_TAKEN',
+    'INVALID_SEAT', 'SEAT_TAKEN', 'NOT_HITA_MEMBER',
 ] as const;
 type ReservationErrorCode = (typeof knownReservationErrorCodes)[number];
 const isKnownReservationErrorCode = (value?: string): value is ReservationErrorCode => {

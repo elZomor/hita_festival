@@ -4,7 +4,7 @@ import {useState, type ReactNode} from 'react';
 import {useQueryClient} from '@tanstack/react-query';
 import {ArrowLeft} from 'lucide-react';
 import {LoadingState} from '../components/common';
-import {useArticles, useReserveShow, useShow, useSymposia, type ReserveShowResponse} from '../api/hooks';
+import {useArticles, useIsHitaMember, useReserveShow, useShow, useSymposia, type ReserveShowResponse} from '../api/hooks';
 import {useAuth} from '../contexts/AuthContext';
 import {ReservationModal} from '../features/reservations/ReservationModal';
 import {ReservationSuccessModal} from '../features/reservations/ReservationSuccessModal';
@@ -27,6 +27,7 @@ export const ShowDetail = () => {
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
     const {isAuthenticated} = useAuth();
+    const {data: isHitaMember} = useIsHitaMember(isAuthenticated);
     const reserveMutation = useReserveShow();
     const [isReservationOpen, setReservationOpen] = useState(false);
     const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
@@ -73,7 +74,8 @@ export const ShowDetail = () => {
 
     const showDate = show.date ? new Date(show.date) : null;
     const reservationStatuses = ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'];
-    const isReservationStatus = reservationStatuses.includes(show.isOpenForReservation);
+    const isReservationStatus = reservationStatuses.includes(show.isOpenForReservation)
+        && (!isAuthenticated || isHitaMember === true);
     const isReservationComplete = show.isOpenForReservation === 'COMPLETE';
     const getReservationStatusClass = (status: string) => {
         switch (status) {

@@ -853,6 +853,14 @@ export type ReserveShowResponseData = {
     data: ReserveShowResponse;
 };
 
+export const useIsHitaMember = (enabled = true) =>
+    useApiQuery<{ data: { isMember: boolean } }, boolean>({
+        queryKey: buildQueryKey('is-hita-member'),
+        path: `${api}/shows/is_hita_member`,
+        select: data => data.data.isMember,
+        enabled,
+    });
+
 export const useShowSeats = (showId?: string) =>
     useApiQuery<{ data: { taken: string[] } }, { taken: string[] }>({
         queryKey: buildQueryKey('show-seats', showId),

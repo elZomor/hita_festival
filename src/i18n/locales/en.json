@@ -281,6 +281,7 @@
         "NO_SEATS": "All seats for this show are taken.",
         "DUPLICATE_MAIL": "You have already reserved this show. Your seat is {{seat}}.",
         "DUPLICATE_WAITING_LIST": "You are already on the waiting list. Your position is #{{seat}}.",
+        "NOT_HITA_MEMBER": "Booking is only allowed for students of the Higher Institute of Theatrical Arts.",
         "UNKNOWN_ERROR": "Internet Connection Error",
         "INVALID_SEAT": "Invalid seat selection. Please choose a seat from rows G–L.",
         "SEAT_TAKEN": "This seat was just taken. Please choose another seat."
