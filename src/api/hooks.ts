@@ -839,6 +839,7 @@ export const useMyShowReservation = (showId?: string, userId?: string, enabled =
 type ReserveShowVariables = {
     showId: string;
     seatNumber?: string;
+    token?: string;
 };
 
 export type ReserveShowResponse = {
@@ -874,7 +875,11 @@ export const useReserveShow = () =>
         path: ({showId}) => `${api}/shows/${showId}/reserve`,
         method: 'POST',
         expectedStatus: 201,
-        bodySerializer: ({seatNumber}) => JSON.stringify(seatNumber ? {seat_number: seatNumber} : {}),
+        bodySerializer: ({seatNumber, token}) =>
+            JSON.stringify({
+                ...(seatNumber ? {seat_number: seatNumber} : {}),
+                ...(token ? {access_token: token} : {}),
+            }),
     });
 
 /**

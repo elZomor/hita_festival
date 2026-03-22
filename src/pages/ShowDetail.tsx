@@ -1,4 +1,4 @@
-import {Link, useParams, useNavigate} from 'react-router-dom';
+import {Link, useParams, useNavigate, useSearchParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useState, type ReactNode} from 'react';
 import {useQueryClient} from '@tanstack/react-query';
@@ -24,6 +24,8 @@ import {isDetailEntry} from '../components/detail-display/utils';
 export const ShowDetail = () => {
     const {pk} = useParams<{ pk: string }>();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token') ?? undefined;
     const {t, i18n} = useTranslation();
     const isRTL = i18n.language === 'ar';
     const {isAuthenticated} = useAuth();
@@ -75,7 +77,7 @@ export const ShowDetail = () => {
     const showDate = show.date ? new Date(show.date) : null;
     const reservationStatuses = ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'];
     const isReservationStatus = reservationStatuses.includes(show.isOpenForReservation)
-        && (!isAuthenticated || isHitaMember === true);
+        && (!isAuthenticated || Boolean(token) || isHitaMember === true);
     const isReservationComplete = show.isOpenForReservation === 'COMPLETE';
     const getReservationStatusClass = (status: string) => {
         switch (status) {
@@ -297,7 +299,7 @@ export const ShowDetail = () => {
                 onReservationClick={async () => {
                     if (show.isOpenForReservation === 'OPEN_FOR_WAITING_LIST' && isAuthenticated) {
                         try {
-                            const response = await reserveMutation.mutateAsync({ showId: show.id });
+                            const response = await reserveMutation.mutateAsync({ showId: show.id, token });
                             setReservationSuccess(response.data);
                         } catch {
                             setReservationOpen(true);
@@ -319,6 +321,7 @@ export const ShowDetail = () => {
                     isOpen={isReservationOpen}
                     onClose={() => setReservationOpen(false)}
                     onSuccess={response => setReservationSuccess(response)}
+                    token={token}
                 />
             )}
             <ReservationSuccessModal

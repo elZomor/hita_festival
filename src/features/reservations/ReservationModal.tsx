@@ -12,11 +12,12 @@ interface ReservationModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess?: (response: ReserveShowResponse) => void;
+    token?: string;
 }
 
 const knownReservationErrorCodes = [
     'NO_SHOW', 'NO_SEATS', 'DUPLICATE_MAIL', 'UNKNOWN_ERROR',
-    'INVALID_SEAT', 'SEAT_TAKEN', 'NOT_HITA_MEMBER',
+    'INVALID_SEAT', 'SEAT_TAKEN', 'INVALID_TOKEN',
 ] as const;
 type ReservationErrorCode = (typeof knownReservationErrorCodes)[number];
 const isKnownReservationErrorCode = (value?: string): value is ReservationErrorCode => {
@@ -24,7 +25,7 @@ const isKnownReservationErrorCode = (value?: string): value is ReservationErrorC
     return (knownReservationErrorCodes as readonly string[]).includes(value);
 };
 
-export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess }: ReservationModalProps) => {
+export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess, token }: ReservationModalProps) => {
     const { t } = useTranslation();
     const { user, isAuthenticated, loginWithGoogleCredential } = useAuth();
     const reserveMutation = useReserveShow();
@@ -49,7 +50,7 @@ export const ReservationModal = ({ showId, showName, isOpen, onClose, onSuccess 
     const handleReserve = async () => {
         if (!selectedSeat) return;
         try {
-            const response = await reserveMutation.mutateAsync({ showId, seatNumber: selectedSeat });
+            const response = await reserveMutation.mutateAsync({ showId, seatNumber: selectedSeat, token });
             handleClose();
             onSuccess?.({
                 ...response.data,

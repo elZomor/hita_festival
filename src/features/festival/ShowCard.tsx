@@ -1,16 +1,9 @@
-import {useState} from 'react';
-import {useQueryClient} from '@tanstack/react-query';
 import {useTranslation} from 'react-i18next';
 import {Calendar, Clock, MapPin, UserCog} from 'lucide-react';
 import {Badge, Button, Card} from '../../components/common';
 import {Show} from '../../types';
 import {compareWithToday, getLongFormattedDate, translateTime} from "../../utils/dateUtils.ts";
 import {Link} from "react-router-dom";
-import {ReservationModal} from "../reservations/ReservationModal";
-import {ReservationSuccessModal} from "../reservations/ReservationSuccessModal";
-import type {ReserveShowResponse} from '../../api/hooks';
-import {useIsHitaMember, useReserveShow} from '../../api/hooks';
-import {useAuth} from '../../contexts/AuthContext';
 
 interface ShowCardProps {
     show: Show;
@@ -18,37 +11,7 @@ interface ShowCardProps {
 
 export const ShowCard = ({show}: ShowCardProps) => {
     const {t, i18n} = useTranslation();
-    const {isAuthenticated} = useAuth();
-    const {data: isHitaMember} = useIsHitaMember(isAuthenticated);
-    const reserveMutation = useReserveShow();
-    const [isReservationOpen, setReservationOpen] = useState(false);
-    const [reservationSuccess, setReservationSuccess] = useState<ReserveShowResponse | null>(null);
-    const queryClient = useQueryClient();
 
-    const isWaitingList = show.isOpenForReservation === 'OPEN_FOR_WAITING_LIST';
-
-    const handleReservationButtonClick = async () => {
-        if (isWaitingList && isAuthenticated) {
-            try {
-                const response = await reserveMutation.mutateAsync({ showId: show.id });
-                setReservationSuccess(response.data);
-            } catch {
-                setReservationOpen(true);
-            }
-        } else {
-            setReservationOpen(true);
-        }
-    };
-
-    const handleSuccessModalClose = () => {
-        setReservationSuccess(null);
-        queryClient.invalidateQueries({queryKey: ['show']});
-        queryClient.invalidateQueries({queryKey: ['shows']});
-    };
-
-    const isOpenForReservation = ['OPEN_FOR_RESERVATION', 'OPEN_FOR_WAITING_LIST', 'COMPLETE'].includes(show.isOpenForReservation)
-        && (!isAuthenticated || isHitaMember === true)
-    const isReservationComplete = show.isOpenForReservation === 'COMPLETE'
     const getShowStatusName = (showDate: string) => {
         const comparisonResult = compareWithToday(new Date(showDate))
         switch (comparisonResult) {
@@ -73,35 +36,8 @@ export const ShowCard = ({show}: ShowCardProps) => {
         }
     }
 
-    const getReservationStatusClass = (status: string) => {
-        switch (status) {
-            case 'OPEN_FOR_RESERVATION':
-                return 'reservation'
-            case 'OPEN_FOR_WAITING_LIST':
-                return 'waiting'
-            case 'COMPLETE':
-                return 'complete'
-            default:
-                return 'secondary'
-        }
-    }
-
-    const getReservationStatus = (status: string) => {
-        switch (status) {
-            case 'OPEN_FOR_RESERVATION':
-                return t('show.reserve')
-            case 'OPEN_FOR_WAITING_LIST':
-                return t('show.reserve_waiting_list')
-            case 'COMPLETE':
-                return t('show.complete')
-        }
-    }
-
     return (
-        <>
         <Card className="h-full flex flex-col relative">
-
-
             <div className="relative">
                 <img
                     src={
@@ -118,13 +54,11 @@ export const ShowCard = ({show}: ShowCardProps) => {
                     {t(getShowStatusName(show.date))}
                 </Badge>
             </div>
-            {/* make this a flex column that can stretch */}
             <div className="space-y-3 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold text-primary-900 dark:text-primary-50">
                     {show.name}
                 </h3>
 
-                {/* info block grows, pushes buttons down when needed */}
                 <div className="space-y-2 text-sm flex-1">
                     <div className="flex items-center text-primary-600 dark:text-primary-300 mb-2">
                         <UserCog size={16} className="text-secondary-500 mx-2" />
@@ -150,47 +84,14 @@ export const ShowCard = ({show}: ShowCardProps) => {
                     </div>
                 </div>
 
-                {/* buttons */}
-                <div
-                    className={`px-4 mb-5 flex flex-col ${
-                        isOpenForReservation
-                            ? 'mt-auto'                // two buttons, keep them at the bottom
-                            : 'flex-1 justify-center'  // single button, center in remaining space
-                    }`}
-                >
+                <div className="px-4 mb-5 flex flex-col flex-1 justify-center">
                     <Link to={`/shows/${show.id}`}>
                         <Button variant="secondary" className="w-full">
                             {t('show.viewDetails')}
                         </Button>
                     </Link>
-
-                    {isOpenForReservation && (
-                        <Button
-                            variant={getReservationStatusClass(show.isOpenForReservation)}
-                            className="w-full mt-5"
-                            onClick={handleReservationButtonClick}
-                            disabled={isReservationComplete || reserveMutation.isPending}
-                        >
-                            {getReservationStatus(show.isOpenForReservation)}
-                        </Button>
-                    )}
                 </div>
             </div>
         </Card>
-            {isOpenForReservation && (
-                <ReservationModal
-                    showId={show.id}
-                    showName={show.name}
-                    isOpen={isReservationOpen}
-                    onClose={() => setReservationOpen(false)}
-                    onSuccess={response => setReservationSuccess(response)}
-                />
-            )}
-            <ReservationSuccessModal
-                isOpen={Boolean(reservationSuccess)}
-                reservation={reservationSuccess}
-                onClose={handleSuccessModalClose}
-            />
-        </>
     );
 };
